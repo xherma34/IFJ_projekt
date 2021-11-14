@@ -15,9 +15,9 @@ typedef enum
 
     //Typy
     S_ID,
-    
+
     //Number
-    S_INTEGER,    
+    S_INTEGER,
     S_NUMBER_DOT,
     S_NUMBER_DOT_NUMBER,
     S_NUMBER_E,
@@ -60,12 +60,12 @@ typedef enum
     S_LT,
     S_GET,
     S_LET,
-   
+
     S_SETVALUE,
 
     S_BRACKET_LEFT,
-    S_BRACKET_RIGHT, 
-   
+    S_BRACKET_RIGHT,
+
 
 } FSM_STATE;
 
@@ -112,37 +112,37 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if(loadChar == '-')
                 {
-                    state = S_SUB;      
-                }       
+                    state = S_SUB;
+                }
                 else if(loadChar == ':')
                 {
                     currentToken->type = T_COLON;
                     return 0;
-                }     
+                }
                 else if(loadChar == '.')
                 {
                     state = S_CONCATENATION_FIRST;
-                }     
+                }
                 else if(loadChar == '<')
                 {
                     state = S_LT;
-                }     
+                }
                 else if(loadChar == '>')
                 {
                     state = S_GT;
-                }     
+                }
                 else if(loadChar == '=')
                 {
                     state = S_SETVALUE;
-                }     
+                }
                 else if(loadChar == '~')
                 {
                     state = S_NEQ_FIRST;
-                }     
+                }
                 else if(loadChar == '(')
                 {
                     state = S_BRACKET_LEFT;
-                }     
+                }
                 else if(loadChar == ')')
                 {
                     state = S_BRACKET_RIGHT;
@@ -151,7 +151,7 @@ int ScannerGetToken (Token *currentToken)
                 {
                     DLL_insertLast(&list, loadChar);
                     state = S_ID;
-                }     
+                }
                 else if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
@@ -167,13 +167,13 @@ int ScannerGetToken (Token *currentToken)
                     return 0;
                 }
                 break;
-            
+
             case(S_DIV_NUMBER):
                 if(loadChar == '/')     //Nacetl jsem '//', coz urcuje celociselne deleni
                 {
                     currentToken->type = T_DIV_INTEGER;     //predavam token
                     return 0;
-                } 
+                }
                 else if(loadChar != '/')        //nacetl jsem '/', coz urcuje necelociselne deleni
                 {
                     currentToken->type = T_DIV_NUMBER;      //predavam token
@@ -198,7 +198,7 @@ int ScannerGetToken (Token *currentToken)
             case(S_COMMENT_START_SECOND):       //Nacetl jsem dva znaky '--'
                 if(loadChar == '[')     //Pokud je nasledujici znak '['
                 {
-                    state = S_COMMENT_START_BLOCK_FIRST;       //Jdu do nasledujiciho stavu 
+                    state = S_COMMENT_START_BLOCK_FIRST;       //Jdu do nasledujiciho stavu
                 }
                 else if(loadChar == '\n')       //Pokud je nasledujici znak EOL -> znaci mi konec radkoveho komentare, jdu do stavu start
                 {
@@ -242,7 +242,7 @@ int ScannerGetToken (Token *currentToken)
                     state = S_COMMENT_BLOCK;
                 }
                 break;
-                
+
             case(S_CONCATENATION_FIRST):
                 if(loadChar == '.')     //nacetl jsem '..' -> korektni stav FSM prechazim do koncoveho stavu
                 {
@@ -272,7 +272,7 @@ int ScannerGetToken (Token *currentToken)
                     state = S_GET;
                 }
                 break;
-            
+
             case(S_GET):
                 ungetc(loadChar, stdin);
                 currentToken->type = T_GET;
@@ -346,7 +346,7 @@ int ScannerGetToken (Token *currentToken)
                 return 0;
                 break;
 
-            case(S_INTEGER):  
+            case(S_INTEGER):
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
@@ -382,7 +382,7 @@ int ScannerGetToken (Token *currentToken)
                     return 1;
                 }
                 break;
-            
+
             case(S_NUMBER_DOT_NUMBER):
                 if(isdigit(loadChar))
                 {
@@ -491,7 +491,7 @@ int ScannerGetToken (Token *currentToken)
                     return 1;
                 }
                 break;
-            
+
             case(S_STRING_BACKSLASH_ZERO):
                 if(loadChar == '0')
                 {
@@ -508,7 +508,7 @@ int ScannerGetToken (Token *currentToken)
                     return 1;
                 }
                 break;
-            
+
             case(S_STRING_BACKSLASH_ZERO_ZERO):
                 if(loadChar >= '1' && loadChar <= '9')
                 {
@@ -579,7 +579,7 @@ int ScannerGetToken (Token *currentToken)
                 {
                     currentToken->type = T_ID_KW;
                     return 0;
-                } 
+                }
                 break;
 
             default:
@@ -588,106 +588,3 @@ int ScannerGetToken (Token *currentToken)
     }
     return 0;
 }
-
-int main()
-{
-    Token myToken;
-    
-
-    while(myToken.type != T_EOF)
-    {
-        ScannerGetToken(&myToken);
-        switch(myToken.type)
-        {
-            case(T_MUL):
-                printf("MUL \n");
-                break;
-
-            case(T_DIV_NUMBER):
-                printf("DIVNUMBER \n");
-                break;
-
-            case(T_SUB):
-                printf("SUB\n");
-                break;
-
-            case(T_ADD):
-                printf("ADD \n");
-                break;
-
-            case(T_ID_KW):
-                printf("ID KEYWORD \n");
-                break;
-
-            case(T_STRLEN):
-                printf("STRLEN \n");
-                break;
-
-            case(T_DIV_INTEGER):
-                printf("DIVINT \n");
-                break;
-
-            case(T_CONCATENATION):
-                printf("CONCATENATION \n");
-                break;
-
-            case(T_LT):
-                printf("< \n");
-                break;
-            
-            case(T_GT):
-                printf("> \n");
-                break;
-            
-            case(T_LET):
-                printf("<= \n");
-                break;
-            
-            case(T_GET):
-                printf("=> \n");
-                break;
-            
-            case(T_EQ):
-                printf("== \n");
-                break;
-            
-            case(T_NEQ):
-                printf("!= \n");
-                break;
-            
-            case(T_NUM_INTEGER):
-                printf("INTEGER \n");
-                break;
-
-            case(T_NUM_NUMBER):
-                printf("FLOAT \n");
-                break;
-
-            case(T_BRACKET_LEFT):
-                printf("( \n");
-                break;
-
-            case(T_BRACKET_RIGHT):
-                printf(") \n");
-                break;
-            
-            case(T_COLON):
-                printf("COLON \n");
-                break;
-            
-            case(T_STRING):
-                printf("STRING \n");
-                break;
-            
-            case(T_SETVALUE):
-                printf("SETVALUE \n");
-                break;
-
-            default:
-                printf("ERROR \n");
-                break;
-        }
-    }
-    return 0;
-}
-                
