@@ -130,3 +130,4 @@ void DLL_getFirst(DLList *list, char *data)
     *data = list->firstElement->data;
 }
 
+

@@ -3,7 +3,7 @@
 #include<stdlib.h>
 
 
-typedef struct DLLnode {
+typedef struct DLLnode{
 	char data;
 	struct DLLnode *prev;
 	struct DLLnode *next;
