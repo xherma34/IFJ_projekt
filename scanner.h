@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include "DLList.h"
 #define FILE_INPUT = "file.txt"
 
 typedef enum
 {
     //Identifikator
-    T_ID,
+    T_ID_KW,
 
     //Klicova slova
     T_KW_DO,
@@ -31,6 +34,7 @@ typedef enum
     T_MUL,              //  *
     T_DIV_NUMBER,       //  /   -> NORMALNI DELENI
     T_DIV_INTEGER,      //  //  -> CELOCISELNE DELENI
+    T_CONCATENATION,
 
     //Relacni operatory
     T_LT,       //  <
@@ -41,7 +45,6 @@ typedef enum
     T_NEQ,      //  ~=
 
     //Zbytek
-    T_EOL,
     T_EOF,
     T_NUM_INTEGER,
     T_NUM_NUMBER,
@@ -49,7 +52,7 @@ typedef enum
     T_BRACKET_LEFT,
     T_COLON,
     T_STRING,
-    T_SET,      //  = -> prirazeni hodnoty
+    T_SETVALUE,      //  = -> prirazeni hodnoty
     T_EMPTY,
 } Token_type;
 
@@ -81,3 +84,9 @@ typedef struct
     TNode last;
     TNode active;
 } TList;
+
+/**
+ * @brief Funkce na vytahovani tokenu
+ * @param Token
+ */
+int ScannerGetToken (Token *);
