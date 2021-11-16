@@ -66,16 +66,22 @@ typedef enum
     S_BRACKET_LEFT,
     S_BRACKET_RIGHT,
 
+    S_COMMA,
+
 
 } FSM_STATE;
 
 
+
 int ScannerGetToken (Token *currentToken)
 {
+    Token tmp;
     currentToken->type = T_EMPTY;
     FSM_STATE state = S_START;
 
     char loadChar;
+    //char backslashChar;
+    int backslashLen = 0;
 
     DLList list;
     DLL_init(&list);
@@ -91,15 +97,17 @@ int ScannerGetToken (Token *currentToken)
                 {
                     state = S_START;
                 }
+                else if(loadChar == ',')
+                {
+                    state = S_COMMA;
+                }
                 else if (loadChar == '#')
                 {
-                    currentToken->type = T_STRLEN;
-                    return 0;
+                    state = S_STRLEN;
                 }
                 else if(loadChar == '*')
                 {
-                    currentToken->type = T_MUL;
-                    return 0;
+                    state = S_MUL;
                 }
                 else if(loadChar == '/')
                 {
@@ -107,8 +115,7 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if (loadChar == '+')
                 {
-                    currentToken->type = T_ADD;
-                    return 0;
+                    state = S_ADD;
                 }
                 else if(loadChar == '-')
                 {
@@ -116,8 +123,7 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if(loadChar == ':')
                 {
-                    currentToken->type = T_COLON;
-                    return 0;
+                    state = S_COLON;
                 }
                 else if(loadChar == '.')
                 {
@@ -150,11 +156,13 @@ int ScannerGetToken (Token *currentToken)
                 else if(isalpha(loadChar) || loadChar == '_')
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_ID;
                 }
                 else if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_INTEGER;
                 }
                 else if(loadChar == '"')
@@ -166,7 +174,26 @@ int ScannerGetToken (Token *currentToken)
                     currentToken->type = T_EOF;
                     return 0;
                 }
+                else
+                {
+                    return 1;
+                }
                 break;
+
+            case(S_COMMA):
+                ungetc(loadChar, stdin);
+                currentToken->type = T_COMMA;
+                return 0;
+
+            case(S_STRLEN):
+                ungetc(loadChar, stdin);
+                currentToken->type = T_STRLEN;
+                return 0;
+
+            case(S_MUL):
+                ungetc(loadChar, stdin);
+                currentToken->type = T_MUL;
+                return 0;
 
             case(S_DIV_NUMBER):
                 if(loadChar == '/')     //Nacetl jsem '//', coz urcuje celociselne deleni
@@ -174,26 +201,35 @@ int ScannerGetToken (Token *currentToken)
                     currentToken->type = T_DIV_INTEGER;     //predavam token
                     return 0;
                 }
-                else if(loadChar != '/')        //nacetl jsem '/', coz urcuje necelociselne deleni
+                else        //nacetl jsem '/', coz urcuje necelociselne deleni
                 {
                     currentToken->type = T_DIV_NUMBER;      //predavam token
                     ungetc(loadChar, stdin);       //musim vratit nacteny znak
                     return 0;
                 }
-                break;
+
+            case(S_ADD):
+                ungetc(loadChar, stdin);
+                currentToken->type = T_ADD;
+                return 0;
 
             case(S_SUB):
                 if(loadChar == '-')         //Nacetl jsem znaky '--'
                 {
                     state = S_COMMENT_START_SECOND;     //Vim ze budu nacitat komentar
                 }
-                else if(loadChar != '-')         //Pokud je za - cokoliv jineho, predavam token
+                else         //Pokud je za - cokoliv jineho, predavam token
                 {
                     currentToken->type = T_SUB;
                     ungetc(loadChar, stdin);
                     return 0;
                 }
                 break;
+
+            case(S_COLON):
+                ungetc(loadChar, stdin);
+                currentToken->type = T_COLON;
+                return 0;
 
             case(S_COMMENT_START_SECOND):       //Nacetl jsem dva znaky '--'
                 if(loadChar == '[')     //Pokud je nasledujici znak '['
@@ -203,6 +239,11 @@ int ScannerGetToken (Token *currentToken)
                 else if(loadChar == '\n')       //Pokud je nasledujici znak EOL -> znaci mi konec radkoveho komentare, jdu do stavu start
                 {
                     state = S_START;
+                }
+                else if(loadChar == EOF)
+                {
+                    currentToken->type = T_EOF;
+                    return 0;
                 }
                 else        //Pokud jsem nenacetl jako dalsi znak [ || EOL, dumpuji vnitrek komentare
                 {
@@ -215,7 +256,7 @@ int ScannerGetToken (Token *currentToken)
                 {
                     state = S_COMMENT_BLOCK;
                 }
-                else if (loadChar != '[')       //pokud jsem po '--[' nenacetl [, jedna se o radkovy komentar
+                else      //pokud jsem po '--[' nenacetl [, jedna se o radkovy komentar
                 {
                     state = S_COMMENT_START_SECOND;
                 }
@@ -226,7 +267,11 @@ int ScannerGetToken (Token *currentToken)
                 {
                     state = S_COMMENT_BLOCK_END;        //Pokud prisel, jdu do stavu comment block end
                 }
-                else if(loadChar != ']')        //pokud neprisel, opet dumpuji vnitrek komentare a cekam na nacteni znaku ']'
+                else if(loadChar == EOF)
+                {
+                    return 1;
+                }
+                else        //pokud neprisel, opet dumpuji vnitrek komentare a cekam na nacteni znaku ']'
                 {
                     state = S_COMMENT_BLOCK;
                 }
@@ -237,7 +282,7 @@ int ScannerGetToken (Token *currentToken)
                 {
                     state = S_START;
                 }
-                else if(loadChar != ']')        //Nacetl jsem pouze ']' a za nim neco jineho nez ']', vracim se do comment block a dumpuji
+                else        //Nacetl jsem pouze ']' a za nim neco jineho nez ']', vracim se do comment block a dumpuji
                 {
                     state = S_COMMENT_BLOCK;
                 }
@@ -267,7 +312,7 @@ int ScannerGetToken (Token *currentToken)
                     currentToken->type = T_GT;
                     return 0;
                 }
-                else if(loadChar == '=')
+                else
                 {
                     state = S_GET;
                 }
@@ -283,10 +328,10 @@ int ScannerGetToken (Token *currentToken)
                 if(loadChar != '=')
                 {
                     ungetc(loadChar, stdin);
-                    currentToken->type = T_LET;
+                    currentToken->type = T_LT;
                     return 0;
                 }
-                else if(loadChar == '=')
+                else
                 {
                     state = S_LET;
                 }
@@ -305,7 +350,7 @@ int ScannerGetToken (Token *currentToken)
                     currentToken->type = T_SETVALUE;
                     return 0;
                 }
-                else if(loadChar == '=')
+                else
                 {
                     state = S_EQ;
                 }
@@ -322,7 +367,7 @@ int ScannerGetToken (Token *currentToken)
                 {
                     return 1;
                 }
-                else if(loadChar == '=')
+                else
                 {
                     state = S_NEQ_SECOND;
                 }
@@ -336,13 +381,13 @@ int ScannerGetToken (Token *currentToken)
 
             case(S_BRACKET_LEFT):
                 ungetc(loadChar, stdin);
-                currentToken->type = S_BRACKET_LEFT;
+                currentToken->type = T_BRACKET_LEFT;
                 return 0;
                 break;
 
             case(S_BRACKET_RIGHT):
                 ungetc(loadChar, stdin);
-                currentToken->type = S_BRACKET_RIGHT;
+                currentToken->type = T_BRACKET_RIGHT;
                 return 0;
                 break;
 
@@ -350,23 +395,27 @@ int ScannerGetToken (Token *currentToken)
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_INTEGER;
                 }
                 else if(loadChar == '.')
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_DOT;
                 }
                 else if(loadChar == 'e' || loadChar == 'E')
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_E;
                 }
                 else
                 {
                     ungetc(loadChar, stdin);
-                    currentToken->type = T_NUM_INTEGER;
-                    currentToken->value.integer = 10;       //DOPLNIT FUNKCI CO UDELA Z DLLISTU INTEGER
+                    tmp = GetInteger(&list);
+                    currentToken->type = tmp.type;
+                    currentToken->value.integer = tmp.value.integer;
                     return 0;
                 }
                 break;
@@ -375,6 +424,7 @@ int ScannerGetToken (Token *currentToken)
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_DOT_NUMBER;
                 }
                 else
@@ -387,17 +437,20 @@ int ScannerGetToken (Token *currentToken)
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_DOT_NUMBER;
                 }
                 else if(loadChar == 'e' || loadChar == 'E')
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_E;
                 }
                 else
                 {
-                    currentToken->type = T_NUM_NUMBER;
-                    currentToken->value.number = 10;        // -||-
+                    tmp = GetNumber(&list);
+                    currentToken->type = tmp.type;
+                    currentToken->value = tmp.value;
                     return 0;
                 }
                 break;
@@ -406,6 +459,7 @@ int ScannerGetToken (Token *currentToken)
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_E_NUMBER;
                 }
                 else
@@ -418,12 +472,14 @@ int ScannerGetToken (Token *currentToken)
                 if(isdigit(loadChar))
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_NUMBER_E_NUMBER;
                 }
                 else
                 {
-                    currentToken->type = T_NUM_NUMBER;
-                    currentToken->value.number = 10;
+                    tmp = GetNumber(&list);
+                    currentToken->type = tmp.type;
+                    currentToken->value = tmp.value;
                     return 0;
                 }
                 break;
@@ -436,12 +492,14 @@ int ScannerGetToken (Token *currentToken)
                 else if(loadChar > 31 && loadChar != 34)
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '"')        //Znaci konec stringu
                 {
-                    currentToken->type = T_STRING;
-                    currentToken->value.string = "hovno";
+                    tmp = GetString(&list);
+                    currentToken->type = tmp.type;
+                    currentToken->value.string = tmp.value.string;
                     return 0;
                 }
                 else
@@ -454,36 +512,39 @@ int ScannerGetToken (Token *currentToken)
                 if(loadChar == 'n')
                 {
                     DLL_insertLast(&list, '\n');
+                    list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '"')
                 {
                     DLL_insertLast(&list, '\"');
+                    list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '\\')
                 {
                     DLL_insertLast(&list, '\\');
+                    list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == 't')
                 {
                     DLL_insertLast(&list, '\t');
+                    list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '0')
                 {
-                    DLL_insertLast(&list, loadChar);
                     state = S_STRING_BACKSLASH_ZERO;
                 }
                 else if(loadChar == '1')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = 100;
                     state = S_STRING_BACKSLASH_ONE;
                 }
                 else if(loadChar == '2')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = 200;
                     state = S_STRING_BACKSLASH_TWO;
                 }
                 else
@@ -495,12 +556,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_ZERO):
                 if(loadChar == '0')
                 {
-                    DLL_insertLast(&list, loadChar);
                     state = S_STRING_BACKSLASH_ZERO_ZERO;
                 }
                 else if(loadChar >= '1' && loadChar <= '9')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = ((int)(loadChar) - 48) * 10;
                     state = S_STRING_BACKSLASH_ZEROorONE_ONEtoNINE;
                 }
                 else
@@ -512,7 +572,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_ZERO_ZERO):
                 if(loadChar >= '1' && loadChar <= '9')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = (int)(loadChar) - 48;
+                    //backslashChar = '\000' + backslashLen;
+                    DLL_insertLast(&list, backslashLen);
+                    list.length = list.length + 1;
+                    backslashLen = 0;
                     state = S_STRING_START;
                 }
                 else
@@ -524,7 +588,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_ZEROorONE_ONEtoNINE):
                 if(loadChar >= '0' && loadChar <= '9')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = backslashLen + ((int)(loadChar) - 48);
+                    //backslashChar = '\000' + backslashLen;
+                    DLL_insertLast(&list, backslashLen);
+                    list.length = list.length + 1;
+                    backslashLen = 0;
                     state = S_STRING_START;
                 }
                 else
@@ -536,7 +604,7 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_ONE):
                 if(loadChar >= '0' && loadChar <= '9')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = backslashLen + ((int)(loadChar) - 48) * 10;
                     state = S_STRING_BACKSLASH_ZEROorONE_ONEtoNINE;
                 }
                 else
@@ -548,7 +616,7 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_TWO):
                 if(loadChar >= '0' && loadChar <= '5')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = backslashLen + ((int)(loadChar) - 48) * 10;
                     state = S_STRING_BACKSLASH_TWO_ONEtoFIVE;
                 }
                 else
@@ -560,7 +628,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH_TWO_ONEtoFIVE):
                 if(loadChar >= '0' && loadChar <= '5')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    backslashLen = backslashLen + ((int)(loadChar) - 48);
+                    //backslashChar = '\000' + backslashLen;
+                    DLL_insertLast(&list, backslashLen);
+                    list.length = list.length + 1;
+                    backslashLen = 0;
                     state = S_STRING_START;
                 }
                 else
@@ -573,11 +645,15 @@ int ScannerGetToken (Token *currentToken)
                 if(isalpha(loadChar) || isdigit(loadChar) || loadChar == '_')
                 {
                     DLL_insertLast(&list, loadChar);
+                    list.length = list.length + 1;
                     state = S_ID;
                 }
                 else
                 {
-                    currentToken->type = T_ID_KW;
+                    ungetc(loadChar, stdin);
+                    tmp = IdentifyKW(&list);
+                    currentToken->type = tmp.type;
+                    currentToken->value.string = tmp.value.string;
                     return 0;
                 }
                 break;
@@ -587,4 +663,161 @@ int ScannerGetToken (Token *currentToken)
         }
     }
     return 0;
+}
+
+Token IdentifyKW(DLList *list)
+{
+    Token myToken;
+    int len = list->length;
+    myToken.value.string = malloc(len + 1 * sizeof(char));
+    DLLnodePtr tmp= list->firstElement;
+
+    for(int i = 0; i < len; i++)
+    {
+        myToken.value.string[i] = tmp->data;
+        tmp = tmp->next;
+    }
+
+    myToken.value.string[len] = '\0';
+
+    if(strcmp(myToken.value.string, "do") == 0)
+    {
+        myToken.type = T_KW_DO;
+
+    }
+    else if(strcmp(myToken.value.string, "else") == 0)
+    {
+        myToken.type = T_KW_ELSE;
+    }
+    else if(strcmp(myToken.value.string, "end") == 0)
+    {
+        myToken.type =  T_KW_END;
+    }
+    else if(strcmp(myToken.value.string, "function") == 0)
+    {
+        myToken.type =  T_KW_FUNCTION;
+    }
+    else if(strcmp(myToken.value.string, "global") == 0)
+    {
+        myToken.type =  T_KW_GLOBAL;
+    }
+    else if(strcmp(myToken.value.string, "if") == 0)
+    {
+        myToken.type =  T_KW_IF;
+    }else if(strcmp(myToken.value.string, "local") == 0)
+    {
+        myToken.type =  T_KW_LOCAL;
+    }
+    else if(strcmp(myToken.value.string, "nil") == 0)
+    {
+        myToken.type =  T_KW_NIL;
+    }
+    else if(strcmp(myToken.value.string, "integer") == 0)
+    {
+        myToken.type =  T_KW_INTEGER;
+    }else if(strcmp(myToken.value.string, "number") == 0)
+    {
+        myToken.type =  T_KW_NUMBER;
+    }else if(strcmp(myToken.value.string, "require") == 0)
+    {
+        myToken.type =  T_KW_REQUIRE;
+    }else if(strcmp(myToken.value.string, "return") == 0)
+    {
+        myToken.type =  T_KW_RETURN;
+    }else if(strcmp(myToken.value.string, "string") == 0)
+    {
+        myToken.type =  T_KW_STRING;
+    }else if(strcmp(myToken.value.string, "then") == 0)
+    {
+        myToken.type =  T_KW_THEN;
+    }else if(strcmp(myToken.value.string, "while") == 0)
+    {
+        myToken.type =  T_KW_WHILE;
+    }
+    else
+    {
+        myToken.type =  T_ID;
+        DLL_dispose(&(*list));
+        return myToken;
+    }
+
+    DLL_dispose(&(*list));
+
+    free(myToken.value.string);
+
+    return myToken;
+}
+
+Token GetString(DLList *list)
+{
+    Token myToken;
+    int len = list->length;
+    myToken.value.string = malloc(len + 1 * sizeof(char));
+    DLLnodePtr tmp= list->firstElement;
+
+    for(int i = 0; i < len; i++)
+    {
+        myToken.value.string[i] = tmp->data;
+        tmp = tmp->next;
+    }
+
+    myToken.value.string[len] = '\0';
+
+    myToken.type = T_STRING;
+
+    DLL_dispose(&(*list));
+
+    return myToken;
+}
+
+Token GetInteger(DLList *list)
+{
+    Token myToken;
+    int len = list->length;
+    myToken.value.string = malloc(len + 1 * sizeof(char));
+    DLLnodePtr tmp= list->firstElement;
+
+    for(int i = 0; i < len; i++)
+    {
+        myToken.value.string[i] = tmp->data;
+        tmp = tmp->next;
+    }
+
+    myToken.value.string[len] = '\0';
+
+    int x = atoi(myToken.value.string);
+
+    free(myToken.value.string);
+
+    myToken.value.integer = x;
+
+    myToken.type = T_NUM_INTEGER;
+
+    DLL_dispose(&(*list));
+
+    return myToken;
+}
+
+Token GetNumber(DLList *list)
+{
+    Token myToken;
+    int len = list->length;
+    myToken.value.string = malloc(len + 1 * sizeof(char));
+    DLLnodePtr tmp= list->firstElement;
+    char *ptr;
+
+    for(int i = 0; i < len; i++)
+    {
+        myToken.value.string[i] = tmp->data;
+        tmp = tmp->next;
+    }
+
+    myToken.value.string[len] = '\0';
+
+    myToken.value.number = strtod(myToken.value.string, &ptr);
+    myToken.type = T_NUM_NUMBER;
+
+    DLL_dispose(&(*list));
+
+    return myToken;
 }

@@ -20,17 +20,23 @@ void DLL_dispose(DLList *list)
         return;
     }
 
+    if(list->length == 1)
+    {
+        free(list->firstElement);
+        return;
+    }
+
     DLLnodePtr tmp = list->firstElement;
 
 
     while(tmp != NULL)
     {
-        list->length--;
         list->firstElement = tmp->next;
         free(tmp);
         tmp = list->firstElement;
     }
 
+    list->length = 0;
     list->lastElement = NULL;
     list->firstElement = NULL;
 }

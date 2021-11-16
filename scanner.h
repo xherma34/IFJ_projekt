@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 #include "DLList.h"
 #define FILE_INPUT = "file.txt"
 
 typedef enum
 {
     //Identifikator
-    T_ID_KW,
+    T_ID,
 
     //Klicova slova
     T_KW_DO,
@@ -37,23 +38,24 @@ typedef enum
     T_CONCATENATION,
 
     //Relacni operatory
-    T_LT,       //  <
-    T_GT,       //  >
-    T_LET,      //  <=
-    T_GET,      //  >=
-    T_EQ,       //  ==
-    T_NEQ,      //  ~=
+    T_LT,               //  <
+    T_GT,               //  >
+    T_LET,              //  <=
+    T_GET,              //  >=
+    T_EQ,               //  ==
+    T_NEQ,              //  ~=
 
     //Zbytek
-    T_EOF,
+    T_EOF,              //End Of File (konec nacitaneho dokumentu)
     T_NUM_INTEGER,
     T_NUM_NUMBER,
     T_BRACKET_RIGHT,
     T_BRACKET_LEFT,
     T_COLON,
     T_STRING,
-    T_SETVALUE,      //  = -> prirazeni hodnoty
+    T_SETVALUE,         //  = -> prirazeni hodnoty
     T_EMPTY,
+    T_COMMA,            //TODO to FSM
 } Token_type;
 
 typedef union 
@@ -86,7 +88,37 @@ typedef struct
 } TList;
 
 /**
- * @brief Funkce na vytahovani tokenu
- * @param Token
+ * @brief Funkce pro ziskani tokenu ze stdin
+ * @param Token do ktereho chceme ulozit typ a hodnotu
+ * @return Integer, pokud =0 -> vse probehlo bez chyb, jinak vraci hodnotu nastale chyby
  */
 int ScannerGetToken (Token *);
+
+
+/**
+ * @brief Funkce pro identifikaci klicoveho slova nebo identifikatoru
+ * @param DLList z ktereho se identifikuje
+ * @return Identifikovany token vcetne typu a hodnoty
+ */
+Token IdentifyKW(DLList *);
+
+/**
+ * @brief Funkce pro ziskani stringu ze seznamu
+ * @param DLList ktery obsahuje dany string
+ * @return Token vcetne typu a hodnoty
+ */
+Token GetString(DLList *);
+
+/**
+ * @brief Funkce pro ziskani integeru ze seznamu
+ * @param DLList ktery obsahuje dany integer
+ * @return Token vcetne typu a hodnoty
+ */
+Token GetInteger(DLList *);
+
+/**
+ * @brief Funkce pro ziskani doublu ze seznamu
+ * @param DLList ktery obsahuje sany double
+ * @return Token vcetne typu a hodnoty
+ */
+Token GetNumber(DLList *);

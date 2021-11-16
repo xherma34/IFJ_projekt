@@ -1,0 +1,136 @@
+--TOKEN TESTS--
+T_KW_REQUIRE
+T_STRING
+||ifj21||
+T_KW_FUNCTION
+T_ID | main
+T_BRACKET_LEFT
+T_BRACKET_RIGHT
+T_KW_LOCAL
+T_ID | s1
+T_COLON
+T_KW_STRING
+T_SETVALUE
+T_STRING
+||Toto je nejaky text||
+T_KW_LOCAL
+T_ID | s2
+T_COLON
+T_KW_STRING
+T_SETVALUE
+T_ID | s1
+T_CONCATENATION
+T_STRING
+||, ktery jeste trochu obohatime||
+T_ID | write
+T_BRACKET_LEFT
+T_ID | s1
+T_COMMA
+T_STRING
+||
+||
+T_COMMA
+T_ID | s2
+T_BRACKET_RIGHT
+T_KW_LOCAL
+T_ID | s1len
+T_COLON
+T_KW_INTEGER
+T_SETVALUE
+T_STRLEN
+T_ID | s1
+T_KW_LOCAL
+T_ID | s1len4
+T_COLON
+T_KW_INTEGER
+T_SETVALUE
+T_ID | s1len
+T_ID | s1len
+T_SETVALUE
+T_ID | s1len
+T_SUB
+T_NUM_INTEGER | 4
+T_ID | s1
+T_SETVALUE
+T_ID | substr
+T_BRACKET_LEFT
+T_ID | s2
+T_COMMA
+T_ID | s1len
+T_COMMA
+T_ID | s1len4
+T_BRACKET_RIGHT
+T_ID | s1len
+T_SETVALUE
+T_ID | s1len
+T_ADD
+T_NUM_INTEGER | 1
+T_ID | write
+T_BRACKET_LEFT
+T_STRING
+||4 znaky od||
+T_COMMA
+T_ID | s1len
+T_COMMA
+T_STRING
+||. znaku v "||
+T_COMMA
+T_ID | s2
+T_COMMA
+T_STRING
+||":||
+T_COMMA
+T_ID | s1
+T_COMMA
+T_STRING
+||
+||
+T_BRACKET_RIGHT
+T_ID | write
+T_BRACKET_LEFT
+T_STRING
+||Zadejte serazenou posloupnost vsech malych pismen a-h, ||
+T_BRACKET_RIGHT
+T_ID | write
+T_BRACKET_LEFT
+T_STRING
+||pricemz se pismena nesmeji v posloupnosti opakovat: ||
+T_BRACKET_RIGHT
+T_ID | s1
+T_SETVALUE
+T_ID | reads
+T_BRACKET_LEFT
+T_BRACKET_RIGHT
+T_KW_IF
+T_ID | s1
+T_NEQ
+T_KW_NIL
+T_KW_THEN
+T_KW_WHILE
+T_ID | s1
+T_NEQ
+T_STRING
+||abcdefgh||
+T_KW_DO
+T_ID | write
+T_BRACKET_LEFT
+T_STRING
+||
+||
+T_COMMA
+T_STRING
+||Spatne zadana posloupnost, zkuste znovu:||
+T_BRACKET_RIGHT
+T_ID | s1
+T_SETVALUE
+T_ID | reads
+T_BRACKET_LEFT
+T_BRACKET_RIGHT
+T_KW_END
+T_KW_ELSE
+T_KW_END
+T_KW_END
+T_ID | main
+T_BRACKET_LEFT
+T_BRACKET_RIGHT
+T_EOF

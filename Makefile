@@ -1,23 +1,42 @@
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon
-CEXE = ifj21
-SOURCES = scanner.c DLList.c
-TEST_INPUT = Tests/testInput.txt
-TEST_OUTPUT = Tests/testOutput.txt
-REF_OUTPUT = Tests/refOutput.txt
+CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
+TARGET = ifj21
+SOURCES = scanner.o DLList.o
+TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
-.PHONY: all
+currDir:=$(PWD)
+buildDir:=$(currDir)/Build
+testDir:=Tests
 
-ifj21: $(SOURCES)
-	$(CC) $(CFLAGS) -o $(CEXE) $(SOURCES)
+n = 1
+s ?= @
 
-run: $(CEXE)
-	./$(CEXE) < $(TEST_INPUT)
+TEST_INPUT = $(testDir)/testInput_$(n).txt
+TEST_OUTPUT = $(testDir)/testOutput_$(n).txt
+REF_OUTPUT = $(testDir)/Referal/referOutput_$(n).txt
 
-clean: $(CEXE)
-	rm -f $(CEXE) Tests/testExe
+.PHONY: all test debug clean
+
+all: scanner.o DLList.o
+	$(s)if [ ! -d "$(buildDir)" ]; then mkdir "$(buildDir)"; fi
+	$(s)$(CC) $(CFLAGS) -o $(buildDir)/$(TARGET) $(SOURCES) main.c
+
+
+scanner.o: scanner.c scanner.h
+	$(s)@$(CC) $(CFLAGS) -c scanner.c
+
+DLList.o: DLList.c DLList.h
+	$(s)@$(CC) $(CFLAGS) -c DLList.c
 
 test: Tests/test.c
-	$(CC) $(CFLAGS) -o Tests/testExe $(SOURCES) Tests/test.c
-	Tests/./testExe  < $(TEST_INPUT) > $(TEST_OUTPUT)
-	diff -u $(REF_OUTPUT) $(TEST_OUTPUT)
+	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
+	$(s)Tests/./test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
+	- $(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
+debug: Tests/test.c
+	$(s)$(CC) $(CFLAGS) -ggdb3 -o $(testDir)/test.o $(TESTSOURCES)
+	$(s)valgrind --tool=memcheck --leak-check=yes Tests/./test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
+
+clean:
+	$(s)rm -f $(SOURCES)
+	$(s)rm -f $(testDir)/*.o
+	$(s)if [ -d "$(buildDir)" ]; then rm -rf $(buildDir); fi
