@@ -71,8 +71,6 @@ typedef enum
 
 } FSM_STATE;
 
-
-
 int ScannerGetToken (Token *currentToken)
 {
     Token tmp;
@@ -93,7 +91,12 @@ int ScannerGetToken (Token *currentToken)
         switch(state)
         {
             case(S_START):
-                if(isspace(loadChar))
+                if(loadChar == '\n')
+                {
+                    currentToken->type = T_EOL;
+                    return 0;
+                }
+                else if(isspace(loadChar))
                 {
                     state = S_START;
                 }
@@ -238,6 +241,7 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if(loadChar == '\n')       //Pokud je nasledujici znak EOL -> znaci mi konec radkoveho komentare, jdu do stavu start
                 {
+                    ungetc(loadChar, stdin);
                     state = S_START;
                 }
                 else if(loadChar == EOF)

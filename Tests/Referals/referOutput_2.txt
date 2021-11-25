@@ -1,0 +1,136 @@
+--TOKEN TESTS--
+2 T_KW_REQUIRE
+2 T_STRING
+||ifj21||
+3 T_KW_FUNCTION
+3 T_ID | main
+3 T_BRACKET_LEFT
+3 T_BRACKET_RIGHT
+4 T_KW_LOCAL
+4 T_ID | s1
+4 T_COLON
+4 T_KW_STRING
+4 T_SETVALUE
+4 T_STRING
+||Toto je nejaky text||
+5 T_KW_LOCAL
+5 T_ID | s2
+5 T_COLON
+5 T_KW_STRING
+5 T_SETVALUE
+5 T_ID | s1
+5 T_CONCATENATION
+5 T_STRING
+||, ktery jeste trochu obohatime||
+6 T_ID | write
+6 T_BRACKET_LEFT
+6 T_ID | s1
+6 T_COMMA
+6 T_STRING
+||
+||
+6 T_COMMA
+6 T_ID | s2
+6 T_BRACKET_RIGHT
+6 T_KW_LOCAL
+6 T_ID | s1len
+6 T_COLON
+6 T_KW_INTEGER
+6 T_SETVALUE
+6 T_STRLEN
+6 T_ID | s1
+6 T_KW_LOCAL
+6 T_ID | s1len4
+6 T_COLON
+6 T_KW_INTEGER
+6 T_SETVALUE
+6 T_ID | s1len
+7 T_ID | s1len
+7 T_SETVALUE
+7 T_ID | s1len
+7 T_SUB
+7 T_NUM_INTEGER | 4
+7 T_ID | s1
+7 T_SETVALUE
+7 T_ID | substr
+7 T_BRACKET_LEFT
+7 T_ID | s2
+7 T_COMMA
+7 T_ID | s1len
+7 T_COMMA
+7 T_ID | s1len4
+7 T_BRACKET_RIGHT
+7 T_ID | s1len
+7 T_SETVALUE
+7 T_ID | s1len
+7 T_ADD
+7 T_NUM_INTEGER | 1
+8 T_ID | write
+8 T_BRACKET_LEFT
+8 T_STRING
+||4 znaky od||
+8 T_COMMA
+8 T_ID | s1len
+8 T_COMMA
+8 T_STRING
+||. znaku v "||
+8 T_COMMA
+8 T_ID | s2
+8 T_COMMA
+8 T_STRING
+||":||
+8 T_COMMA
+8 T_ID | s1
+8 T_COMMA
+8 T_STRING
+||
+||
+8 T_BRACKET_RIGHT
+9 T_ID | write
+9 T_BRACKET_LEFT
+9 T_STRING
+||Zadejte serazenou posloupnost vsech malych pismen a-h, ||
+9 T_BRACKET_RIGHT
+10 T_ID | write
+10 T_BRACKET_LEFT
+10 T_STRING
+||pricemz se pismena nesmeji v posloupnosti opakovat: ||
+10 T_BRACKET_RIGHT
+11 T_ID | s1
+11 T_SETVALUE
+11 T_ID | reads
+11 T_BRACKET_LEFT
+11 T_BRACKET_RIGHT
+12 T_KW_IF
+12 T_ID | s1
+12 T_NEQ
+12 T_KW_NIL
+12 T_KW_THEN
+13 T_KW_WHILE
+13 T_ID | s1
+13 T_NEQ
+13 T_STRING
+||abcdefgh||
+13 T_KW_DO
+14 T_ID | write
+14 T_BRACKET_LEFT
+14 T_STRING
+||
+||
+14 T_COMMA
+14 T_STRING
+||Spatne zadana posloupnost, zkuste znovu:||
+14 T_BRACKET_RIGHT
+15 T_ID | s1
+15 T_SETVALUE
+15 T_ID | reads
+15 T_BRACKET_LEFT
+15 T_BRACKET_RIGHT
+16 T_KW_END
+17 T_KW_ELSE
+18 T_KW_END
+19 T_KW_END
+20 T_ID | main
+20 T_BRACKET_LEFT
+20 T_BRACKET_RIGHT
+20 T_EOF

@@ -13,14 +13,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46184823-4159-46bd-9fea-2c32238377fb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/DLList.c" beforeDir="false" afterPath="$PROJECT_DIR$/DLList.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Build/ifj21" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/refOutput.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Referal/referOutput_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Referal/referOutput_2.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/testInput.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/testOutput.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/test.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/testInput_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/testInput_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/testOutput_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/testOutput_2.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scanner.c" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scanner.h" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scanner.o" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.o" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +79,9 @@
       <workItem from="1636921268688" duration="2582000" />
       <workItem from="1636923863206" duration="12000" />
       <workItem from="1636923888686" duration="26652000" />
-      <workItem from="1637016729903" duration="9298000" />
+      <workItem from="1637016729903" duration="10203000" />
+      <workItem from="1637120787355" duration="9896000" />
+      <workItem from="1637870253468" duration="282000" />
     </task>
     <servers />
   </component>

@@ -47,6 +47,7 @@ typedef enum
 
     //Zbytek
     T_EOF,              //End Of File (konec nacitaneho dokumentu)
+    T_EOL,
     T_NUM_INTEGER,
     T_NUM_NUMBER,
     T_BRACKET_RIGHT,
@@ -70,6 +71,7 @@ typedef struct
 {
     Token_type type;
     Token_value value;
+    int line;
 
 } Token;
 

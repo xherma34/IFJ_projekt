@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include "../scanner.h"
 
+
 void ErrorHandler(int error)
 {
     printf("Error %d, process terminated.\n", error);
@@ -11,6 +12,7 @@ void ErrorHandler(int error)
 int main()
 {
 
+    int line = 1;
     Token myToken;
     myToken.type = T_EMPTY;
     int error = 0;
@@ -18,6 +20,11 @@ int main()
     while(myToken.type != T_EOF)
     {
         error = ScannerGetToken(&myToken);
+        myToken.line = line;
+        if(myToken.type != T_EOL)
+        {
+            printf("%d ", myToken.line);
+        }
         if(error != 0)
         {
             ErrorHandler(error);
@@ -177,6 +184,10 @@ int main()
 
             case(T_COMMA):
                 printf("T_COMMA\n");
+                break;
+
+            case(T_EOL):
+                line++;
                 break;
 
             default:

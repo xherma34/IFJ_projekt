@@ -5,21 +5,19 @@ SOURCES = scanner.o DLList.o
 TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
-buildDir:=$(currDir)/Build
 testDir:=Tests
 
 n = 1
 s ?= @
 
-TEST_INPUT = $(testDir)/testInput_$(n).txt
-TEST_OUTPUT = $(testDir)/testOutput_$(n).txt
-REF_OUTPUT = $(testDir)/Referal/referOutput_$(n).txt
+TEST_INPUT = $(testDir)/Inputs/testInput_$(n).txt
+TEST_OUTPUT = $(testDir)/Outputs/testOutput_$(n).txt
+REF_OUTPUT = $(testDir)/Referals/referOutput_$(n).txt
 
 .PHONY: all test debug clean
 
 all: scanner.o DLList.o
-	$(s)if [ ! -d "$(buildDir)" ]; then mkdir "$(buildDir)"; fi
-	$(s)$(CC) $(CFLAGS) -o $(buildDir)/$(TARGET) $(SOURCES) main.c
+	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 
 scanner.o: scanner.c scanner.h
@@ -28,15 +26,20 @@ scanner.o: scanner.c scanner.h
 DLList.o: DLList.c DLList.h
 	$(s)@$(CC) $(CFLAGS) -c DLList.c
 
+scannerTest:
+	$(s)bash $(currDir)/Tests/Scripts/scannerTest.sh
+
 test: Tests/test.c
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
-	$(s)Tests/./test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
+	$(s)Tests/test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
 	- $(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
+
 debug: Tests/test.c
 	$(s)$(CC) $(CFLAGS) -ggdb3 -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)valgrind --tool=memcheck --leak-check=yes Tests/./test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
 
 clean:
 	$(s)rm -f $(SOURCES)
-	$(s)rm -f $(testDir)/*.o
-	$(s)if [ -d "$(buildDir)" ]; then rm -rf $(buildDir); fi
+	$(s)rm -f $(currDir)/*.o
+	$(s)rm -f $(testDir)/Outputs/*
+	$(s)rm -f $(currDir)/ifj21
