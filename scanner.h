@@ -20,8 +20,8 @@ typedef enum
     T_KW_IF,
     T_KW_LOCAL,
     T_KW_NIL,
-    T_KW_INTEGER,      
-    T_KW_NUMBER,       
+    T_KW_INTEGER,
+    T_KW_NUMBER,
     T_KW_REQUIRE,
     T_KW_RETURN,
     T_KW_STRING,
@@ -59,7 +59,7 @@ typedef enum
     T_COMMA,            //TODO to FSM
 } Token_type;
 
-typedef union 
+typedef union
 {
     int integer;
     double number;
@@ -67,26 +67,25 @@ typedef union
 } Token_value;
 
 
-typedef struct 
+typedef struct
 {
     Token_type type;
     Token_value value;
     int line;
-
 } Token;
+
+typedef struct TNode
+{
+    Token  token;
+    struct TNode *prev;
+    struct TNode *next;
+} *TNodePtr;
 
 typedef struct
 {
-    Token token;
-    struct Node *prev;
-    struct Node *next;
-} TNode;
-
-typedef struct 
-{
-    TNode first;
-    TNode last;
-    TNode active;
+    TNodePtr first;
+    TNodePtr last;
+    TNodePtr active;
 } TList;
 
 /**
@@ -124,3 +123,17 @@ Token GetInteger(DLList *);
  * @return Token vcetne typu a hodnoty
  */
 Token GetNumber(DLList *);
+
+int TListInit(TList *);
+
+int TListInsert(TList *, Token);
+
+int TListDeleteActive(TList *);
+
+int TListTokenNext(TList *);
+
+int TListTokenPrev(TList *);
+
+int TListDispose(TList *);
+
+int GetTokenList(TList *);

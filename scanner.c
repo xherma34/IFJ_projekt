@@ -2,7 +2,8 @@
 * Obsah souboru: Lexikalni analyzator
 *   Autor:  Pavel Hermann(xherma34)
 *           Jan Zdenek(xzdene00)
-*           Maxim Plicka(xplick01)
+*           Al(xsila00)
+*           Maxim Plicka(xplick04)
 */
 
 #include "scanner.h"
@@ -824,4 +825,151 @@ Token GetNumber(DLList *list)
     DLL_dispose(&(*list));
 
     return myToken;
+}
+
+int TListInit(TList *list)
+{
+  if(list == NULL)
+  {
+      return 1;
+  }
+  list->first = NULL;
+  list->last = NULL;
+  list->active = NULL;
+  return 0;
+}
+
+int TListInsert(TList *list, Token token)
+{
+  if(list == NULL)
+  {
+    return 1;
+  }
+  TNodePtr new = (TNodePtr)malloc(sizeof(struct TNode));
+  new->token = token;
+  new->next = NULL;
+  new->prev = NULL;
+  if(list->first == NULL)
+  {
+    list->first = new;
+    list->last = new;
+  }
+  else
+  {
+    list->last->next = new;
+    new->next = NULL;
+    new->prev = list->last;
+    list->last = new;
+  }
+  return 0;
+}
+
+int TListDeleteActive(TList *list)
+{
+  if(list == NULL)
+  {
+      return 1;
+  }
+  if(list->active == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    if(list->active->token.type == T_ID || list->active->token.type == T_STRING)
+    {
+      free(list->active->token.value.string);
+    }
+    if(list->active == list->first)
+    {
+      list->first = list->active->next;
+      list->active = list->first;
+    }
+    else if(list->active == list->last)
+    {
+      list->last = list->active->prev;
+      list->active = NULL;
+    }
+    else
+    {
+      list->active->prev->next = list->active->next;
+      list->active = list->active->next;
+    }
+  }
+  return 0;
+}
+
+int TListTokenNext(TList *list)
+{
+  if(list == NULL)
+  {
+      return 1;
+  }
+  if(list->active == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    list->active = list->active->next;
+  }
+  return 0;
+}
+
+int TListTokenPrev(TList *list)
+{
+  if(list == NULL)
+  {
+      return 1;
+  }
+  if(list->active == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    list->active = list->active->prev;
+  }
+  return 0;
+}
+
+int TListDispose(TList *list)
+{
+  if(list == NULL)
+  {
+      return 1;
+  }
+  list->active = list->first;
+  while(list->active != NULL)
+  {
+    TListDeleteActive(&(*list));
+  }
+  return 0;
+}
+
+int GetTokenList(TList *list)
+{
+  int line = 1;
+  Token myToken;
+  myToken.type = T_EMPTY;
+  int error = 0;
+
+  while(myToken.type != T_EOF)
+  {
+    error = ScannerGetToken(&myToken);
+    if(error != 0)
+    {
+        return 1;
+    }
+    myToken.line = line;
+    if(myToken.type == T_EOL)
+    {
+      line++;
+    }
+    if(error == 0)
+    {
+      TListInsert(&(*list), myToken);
+    }
+  }
+  return 0;
 }
