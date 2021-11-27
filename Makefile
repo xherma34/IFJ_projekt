@@ -5,7 +5,7 @@ SOURCES = scanner.o DLList.o
 TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
-testDir:=Tests
+testDir:=$(currDir)/Tests
 
 n = 1
 s ?= @

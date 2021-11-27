@@ -9,6 +9,7 @@ for((i=1;i<$numberOfFiles+1;i++))
 do
   echo "---Test" $i "---";
   echo
-  make test n=$i --no-print-directory;
+    $PWD/Tests/test.o  < $PWD/Tests/Inputs/testInput_$i.txt > $PWD/Tests/Outputs/testOutput_$i.txt
+    diff -us  $PWD/Tests/Outputs/testOutput_$i.txt $PWD/Tests/Referals/referOutput_$i.txt
   echo
 done
