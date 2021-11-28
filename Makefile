@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
 TARGET = ifj21
-SOURCES = scanner.o DLList.o
+SOURCES = scanner.o DLList.o parser.o
 TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
@@ -16,7 +16,7 @@ REF_OUTPUT = $(testDir)/Referals/referOutput_$(n).txt
 
 .PHONY: all test debug clean
 
-all: scanner.o DLList.o
+all: scanner.o DLList.o parser.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 
@@ -25,6 +25,9 @@ scanner.o: scanner.c scanner.h
 
 DLList.o: DLList.c DLList.h
 	$(s)@$(CC) $(CFLAGS) -c DLList.c
+
+parser.o: parser.c parser.h
+	$(s)@$(CC) $(CFLAGS) -c parser.c
 
 scannerTest:
 	$(s)bash $(currDir)/Tests/Scripts/scannerTest.sh

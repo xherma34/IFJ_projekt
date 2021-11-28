@@ -3,8 +3,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+
 #include "DLList.h"
-#define FILE_INPUT = "file.txt"
 
 typedef enum
 {

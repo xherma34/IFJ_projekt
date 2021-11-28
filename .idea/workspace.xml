@@ -14,8 +14,14 @@
   <component name="ChangeListManager">
     <list default="true" id="46184823-4159-46bd-9fea-2c32238377fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DLList.h" beforeDir="false" afterPath="$PROJECT_DIR$/DLList.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Scripts/scannerTest.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Scripts/scannerTest.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Inputs/testInput_1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Inputs/testInput_1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser.c" beforeDir="false" afterPath="$PROJECT_DIR$/parser.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scanner.c" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scanner.h" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +77,7 @@
       <workItem from="1637016729903" duration="10203000" />
       <workItem from="1637120787355" duration="9896000" />
       <workItem from="1637870253468" duration="2227000" />
+      <workItem from="1638115141146" duration="8265000" />
     </task>
     <servers />
   </component>

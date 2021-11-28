@@ -1,0 +1,5 @@
+require "ifj21"
+
+global main : function(integer,string) : integer,string
+
+global add : function () : number

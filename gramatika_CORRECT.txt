@@ -1,0 +1,64 @@
+Gramatika
+-----------------------------
+EXP -> sekvence operandu a operatoru (napr.: a+c*1/5)
+ID -> identifikator (napr.: a, b, factorial)
+-----------------------------
+<program> :: require "ifj21" <main_body> EOF
+
+<main_body> :: /*eps*/
+<main_body> :: global <dec_function> <main_body>
+<main_body> :: function <def_function> <main_body>
+<main_body> :: ID <call_function> <main_body>
+
+<dec_function> :: ID : function(<data_types>) <return_types>
+<dec_function> :: ID : function() <return_types>
+
+<data_types> :: <data_type>, <data_types>
+<data_types> :: <data_type>
+
+<def_function> :: ID(<params>) <return_types> <fce_body> end
+<def_function> :: ID() <return_types> <fce_body> end
+
+<data_type> :: integer
+<data_type> :: number
+<data_type> :: string
+<data_type> :: nil
+
+<params> :: /*eps*/
+<params> :: <param>, <params>
+<params> :: <param>
+<param> :: ID : <data_type>
+
+<return_types> :: /*eps*/
+<return_types> :: : <return_type>
+<return_type> :: <data_type>
+<return_type> :: <data_type>, <return_type>
+
+<fce_body> :: /*eps*/
+<fce_body> :: local<def_var> <fce_body>
+<fce_body> :: <assign> <fce_body>
+<fce_body> :: if<cond> <fce_body>
+<fce_body> :: while<cycle> <fce_body>
+<fce_body> :: ID<call_function> <fce_body>
+<fce_body> :: return<return> <fce_body>
+
+<def_var> :: ID : <data_type>
+<def_var> :: ID : <data_type> = EXP
+<def_var> :: ID : <data_type> = STRING
+
+<assign> :: <ids> = <exps>
+
+<ids> :: ID
+<ids> :: ID, <ids>
+
+<exps> :: EXP
+<exps> :: EXP, <exps>
+//EXP <=> call_function
+
+<cond> :: EXP then <fce_body> else <fce_body> end
+
+<cycle> :: EXP do <fce_body> end
+
+<call_function> :: (<params>)
+
+<return> :: <exps>

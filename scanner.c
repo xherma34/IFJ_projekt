@@ -883,16 +883,19 @@ int TListDeleteActive(TList *list)
     if(list->active == list->first)
     {
       list->first = list->active->next;
+      free(list->active);
       list->active = list->first;
     }
     else if(list->active == list->last)
     {
       list->last = list->active->prev;
+      free(list->active);
       list->active = NULL;
     }
     else
     {
       list->active->prev->next = list->active->next;
+      free(list->active);
       list->active = list->active->next;
     }
   }
@@ -966,9 +969,9 @@ int GetTokenList(TList *list)
     {
       line++;
     }
-    if(error == 0)
+    if(myToken.type != T_EOL)
     {
-      TListInsert(&(*list), myToken);
+        TListInsert(&(*list), myToken);
     }
   }
   return 0;
