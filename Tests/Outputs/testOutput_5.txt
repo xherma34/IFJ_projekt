@@ -1,2 +1,0 @@
---TOKEN TESTS--
-1 T_EOF
