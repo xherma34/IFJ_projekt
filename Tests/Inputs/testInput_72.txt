@@ -1,0 +1,7 @@
+
+require "ifj21"
+
+function main()
+	local a, : integer					--SPRÁVNĚ je (local a,VAR : integer)
+	local vysl : integer = 0
+end

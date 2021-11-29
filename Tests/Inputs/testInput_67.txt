@@ -1,0 +1,7 @@
+
+require "ifj21"
+
+function main()
+	a : integer 						--KAŽDÁ PROMĚNNÁ MUSÍ BÝT LOKÁLNÍ (local a : integer)
+	local vysl : integer = 0
+end

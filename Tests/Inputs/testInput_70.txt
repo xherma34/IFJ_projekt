@@ -1,0 +1,7 @@
+
+require "ifj21"
+
+function main()
+	local a : integer
+	local vysl : integer = 				--SPRÁVNĚ JE local vysl : integer = NUM/FUNKCE 
+end

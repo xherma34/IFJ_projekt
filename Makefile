@@ -29,8 +29,10 @@ DLList.o: DLList.c DLList.h
 parser.o: parser.c parser.h
 	$(s)@$(CC) $(CFLAGS) -c parser.c
 
-scannerTest:
-	$(s)bash $(currDir)/Tests/Scripts/scannerTest.sh
+tests:
+	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
+	$(s)bash $(currDir)/Tests/Scripts/test.sh
+
 
 test: Tests/test.c
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
@@ -45,4 +47,5 @@ clean:
 	$(s)rm -f $(SOURCES)
 	$(s)rm -f $(currDir)/*.o
 	$(s)rm -f $(testDir)/Outputs/*
+	$(s)rm -f $(testDir)/*.o
 	$(s)rm -f $(currDir)/ifj21
