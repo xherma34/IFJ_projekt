@@ -20,6 +20,9 @@ int Cond(TList *);
 int Cycle(TList *);
 int CallFunction(TList *);
 int Return(TList *);
+int Ids_Datatypes(TList *);
+int Exps_Strings(TList *);
 
 int Exp(TList *);
 void PrintToken(Token_type);
+int IsExp(TList *);

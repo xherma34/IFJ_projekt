@@ -1,0 +1,4 @@
+require
+function main()
+    local a,b,cd : integer,string,number = 5,10,"hello"
+end

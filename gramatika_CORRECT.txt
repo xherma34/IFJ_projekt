@@ -42,9 +42,8 @@ ID -> identifikator (napr.: a, b, factorial)
 <fce_body> :: ID<call_function> <fce_body>
 <fce_body> :: return<return> <fce_body>
 
-<def_var> :: <ids> : <data_type>
-<def_var> :: <ids> : <data_type> = EXP                  //!!!TODO!!!
-<def_var> :: <ids> : <data_type> = STRING
+<def_var> :: <ids> : <data_types>
+<def_var> :: <ids> : <data_types> = <exps_strings>
 
 <assign> :: <ids> = <exps>
 
@@ -59,6 +58,10 @@ ID -> identifikator (napr.: a, b, factorial)
 
 <cycle> :: EXP do <fce_body> end
 
-<call_function> :: (<ids>)   //!!!TODO!!!
+<call_function> :: (<ids_datatypes>)
+
+<ids_datatypes> :: //TODO
+
+<exps_strings> :: //TODO
 
 <return> :: <exps>

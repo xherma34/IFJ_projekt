@@ -74,6 +74,7 @@ typedef enum
 
 int ScannerGetToken (Token *currentToken)
 {
+    int error;
     Token tmp;
     currentToken->type = T_EMPTY;
     FSM_STATE state = S_START;
@@ -159,13 +160,21 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if(isalpha(loadChar) || loadChar == '_')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_ID;
                 }
                 else if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_INTEGER;
                 }
@@ -399,19 +408,31 @@ int ScannerGetToken (Token *currentToken)
             case(S_INTEGER):
                 if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_INTEGER;
                 }
                 else if(loadChar == '.')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_DOT;
                 }
                 else if(loadChar == 'e' || loadChar == 'E')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_E;
                 }
@@ -428,7 +449,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_NUMBER_DOT):
                 if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_DOT_NUMBER;
                 }
@@ -441,13 +466,21 @@ int ScannerGetToken (Token *currentToken)
             case(S_NUMBER_DOT_NUMBER):
                 if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_DOT_NUMBER;
                 }
                 else if(loadChar == 'e' || loadChar == 'E')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_E;
                 }
@@ -463,7 +496,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_NUMBER_E):
                 if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_E_NUMBER;
                 }
@@ -476,7 +513,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_NUMBER_E_NUMBER):
                 if(isdigit(loadChar))
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_NUMBER_E_NUMBER;
                 }
@@ -496,7 +537,11 @@ int ScannerGetToken (Token *currentToken)
                 }
                 else if(loadChar > 31 && loadChar != 34)
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_STRING_START;
                 }
@@ -516,25 +561,41 @@ int ScannerGetToken (Token *currentToken)
             case(S_STRING_BACKSLASH):
                 if(loadChar == 'n')
                 {
-                    DLL_insertLast(&list, '\n');
+                    error = DLL_insertLast(&list, '\n');
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '"')
                 {
-                    DLL_insertLast(&list, '\"');
+                    error = DLL_insertLast(&list, '\"');
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == '\\')
                 {
-                    DLL_insertLast(&list, '\\');
+                    error = DLL_insertLast(&list, '\\');
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_STRING_START;
                 }
                 else if(loadChar == 't')
                 {
-                    DLL_insertLast(&list, '\t');
+                    error = DLL_insertLast(&list, '\t');
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_STRING_START;
                 }
@@ -579,7 +640,11 @@ int ScannerGetToken (Token *currentToken)
                 {
                     backslashLen = (int)(loadChar) - 48;
                     //backslashChar = '\000' + backslashLen;
-                    DLL_insertLast(&list, backslashLen);
+                    error = DLL_insertLast(&list, backslashLen);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     backslashLen = 0;
                     state = S_STRING_START;
@@ -595,7 +660,11 @@ int ScannerGetToken (Token *currentToken)
                 {
                     backslashLen = backslashLen + ((int)(loadChar) - 48);
                     //backslashChar = '\000' + backslashLen;
-                    DLL_insertLast(&list, backslashLen);
+                    error = DLL_insertLast(&list, backslashLen);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     backslashLen = 0;
                     state = S_STRING_START;
@@ -635,7 +704,11 @@ int ScannerGetToken (Token *currentToken)
                 {
                     backslashLen = backslashLen + ((int)(loadChar) - 48);
                     //backslashChar = '\000' + backslashLen;
-                    DLL_insertLast(&list, backslashLen);
+                    error = DLL_insertLast(&list, backslashLen);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     backslashLen = 0;
                     state = S_STRING_START;
@@ -649,7 +722,11 @@ int ScannerGetToken (Token *currentToken)
             case(S_ID):
                 if(isalpha(loadChar) || isdigit(loadChar) || loadChar == '_')
                 {
-                    DLL_insertLast(&list, loadChar);
+                    error = DLL_insertLast(&list, loadChar);
+                    if(error != 0)
+                    {
+                        return error;
+                    }
                     list.length = list.length + 1;
                     state = S_ID;
                 }
@@ -827,11 +904,13 @@ Token GetNumber(DLList *list)
     return myToken;
 }
 
+//-----------------------------TOKEN LIST------------------------------------------------------
+
 int TListInit(TList *list)
 {
   if(list == NULL)
   {
-      return 1;
+      return 99;
   }
   list->first = NULL;
   list->last = NULL;
@@ -843,9 +922,13 @@ int TListInsert(TList *list, Token token)
 {
   if(list == NULL)
   {
-    return 1;
+    return 99;
   }
   TNodePtr new = (TNodePtr)malloc(sizeof(struct TNode));
+  if(new == NULL)
+  {
+      return 99;
+  }
   new->token = token;
   new->next = NULL;
   new->prev = NULL;
@@ -868,7 +951,7 @@ int TListDeleteActive(TList *list)
 {
   if(list == NULL)
   {
-      return 1;
+      return 99;
   }
   if(list->active == NULL)
   {
@@ -906,7 +989,7 @@ int TListTokenNext(TList *list)
 {
   if(list == NULL)
   {
-      return 1;
+      return 99;
   }
   if(list->active == NULL)
   {
@@ -923,7 +1006,7 @@ int TListTokenPrev(TList *list)
 {
   if(list == NULL)
   {
-      return 1;
+      return 99;
   }
   if(list->active == NULL)
   {
@@ -938,14 +1021,20 @@ int TListTokenPrev(TList *list)
 
 int TListDispose(TList *list)
 {
+    int error;
+
   if(list == NULL)
   {
-      return 1;
+      return 99;
   }
   list->active = list->first;
   while(list->active != NULL)
   {
-    TListDeleteActive(&(*list));
+    error =  TListDeleteActive(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
   }
   return 0;
 }
@@ -953,25 +1042,29 @@ int TListDispose(TList *list)
 int GetTokenList(TList *list)
 {
   int line = 1;
+  int error = 0;
   Token myToken;
   myToken.type = T_EMPTY;
-  int error = 0;
 
   while(myToken.type != T_EOF)
   {
     error = ScannerGetToken(&myToken);
     if(error != 0)
     {
-        return 1;
+        return error;
     }
     myToken.line = line;
     if(myToken.type == T_EOL)
     {
       line++;
     }
-    if(myToken.type != T_EOL)
+    else
     {
-        TListInsert(&(*list), myToken);
+        error = TListInsert(&(*list), myToken);
+        if(error != 0)
+        {
+            return error;
+        }
     }
   }
   return 0;

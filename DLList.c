@@ -41,11 +41,14 @@ void DLL_dispose(DLList *list)
     list->firstElement = NULL;
 }
 
-void DLL_insertLast(DLList *list, char insertMe)
+int DLL_insertLast(DLList *list, char insertMe)
 {
     DLLnodePtr tmp = malloc(sizeof(struct DLLnode));
 
-    // if(tmp == NULL) ;        DODELAT ERROROVE HLASENI
+    if(tmp == NULL)
+    {
+        return 99;
+    }
 
     //Prepisu data noveho elementu a ukazatele noveho elementu
     tmp->data = insertMe;
@@ -69,6 +72,7 @@ void DLL_insertLast(DLList *list, char insertMe)
         list->firstElement = tmp;
         list->lastElement = tmp;
     }
+    return 0;
 }
 
 void DLL_deleteFirst(DLList *list)

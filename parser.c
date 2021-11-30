@@ -13,34 +13,37 @@ int Parse(TList *list)
 int Program(TList *list)
 {
     int error;
-    //check pro require
+
     if(list->active->token.type != T_KW_REQUIRE)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro "ifj21"
     if(list->active->token.type != T_STRING || strcmp(list->active->token.value.string, "ifj21") != 0)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro EOF -> chybí <main_body>
     if(list->active->token.type != T_EOF)
     {
-        //check pro <main_body>
         error = MainBody(&(*list));
-        return error; //vracim errorovou hodnotu z <main_body>
+        return error;
     }
     else
     {
-        return 0; //chybi <main_body> -> vracim 0
+        return 0;
     }
 
 
@@ -48,213 +51,187 @@ int Program(TList *list)
 
 int MainBody(TList *list)
 {
-    //pomocna promenna pro errorovou hodnotu
-    int error;
+    int error = 0;
 
-    //check pro keyword global -> deklarace funkce
+    if(list->active->token.type != T_KW_GLOBAL && list->active->token.type != T_KW_FUNCTION
+       && list->active->token.type != T_ID)
+    {
+        return 2;
+    }
+
     if(list->active->token.type == T_KW_GLOBAL)
     {
-        //shift v seznamu
-        TListTokenNext(&(*list));
-        //check pro <dec_function>
-        error = DecFunction(&(*list));
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
 
-        if(list->active->token.type == T_EOF)
-        {
-            return error;
-        }
-        error = MainBody(&(*list));
-        return error;
+        error = DecFunction(&(*list));
     }
-    //check pro keyword function -> definice funkce
     else if(list->active->token.type == T_KW_FUNCTION)
     {
-        //shift v seznamu
-        TListTokenNext(&(*list));
-        //check pro <def_function>
-        error = DefFunction(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
 
-        if(list->active->token.type == T_EOF)
+        error = DefFunction(&(*list));
+    }
+
+    else if(list->active->token.type == T_ID)
+    {
+
+        error = TListTokenNext(&(*list));
+        if(error != 0)
         {
             return error;
         }
-        error = MainBody(&(*list));
-        return error;
-    }
-    //check pro keyword function -> volani funkce
-    else if(list->active->token.type == T_ID)
-    {
-        //shift v seznamu
-        TListTokenNext(&(*list));
-        //check pro <call_function>
+
         error = CallFunction(&(*list));
+    }
+
+    if(error != 0 || list->active->token.type == T_EOF)
+    {
         return error;
     }
-    //jinak error
-    else
-    {
-        return 1;
-    }
+
+    error = MainBody(&(*list));
+
+    return error;
 }
 
 int DecFunction(TList *list)
 {
-    //pomocna promenna pro errorovou hodnotu
     int error;
 
-    //check pro id -> jinak vracim 1
     if(list->active->token.type != T_ID)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro colon -> jinak vracim 1
     if(list->active->token.type != T_COLON)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro keyword function -> jinak vracim 1
     if(list->active->token.type != T_KW_FUNCTION)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro levou zavorku -> jinak vracim 1
     if(list->active->token.type != T_BRACKET_LEFT)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro pravou zavorku -> jinak predpokladam ze jsou definovane vstupni typy
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
-        //check pro vstupni typy
         error = DataTypes(&(*list));
 
-        //check pro spravne vstupni typy -> jinak vracim dany error
         if(error != 0)
         {
             return error;
         }
     }
 
-    //check pro pravou zavorku -> jinak vracim 1
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
-        return 1;
+        return 2;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    //check pro navratove typy
     error = ReturnTypes(&(*list));
 
-    //vracim errorovou hodnotu
     return error;
 }
 
 int DataTypes(TList *list)
 {
-    //pomocna promenna pro errorovou hodnotu
     int error;
 
-    //check pro datovy typ
     error = DataType(&(*list));
 
-    //check pro spravne datove typy -> jinak vracim dany error
+    if(error != 0 || list->active->token.type != T_COMMA)
+    {
+        return error;
+    }
+
+    error = TListTokenNext(&(*list));
     if(error != 0)
     {
         return error;
     }
-    //nenaskytl se error -> shift v seznamu
-    else
-    {
-        TListTokenNext(&(*list));
-    }
 
-    //check pro comma -> jinak vracim 0
-    if(list->active->token.type != T_COMMA)
-    {
-        return 0;
-    }
-    //predpokladam dalsi datovy typ
-    else
-    {
-        TListTokenNext(&(*list));
-        //check pro datovy typ
-        error = DataTypes(&(*list));
-        return error;
-    }
+    error = DataTypes(&(*list));
+
+    return error;
 }
 
 int DataType(TList *list)
 {
-    //check pro keyword integer
-    if(list->active->token.type == T_KW_INTEGER)
+    int error = 2;
+
+    if(list->active->token.type == T_KW_INTEGER || list->active->token.type == T_KW_NUMBER
+    || list->active->token.type == T_KW_STRING || list->active->token.type == T_KW_NIL)
     {
-        return 0;
+        error = 0;
     }
 
-    //check pro keyword number
-    if(list->active->token.type == T_KW_NUMBER)
+    error = TListTokenNext(&(*list));
+    if(error != 0)
     {
-        return 0;
+        return error;
     }
 
-    //check pro keyword string
-    if(list->active->token.type == T_KW_STRING)
-    {
-        return 0;
-    }
-
-    //check pro keyword nil
-    if(list->active->token.type == T_KW_NIL)
-    {
-        return 0;
-    }
-
-    //nenasel jsem validni keyword -> vracim 1
-    return 1;
+    return error;
 }
 
 int ReturnTypes(TList *list)
 {
-    //pomocna promenna pro errorovou hodnotu
     int error;
 
-    //check pro colon -> <return_types> neni prazdny
     if(list->active->token.type == T_COLON)
     {
-        //shift v seznamu
-        TListTokenNext(&(*list));
-        //check pro navratovy typ
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+
         error = ReturnType(&(*list));
         return error;
     }
-    //<return_types> muze byt prazdny -> vracim 0
     else
     {
         return 0;
@@ -263,35 +240,28 @@ int ReturnTypes(TList *list)
 
 int ReturnType(TList *list)
 {
-    //pomocna promenna pro errorovou hodnotu
     int error;
 
-    //check pro datovy typ
     error = DataType(&(*list));
 
-    //v pripade chyby vracim errorovou hodnotu
     if(error != 0)
     {
         return error;
     }
 
-    //shift v seznamu
-    TListTokenNext(&(*list));
-
-    //check pro dalsi comma -> nasleduji dalsi typy
     if(list->active->token.type == T_COMMA)
     {
-        //shift v seznamu
-        TListTokenNext(&(*list));
-        //check dalsiho typu
+
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+
         error = ReturnType(&(*list));
-        return error;
     }
-    //konec typu
-    else
-    {
-        return error;
-    }
+
+    return error;
 }
 
 int DefFunction(TList *list)
@@ -300,17 +270,25 @@ int DefFunction(TList *list)
 
     if(list->active->token.type != T_ID)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type != T_BRACKET_LEFT)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
@@ -323,10 +301,14 @@ int DefFunction(TList *list)
 
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     error = ReturnTypes(&(*list));
 
@@ -334,7 +316,6 @@ int DefFunction(TList *list)
     {
         return error;
     }
-
 
     if(list->active->token.type != T_KW_END)
     {
@@ -348,12 +329,16 @@ int DefFunction(TList *list)
 
     if(list->active->token.type != T_KW_END)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
-    return error;
+    return 0;
 }
 
 int Params(TList *list)
@@ -367,14 +352,16 @@ int Params(TList *list)
         return error;
     }
 
-    TListTokenNext(&(*list));
-
     if(list->active->token.type != T_COMMA)
     {
         return error;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     error = Params(&(*list));
     return error;
@@ -386,17 +373,25 @@ int Param(TList *list)
 
     if(list->active->token.type != T_ID)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type != T_COLON)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     error = DataType(&(*list));
 
@@ -409,92 +404,115 @@ int CallFunction(TList *list)
 
     if(list->active->token.type != T_BRACKET_LEFT)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
-        error = Params(&(*list));
+        error = Ids_Datatypes(&(*list));
         if(error != 0)
         {
-            return 1;
+            return error;
         }
     }
 
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
+    return 0;
+}
+
+int Ids_Datatypes(TList *list)
+{
+    int error;
+
+    if(list->active->token.type != T_ID && list->active->token.type != T_STRING &&
+    list->active->token.type != T_NUM_INTEGER && list->active->token.type != T_NUM_NUMBER &&
+    list->active->token.type != T_KW_NIL)
+    {
+        return 2;
+    }
+
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
+
+    if(list->active->token.type == T_COMMA)
+    {
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+
+        error = Ids_Datatypes(&(*list));
+
+        return error;
+    }
     return 0;
 }
 
 int FceBody(TList *list)
 {
-    int error;
+    int error = 0;
+
+    if(list->active->token.type != T_KW_LOCAL && list->active->token.type != T_KW_IF &&
+    list->active->token.type != T_KW_WHILE && list->active->token.type != T_ID &&
+    list->active->token.type != T_KW_RETURN)
+    {
+        return 2;
+    }
 
     if(list->active->token.type == T_KW_LOCAL)
     {
-        TListTokenNext(&(*list));
-        error = DefVar(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
-
-        if(list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
-        {
-            return error;
-        }
-
-        error = FceBody(&(*list));
-        return error;
+        error = DefVar(&(*list));
     }
     else if(list->active->token.type == T_KW_IF)
     {
-
-        TListTokenNext(&(*list));
-        error = Cond(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
-
-        if(list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
-        {
-            return error;
-        }
-
-        error = FceBody(&(*list));
-        return error;
+        error = Cond(&(*list));
     }
     else if(list->active->token.type == T_KW_WHILE)
     {
-        TListTokenNext(&(*list));
-        error = Cycle(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
-
-        if(list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
-        {
-            return error;
-        }
-
-        error = FceBody(&(*list));
-        return error;
+        error = Cycle(&(*list));
     }
     else if(list->active->token.type == T_ID)
     {
-        TListTokenNext(&(*list));
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
 
         if(list->active->token.type == T_BRACKET_LEFT)
         {
@@ -505,90 +523,67 @@ int FceBody(TList *list)
             TListTokenPrev(&(*list));
             error = Assign(&(*list));
         }
-
-        if(error != 0)
-        {
-            return error;
-        }
-
-        if(list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
-        {
-            return error;
-        }
-
-        error = FceBody(&(*list));
-        return error;
     }
     else if(list->active->token.type == T_KW_RETURN)
     {
-        TListTokenNext(&(*list));
-        error = Return(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
             return error;
         }
+        error = Return(&(*list));
+    }
 
-        if(list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
-        {
-            return error;
-        }
-        error = FceBody(&(*list));
+    if(error != 0 || list->active->token.type == T_KW_END || list->active->token.type == T_KW_ELSE)
+    {
         return error;
     }
-    else
-    {
-        return 1;
-    }
+
+    error = FceBody(&(*list));
+    return error;
 }
 
 int DefVar(TList *list)
 {
     int error;
 
-    if(list->active->token.type != T_ID)
-    {
-        return 1;
-    }
-
-    TListTokenNext(&(*list));
-
-    if(list->active->token.type != T_COLON)
-    {
-        return 1;
-    }
-
-    TListTokenNext(&(*list));
-
-    error = DataType(&(*list));
+    error = Ids(&(*list));
 
     if(error != 0)
     {
-        return 1;
+        return error;
     }
 
-    TListTokenNext(&(*list));
+    if(list->active->token.type != T_COLON)
+    {
+        return 2;
+    }
+
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
+
+    error = DataTypes(&(*list));
+
+    if(error != 0)
+    {
+        return 2;
+    }
 
     if(list->active->token.type == T_SETVALUE)
     {
-        TListTokenNext(&(*list));
-        if(list->active->token.type == T_STRING)
-        {
-            TListTokenNext(&(*list));
-            return 0;
-        }
-
-        error = Exp(&(*list));
-
+        error = TListTokenNext(&(*list));
         if(error != 0)
         {
-            return 1;
+            return error;
         }
 
-        return 0;
+        error = Exps_Strings(&(*list));
     }
 
-    return 0;
+    return error;
 }
 
 int Cond(TList *list)
@@ -599,15 +594,19 @@ int Cond(TList *list)
 
     if(error != 0)
     {
-        return 1;
+        return 2;
     }
 
     if(list->active->token.type != T_KW_THEN)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type != T_KW_ELSE)
     {
@@ -615,21 +614,29 @@ int Cond(TList *list)
 
         if(error != 0)
         {
-            return 1;
+            return 2;
         }
     }
 
 
     if(list->active->token.type != T_KW_ELSE)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     if(list->active->token.type == T_KW_END)
     {
-        TListTokenNext(&(*list));
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
         return 0;
     }
 
@@ -637,15 +644,19 @@ int Cond(TList *list)
 
     if(error != 0)
     {
-        return 1;
+        return 2;
     }
 
     if(list->active->token.type != T_KW_END)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     return 0;
 }
@@ -654,46 +665,45 @@ int Cycle(TList *list)
 {
     int error;
 
-    error = Exp(&(*list));
-
-    if(error != 0)
-    {
-        return 1;
-    }
+    Exp(&(*list));
 
     if(list->active->token.type != T_KW_DO)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     error = FceBody(&(*list));
 
     if(error != 0)
     {
-        return 1;
+        return error;
     }
 
     if(list->active->token.type != T_KW_END)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
+    }
 
     return 0;
 }
 
 int Return(TList *list)
 {
-    int error;
-
-    error = Exps(&(*list));
-
-    if(error != 0)
+    if(IsExp(&(*list)) == 2)
     {
-        return error;
+        Exps(&(*list));
     }
 
     return 0;
@@ -712,7 +722,13 @@ int Assign(TList *list)
 
     if(list->active->token.type != T_SETVALUE)
     {
-        return 1;
+        return 2;
+    }
+
+    error = TListTokenNext(&(*list));
+    if(error != 0)
+    {
+        return error;
     }
 
     error = Exps(&(*list));
@@ -722,31 +738,14 @@ int Assign(TList *list)
 
 int Ids(TList *list)
 {
-    int error;
+    int error = 0;
 
     if(list->active->token.type != T_ID)
     {
-        return 1;
+        return 2;
     }
 
-    TListTokenNext(&(*list));
-
-    if(list->active->token.type == T_COMMA)
-    {
-        TListTokenNext(&(*list));
-        error = Ids(&(*list));
-
-        return error;
-    }
-    return 0;
-}
-
-int Exps(TList *list)
-{
-    int error;
-
-    error = Exp(&(*list));
-
+    error = TListTokenNext(&(*list));
     if(error != 0)
     {
         return error;
@@ -754,9 +753,32 @@ int Exps(TList *list)
 
     if(list->active->token.type == T_COMMA)
     {
-        TListTokenNext(&(*list));
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+
+        error = Ids(&(*list));
+    }
+
+    return error;
+}
+
+int Exps(TList *list)
+{
+    int error;
+
+    Exp(&(*list));
+
+    if(list->active->token.type == T_COMMA)
+    {
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
         error = Exps(&(*list));
-        return error;
     }
 
     return error;
@@ -764,179 +786,232 @@ int Exps(TList *list)
 
 int Exp(TList *list)
 {
+    int error;
+
     int line = list->active->token.line;
 
     while(line == list->active->token.line)
     {
-        TListTokenNext(&(*list));
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
     }
     return 0;
+}
+
+int Exps_Strings(TList *list)
+{
+    int error = 0;
+
+    if(list->active->token.type != T_STRING)
+    {
+        error = Exp(&(*list));
+    }
+    else
+    {
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+    }
+
+    if(list->active->token.type == T_COMMA)
+    {
+        error = TListTokenNext(&(*list));
+        if(error != 0)
+        {
+            return error;
+        }
+
+        error = Exps_Strings(&(*list));
+    }
+
+    return error;
+}
+
+//-------------------------------------NOT ACTUALLY HELPFULL-------------------------------------------
+
+int IsExp(TList *list)
+{
+    int is = 0;
+
+    if(list->active->token.type == T_ID || list->active->token.type == T_NUM_INTEGER ||
+    list->active->token.type == T_NUM_NUMBER || list->active->token.type == T_STRING ||
+    list->active->token.type == T_STRLEN || list->active->token.type == T_KW_NIL)
+    {
+        is = 1;
+    }
+
+    return is;
 }
 
 void PrintToken(Token_type token)
 {
     if(token == T_ID)
     {
-        printf("ID\n");
+        printf("ID");
     }
     else if(token == T_KW_DO)
     {
-        printf("KW_DO\n");
+        printf("KW_DO");
     }
     else if(token == T_KW_ELSE)
     {
-        printf("KW_ELSE\n");
+        printf("KW_ELSE");
     }
     else if(token == T_KW_END)
     {
-        printf("KW_END\n");
+        printf("KW_END");
     }
     else if(token == T_KW_FUNCTION)
     {
-        printf("KW_FUNCTION\n");
+        printf("KW_FUNCTION");
     }
     else if(token == T_KW_GLOBAL)
     {
-        printf("KW_GLOBAL\n");
+        printf("KW_GLOBAL");
     }
     else if(token == T_KW_IF)
     {
-        printf("KW_IF\n");
+        printf("KW_IF");
     }
     else if(token == T_KW_LOCAL)
     {
-        printf("KW_LOCAL\n");
+        printf("KW_LOCAL");
     }
     else if(token == T_KW_NIL)
     {
-        printf("KW_NIL\n");
+        printf("KW_NIL");
     }
     else if(token == T_KW_INTEGER)
     {
-        printf("KW_INTEGER\n");
+        printf("KW_INTEGER");
     }
     else if(token == T_KW_NUMBER)
     {
-        printf("KW_NUMBER\n");
+        printf("KW_NUMBER");
     }
     else if(token == T_KW_REQUIRE)
     {
-        printf("KW_REQUIRE\n");
+        printf("KW_REQUIRE");
     }
     else if(token == T_KW_RETURN)
     {
-        printf("KW_RETURN\n");
+        printf("KW_RETURN");
     }
     else if(token == T_KW_STRING)
     {
-        printf("KW_STRING\n");
+        printf("KW_STRING");
     }
     else if(token == T_KW_THEN)
     {
-        printf("KW_THEN\n");
+        printf("KW_THEN");
     }
     else if(token == T_KW_WHILE)
     {
-        printf("KW_WHILE\n");
+        printf("KW_WHILE");
     }
     else if(token == T_STRLEN)
     {
-        printf("STRLEN\n");
+        printf("STRLEN");
     }
     else if(token == T_ADD)
     {
-        printf("ADD\n");
+        printf("ADD");
     }
     else if(token == T_SUB)
     {
-        printf("SUB\n");
+        printf("SUB");
     }
     else if(token == T_MUL)
     {
-        printf("MUL\n");
+        printf("MUL");
     }
     else if(token == T_DIV_NUMBER)
     {
-        printf("DIV_NUMBER\n");
+        printf("DIV_NUMBER");
     }
     else if(token == T_DIV_INTEGER)
     {
-        printf("DIV_INTEGER\n");
+        printf("DIV_INTEGER");
     }
     else if(token == T_CONCATENATION)
     {
-        printf("CONCATENATION\n");
+        printf("CONCATENATION");
     }
     else if(token == T_LT)
     {
-        printf("LT\n");
+        printf("LT");
     }
     else if(token == T_GT)
     {
-        printf("GT\n");
+        printf("GT");
     }
     else if(token == T_LET)
     {
-        printf("LET\n");
+        printf("LET");
     }
     else if(token == T_GET)
     {
-        printf("GET\n");
+        printf("GET");
     }
     else if(token == T_EQ)
     {
-        printf("EQ\n");
+        printf("EQ");
     }
     else if(token == T_NEQ)
     {
-        printf("NEQ\n");
+        printf("NEQ");
     }
     else if(token == T_EOF)
     {
-        printf("EOF\n");
+        printf("EOF");
     }
     else if(token == T_EOL)
     {
-        printf("EOL\n");
+        printf("EOL");
     }
     else if(token == T_NUM_INTEGER)
     {
-        printf("NUM_INTEGER\n");
+        printf("NUM_INTEGER");
     }
     else if(token == T_NUM_NUMBER)
     {
-        printf("NUM_NUMBER\n");
+        printf("NUM_NUMBER");
     }
     else if(token == T_BRACKET_RIGHT)
     {
-        printf("BRACKET_RIGHT\n");
+        printf("BRACKET_RIGHT");
     }
     else if(token == T_BRACKET_LEFT)
     {
-        printf("BRACKET_LEFT\n");
+        printf("BRACKET_LEFT");
     }
     else if(token == T_COLON)
     {
-        printf("COLON\n");
+        printf("COLON");
     }
     else if(token == T_STRING)
     {
-        printf("STRING\n");
+        printf("STRING");
     }
     else if(token == T_SETVALUE)
     {
-        printf("SETVALUE\n");
+        printf("SETVALUE");
     }
     else if(token == T_EMPTY)
     {
-        printf("EMPTY\n");
+        printf("EMPTY");
     }
     else if(token == T_COMMA)
     {
-        printf("COMMA\n");
+        printf("COMMA");
     }
     else
     {
-        printf("není\n");
+        printf("[TOKEN TYPE ERROR]");
     }
 }

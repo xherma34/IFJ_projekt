@@ -19,6 +19,8 @@ REF_OUTPUT = $(testDir)/Referals/referOutput_$(n).txt
 all: scanner.o DLList.o parser.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
+run:
+	-$(s)./ifj21 < $(TEST_INPUT)
 
 scanner.o: scanner.c scanner.h
 	$(s)@$(CC) $(CFLAGS) -c scanner.c
@@ -33,15 +35,10 @@ tests:
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)bash $(currDir)/Tests/Scripts/test.sh
 
-
 test: Tests/test.c
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)Tests/test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
 	- $(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
-
-debug: Tests/test.c
-	$(s)$(CC) $(CFLAGS) -ggdb3 -o $(testDir)/test.o $(TESTSOURCES)
-	$(s)valgrind --tool=memcheck --leak-check=yes Tests/./test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
 
 clean:
 	$(s)rm -f $(SOURCES)

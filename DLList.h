@@ -31,7 +31,7 @@ void DLL_dispose(DLList *);
  * @param Seznam seznam do ktereho vkladam
  * @param Prvek vkladany prvek
  */
-void DLL_insertLast(DLList *, char);
+int DLL_insertLast(DLList *, char);
 
 /**
  * @brief Funkce smaze prvni prvek v seznamu
