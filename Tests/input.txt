@@ -1,1 +1,5 @@
-10.2.3
+require "ifj21"
+
+function main()
+  a = main("ahoj",a,beed)
+end

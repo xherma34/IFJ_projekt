@@ -1,9 +1,10 @@
 /*
-* Obsah souboru: Lexikalni analyzator
-*   Autor:  Pavel Hermann(xherma34)
-*           Jan Zdenek(xzdene00)
-*           Al(xsila00)
-*           Maxim Plicka(xplick04)
+* Obsah souboru:  Lexikalni analyzator
+*
+* Autor:          Pavel Hermann(xherma34)
+*                 Jan Zdenek(xzdene01)
+*                 Aleks(xsila00)
+*                 Maxim Plicka(xplick04)
 */
 
 #include "scanner.h"

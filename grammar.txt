@@ -32,14 +32,18 @@ ID -> identifikator (napr.: a, b, factorial)
 //tela jednotlivych funkci//
 <def_var> :: <ids> : <data_types>
 <def_var> :: <ids> : <data_types> = <exps_strings>
+<def_var> :: <ids> : <data_types> = <call_function>
 
-<assign> :: <ids> = <exps>
+<assign> :: <ids> = <exps_strings>
+<assign> :: <ids> = <call_function>
+
 
 <cond> :: EXP then <fce_body> else <fce_body> end
 
 <cycle> :: EXP do <fce_body> end
 
-<return> :: <exps> //TODO
+<return> :: <exps_strings> //TODO
+<return> :: <call_function> //TODO
 
 //pomocne//
 <data_types> :: <data_type>, <data_types>
@@ -68,6 +72,6 @@ ID -> identifikator (napr.: a, b, factorial)
 <exps> :: EXP
 <exps> :: EXP, <exps>
 
-<ids_datatypes> :: //TODO //nazev
+<ids_datatypes> :: //TODO + nazev
 
 <exps_strings> :: //TODO

@@ -553,8 +553,23 @@ int DefVar(TList *list)
             return error;
         }
 
-        //provedu kontrolu pro identifikatory a ulozim navratovou hodnotu
-        error = Exps_Strings(&(*list));
+        TNodePtr tmp = list->active;
+
+        if(list->active->token.type != T_ID)
+        {
+          error = 1;
+        }
+
+        TListTokenNext(&(*list));
+
+        error = CallFunction(&(*list));
+
+        if(error != 0)
+        {
+            PrintToken(tmp->token.type);
+            list->active = tmp;
+            error = Exps_Strings(&(*list));
+        }
     }
 
     //vratim chybu
@@ -589,8 +604,23 @@ int Assign(TList *list)
         return error;
     }
 
-    //provedu kontrolu pro identifikatory a ulozim navratovou hodnotu
-    error = Exps(&(*list));
+    TNodePtr tmp = list->active;
+
+    if(list->active->token.type != T_ID)
+    {
+      error = 1;
+    }
+
+    TListTokenNext(&(*list));
+
+    error = CallFunction(&(*list));
+
+    if(error != 0)
+    {
+        PrintToken(tmp->token.type);
+        list->active = tmp;
+        error = Exps_Strings(&(*list));
+    }
 
     //vratim chybu
     return error;
