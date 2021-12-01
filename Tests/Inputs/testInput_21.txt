@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+local var : number = 002-E308
+
+
+
+
+
+end

@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+local var, var2, var3, var4 : integer, string, number
+
+
+
+
+
+end

@@ -1,0 +1,22 @@
+require "ifj21"
+
+function main()
+
+
+
+
+local 69_x : integer
+local "x" : string
+local  : number
+local number
+x : integer
+local var width : nil
+local __ __ : string
+
+
+
+
+
+
+
+end

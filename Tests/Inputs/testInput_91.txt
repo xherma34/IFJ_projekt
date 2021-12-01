@@ -1,0 +1,27 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+If 5>a then
+while pes == 2
+write("pes")
+		if pes > 2 then
+			return
+		else
+			return x+y, 0
+		end
+end
+else
+return
+end
+
+
+
+
+
+
+end

@@ -202,7 +202,6 @@ int ScannerGetToken (Token *currentToken)
                 ungetc(loadChar, stdin);
                 currentToken->type = T_STRLEN;
                 return 0;
-
             case(S_MUL):
                 ungetc(loadChar, stdin);
                 currentToken->type = T_MUL;
@@ -489,6 +488,7 @@ int ScannerGetToken (Token *currentToken)
                     tmp = GetNumber(&list);
                     currentToken->type = tmp.type;
                     currentToken->value = tmp.value;
+                    ungetc(loadChar, stdin);
                     return 0;
                 }
                 break;
@@ -503,6 +503,16 @@ int ScannerGetToken (Token *currentToken)
                     }
                     list.length = list.length + 1;
                     state = S_NUMBER_E_NUMBER;
+                }
+                else if(loadChar == '+' || loadChar == '-')
+                {
+                  error = DLL_insertLast(&list, loadChar);
+                  if(error != 0)
+                  {
+                      return error;
+                  }
+                  list.length = list.length + 1;
+                  state = S_NUMBER_E_NUMBER;
                 }
                 else
                 {
@@ -526,6 +536,7 @@ int ScannerGetToken (Token *currentToken)
                     tmp = GetNumber(&list);
                     currentToken->type = tmp.type;
                     currentToken->value = tmp.value;
+                    ungetc(loadChar, stdin);
                     return 0;
                 }
                 break;

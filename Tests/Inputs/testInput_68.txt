@@ -1,7 +1,15 @@
-
 require "ifj21"
 
 function main()
-	local 							-- CHYBÍ INICIALIZACE (local XXXX integer)
-	local vysl : integer = 0
+
+
+
+
+local var : string = "\abc"
+
+
+
+
+
+
 end

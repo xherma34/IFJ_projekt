@@ -1,0 +1,20 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+If 5>x then
+write(“ahoj“)
+else
+var = var + 1
+end
+
+
+
+
+
+
+end

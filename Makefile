@@ -20,29 +20,31 @@ all: scanner.o DLList.o parser.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 run:
-	-$(s)./ifj21 < $(TEST_INPUT)
+	$(s)./ifj21 < $(TEST_INPUT)
 
 scanner.o: scanner.c scanner.h
-	$(s)@$(CC) $(CFLAGS) -c scanner.c
+	$(s)$(CC) $(CFLAGS) -c scanner.c
 
 DLList.o: DLList.c DLList.h
-	$(s)@$(CC) $(CFLAGS) -c DLList.c
+	$(s)$(CC) $(CFLAGS) -c DLList.c
 
 parser.o: parser.c parser.h
 	$(s)@$(CC) $(CFLAGS) -c parser.c
 
 tests:
+	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)bash $(currDir)/Tests/Scripts/test.sh
 
-test: Tests/test.c
+test:
+	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)Tests/test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
-	- $(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
+	-$(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
 
 clean:
 	$(s)rm -f $(SOURCES)
 	$(s)rm -f $(currDir)/*.o
-	$(s)rm -f $(testDir)/Outputs/*
+	$(s)rm -rf $(testDir)/Outputs/
 	$(s)rm -f $(testDir)/*.o
 	$(s)rm -f $(currDir)/ifj21

@@ -1,11 +1,15 @@
-
 require "ifj21"
 
-function concat (x : string, y : string) : string, integer
-	return x .. y, 0						--	return x .. y, 0 END
-
 function main()
-	local x : string
-	local ret: integer
-	x, ret = test("ahoj", "svete")
+
+
+
+local var : number = 45e-2
+
+
+
+
+
+
+
 end

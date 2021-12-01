@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+local var : string = "ahoj jak se dneska mas? Uz mas hotove ifj? :-("
+
+
+
+
+
+
+end

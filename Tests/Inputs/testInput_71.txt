@@ -1,7 +1,15 @@
-
 require "ifj21"
 
 function main()
-	local a, : integer					--SPRÁVNĚ je (local a,XX : integer)
-	local vysl : integer = 0
+
+
+
+
+
+local var : string = "\3000"
+
+
+
+
+
 end

@@ -1,0 +1,20 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+If 5==x then
+return x + y,
+else
+return
+end
+
+
+
+
+
+
+end

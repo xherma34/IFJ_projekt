@@ -119,7 +119,7 @@ Token GetInteger(DLList *);
 
 /**
  * @brief Funkce pro ziskani doublu ze seznamu
- * @param DLList ktery obsahuje sany double
+ * @param DLList ktery obsahuje dany double
  * @return Token vcetne typu a hodnoty
  */
 Token GetNumber(DLList *);

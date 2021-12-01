@@ -1,7 +1,15 @@
-
 require "ifj21"
 
 function main()
-	local a :						-- CHYBÍ DATOVÝ TYP (local a : INTEGER)
-	local vysl : integer = 0
+
+
+
+
+
+local var : string = "\1"
+
+
+
+
+
 end

@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+local var : string = "\n\t\\ \001 \255 #! ., &% $ bla bla"
+
+
+
+
+
+
+end

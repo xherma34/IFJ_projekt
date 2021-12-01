@@ -1,12 +1,15 @@
-
 require "ifj21"
 
-function concat (x : string, y : string) : , integer		--function concat (x : string, y : string) : string, integer
-	return x .. y, 0
-	end
-
 function main()
-	local x : string
-	local ret: integer
-	x, ret = test("ahoj", "svete")
+
+
+
+
+local var : number = 0.4e-12
+
+
+
+
+
+
 end

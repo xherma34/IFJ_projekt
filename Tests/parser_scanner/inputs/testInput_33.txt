@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+global id : function(string) : string
+
+
+
+
+
+end

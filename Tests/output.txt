@@ -1,0 +1,2 @@
+--TOKEN TESTS--
+[LEXICAL ERROR] Error 1

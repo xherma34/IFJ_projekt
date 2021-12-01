@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+local var : number = 1.7E+308
+
+
+
+
+
+
+end

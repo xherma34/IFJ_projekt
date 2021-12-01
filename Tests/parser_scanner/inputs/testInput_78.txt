@@ -1,0 +1,19 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+--[[ bla bla bla ]
+--[[local 1 : integer]]
+-[[ bla bla]]
+--[[ ]] ]]
+
+
+
+
+
+
+end

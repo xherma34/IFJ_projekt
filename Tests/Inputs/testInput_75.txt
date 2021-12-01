@@ -1,7 +1,15 @@
-
 require "ifj21"
 
 function main()
-	local a, : integer
-	local vysl : integer = "ahoj" 			--SPRÁVNĚ je (local vysl : string = "ahoj")
+
+
+
+
+
+local var : string = "\12 3"
+
+
+
+
+
 end

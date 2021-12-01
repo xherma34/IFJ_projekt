@@ -1,7 +1,20 @@
-
 require "ifj21"
 
 function main()
-	local a : integer
-	local vysl : integer = readi()
+
+
+
+
+
+local var : pes = "ahoj"
+local var : integers
+local var : numbers
+local var : integer string
+local var varr : integer
+
+
+
+
+
+
 end

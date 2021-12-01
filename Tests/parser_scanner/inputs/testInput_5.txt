@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+
+
+
+locav var : string = “\101 \097 \115 \116 \101 \114 \032 \101 \103 \103“
+
+
+
+
+
+
+end

@@ -1,0 +1,16 @@
+require "ifj21"
+
+function main()
+
+
+
+
+end
+function id() : string, integer
+
+
+
+
+
+
+end

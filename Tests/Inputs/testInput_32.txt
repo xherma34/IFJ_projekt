@@ -1,0 +1,17 @@
+require "ifj21"
+
+function main()
+
+
+
+
+
+end
+function id()
+
+
+
+
+
+
+end
