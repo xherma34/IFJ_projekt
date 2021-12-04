@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
 TARGET = ifj21
-SOURCES = scanner.o DLList.o parser.o
+SOURCES = scanner.o DLList.o parser.o symtable.o
 TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
@@ -16,7 +16,7 @@ REF_OUTPUT = $(testDir)/Referals/referOutput_$(n).txt
 
 .PHONY: all test debug clean
 
-all: scanner.o DLList.o parser.o
+all: scanner.o DLList.o parser.o symtable.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 run:
@@ -30,6 +30,9 @@ DLList.o: DLList.c DLList.h
 
 parser.o: parser.c parser.h
 	$(s)@$(CC) $(CFLAGS) -c parser.c
+
+symtable.o: symtable.c symtable.h
+	$(s)@$(CC) $(CFLAGS) -c symtable.c
 
 tests:
 	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi

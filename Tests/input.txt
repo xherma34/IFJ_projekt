@@ -1,5 +1,9 @@
 require "ifj21"
 
-function main()
-  a = main("ahoj",a,beed)
+-- dec -> dec, def -> def, dec
+
+function foo(x:integer, y:number) : string
+end
+
+function foo(x:integer, y:number) : string
 end

@@ -79,6 +79,7 @@ typedef struct TNode
     Token  token;
     struct TNode *prev;
     struct TNode *next;
+    int index;
 } *TNodePtr;
 
 typedef struct
@@ -137,3 +138,12 @@ int TListTokenPrev(TList *);
 int TListDispose(TList *);
 
 int GetTokenList(TList *);
+
+
+/*-----JINE POMOCNE FUNKCE------*/
+
+/**
+ * @brief Funkce pro printovani typu konkretniho tokenu
+ * @param Token_type ktery chceme printovat
+ */
+void PrintToken(Token_type);

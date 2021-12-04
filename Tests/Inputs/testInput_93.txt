@@ -1,0 +1,22 @@
+require "ifj21"
+
+function main()
+
+
+--defvar = strings and functions
+local var : string = "hello world"
+local var : string = fce()
+local var : string = fce("test", x, y)
+
+local x,b,c : string = "sfgame", foo(), ""
+local x,b : string = "ahoj", "hello"
+
+--assign = strings and functions
+var = foo()
+var = "ahoj"
+
+var, x, y = "stringos", fce(), foo()
+var = foo("ahoj", "test")
+var = fce(x, "pjekny", y)
+
+end

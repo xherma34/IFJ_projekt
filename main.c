@@ -6,8 +6,7 @@ int main()
 
     TList list;
     error = TListInit(&list);
-
-    if(error != 0)
+    if(error == 99)
     {
         printf("[INTERNAL ERROR]");
         printf(" Error %d\n", error);
@@ -15,24 +14,45 @@ int main()
         return error;
     }
 
-    error = GetTokenList(&list);
-    if(error != 0)
+    SList slist;
+    error = SListInit(&slist);
+    if(error == 99)
     {
-        if(error != 1)
-        {
-            printf("[INTERNAL ERROR]");
-            printf(" Error %d\n", error);
-            TListDispose(&list);
-            return error;
-        }
-        printf("[LEXICAL ERROR]");
+        printf("[INTERNAL ERROR]");
         printf(" Error %d\n", error);
         TListDispose(&list);
+        SListDispose(&slist);
         return error;
     }
 
-    error = Parse(&list);
-    if(error != 0)
+    error = GetTokenList(&list);
+    if(error == 99)
+    {
+        printf("[INTERNAL ERROR]");
+        printf(" Error %d\n", error);
+        TListDispose(&list);
+        SListDispose(&slist);
+        return error;
+    }
+    else if(error == 1)
+    {
+        printf("[LEXICAL ERROR]");
+        printf(" Error %d\n", error);
+        TListDispose(&list);
+        SListDispose(&slist);
+        return error;
+    }
+
+    error = Parse(&list, &slist);
+    if(error == 99)
+    {
+        printf("[INTERNAL ERROR]");
+        printf(" Error %d\n", error);
+        TListDispose(&list);
+        SListDispose(&slist);
+        return error;
+    }
+    else if(error == 2)
     {
         printf("[SYNTAX ERROR]");
         printf(" Error %d", error);
@@ -41,11 +61,23 @@ int main()
         PrintToken(list.active->token.type);
         printf("'\n");
         TListDispose(&list);
+        SListDispose(&slist);
         return error;
     }
+    else if(error != 0)
+    {
+      printf("ERROR %d", error);
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+
+    PrintSList(&slist);
 
     printf("Compilation succesfull!\n");
 
     TListDispose(&list);
+    SListDispose(&slist);
+
     return 0;
 }

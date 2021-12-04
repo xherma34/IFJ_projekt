@@ -2,7 +2,7 @@
 
 /*-----FUNKCE MIMO PROGRAM-----*/
 
-int Parse(TList *list)
+int Parse(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -11,7 +11,7 @@ int Parse(TList *list)
     list->active = list->first;
 
     //provedu kontrolu pro program, ulozim navratovou hodnotu
-    error = Program(&(*list));
+    error = Program(list, slist);
 
     //navraceni chyby do funkce main() v main.c
     return error;
@@ -19,7 +19,7 @@ int Parse(TList *list)
 
 /*-----FUNKCE NA UROVNI CELEHO PROGRAMU-----*/
 
-int Program(TList *list)
+int Program(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -32,7 +32,7 @@ int Program(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -48,7 +48,7 @@ int Program(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -59,14 +59,14 @@ int Program(TList *list)
     if(list->active->token.type != T_EOF)
     {
         //v pripade absence program obsahuje hlavni telo
-        error = MainBody(&(*list));
+        error = MainBody(list, slist);
     }
 
     //vracim chybu
     return error;
 }
 
-int MainBody(TList *list)
+int MainBody(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error = 0;
@@ -84,7 +84,7 @@ int MainBody(TList *list)
     if(list->active->token.type == T_KW_GLOBAL)
     {
         //jedna se o deklaraci funkce, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -92,12 +92,12 @@ int MainBody(TList *list)
         }
 
         //provedu kontrolu pro deklaraci funkce a ulozim navratovou hodnotu
-        error = DecFunction(&(*list));
+        error = DecFunction(list, slist);
     }
     else if(list->active->token.type == T_KW_FUNCTION)
     {
         //jedna se o definici funkce, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -105,13 +105,13 @@ int MainBody(TList *list)
         }
 
         //provedu kontrolu pro definici funkce a ulozim navratovou hodnotu
-        error = DefFunction(&(*list));
+        error = DefFunction(list, slist);
     }
 
     else if(list->active->token.type == T_ID)
     {
         //jedna se o volani funkce, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -119,7 +119,7 @@ int MainBody(TList *list)
         }
 
         //provedu kontrolu pro volani funkce a ulozim navratovou hodnotu
-        error = CallFunction(&(*list));
+        error = CallFunction(list, slist);
     }
 
     //pokud jsem nasel chybu nebo jsem na konci hlavniho tela
@@ -130,7 +130,7 @@ int MainBody(TList *list)
     }
 
     //rekurzivne opakuju kontrolu hlavniho tela dokud nenastane chyba nebo EOF
-    error = MainBody(&(*list));
+    error = MainBody(list, slist);
 
     //vracim hodnotu chyby
     return error;
@@ -138,7 +138,7 @@ int MainBody(TList *list)
 
 /*-----FUNKCE NA UROVNI HLAVNIHO TELA PROGRAMU-----*/
 
-int DecFunction(TList *list)
+int DecFunction(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -150,8 +150,17 @@ int DecFunction(TList *list)
         return 2;
     }
 
+    if(IsDeclaredFunc(slist, &(list->active->token)) == 3)
+    {
+      SListInsertFunc(slist, false, &list->active->token);
+    }
+    else
+    {
+      return 3;
+    }
+
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -166,7 +175,7 @@ int DecFunction(TList *list)
     }
 
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -181,7 +190,7 @@ int DecFunction(TList *list)
     }
 
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -196,7 +205,7 @@ int DecFunction(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -208,7 +217,7 @@ int DecFunction(TList *list)
     {
         //seznam datatypu neni prazdny
         //provedu kontrolu pro datatypy a ulozim navratovou hodnotu
-        error = DataTypes(&(*list));
+        error = DataTypes(list, slist);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -224,7 +233,7 @@ int DecFunction(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -232,13 +241,13 @@ int DecFunction(TList *list)
     }
 
     //provedu kontrolu pro vracene typy a ulozim navratovou hodnotu
-    error = ReturnTypes(&(*list));
+    error = ReturnTypes(list, slist);
 
     //vratim chybu
     return error;
 }
 
-int DefFunction(TList *list)
+int DefFunction(TList *list, SList *slist)
 {
     int error = 0;
 
@@ -248,8 +257,17 @@ int DefFunction(TList *list)
         return 2;
     }
 
+    if(IsDeclaredFunc(slist, &list->active->token) != 1)
+    {
+      SListInsertFunc(slist, true, &list->active->token);
+    }
+    else
+    {
+      return 3;
+    }
+
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -264,7 +282,7 @@ int DefFunction(TList *list)
     }
 
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -276,12 +294,22 @@ int DefFunction(TList *list)
     {
         //v pripade absence tokenu definice funkce obsahuje parametry
         //provedu kontrolu pro parametry funkce a ulozim navratovou hodnotu
-        error = Params(&(*list));
+        error = Params(list, slist);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
             return error;
         }
+    }
+
+    error = IsDeclaredJump(slist, slist->last->id_func);
+
+    if(error != 3)
+    {
+      if(slist->active->numParams != slist->last->numParams)
+      {
+        return 5;
+      }
     }
 
     //kontrola pro token T_BRACKET_RIGHT
@@ -292,7 +320,7 @@ int DefFunction(TList *list)
     }
 
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -300,11 +328,20 @@ int DefFunction(TList *list)
     }
 
     //provedu kontrolu pro vracene typy a ulozim navratovou hodnotu
-    error = ReturnTypes(&(*list));
+    error = ReturnTypes(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
         return error;
+    }
+
+    error = IsDeclaredJump(slist, slist->last->id_func);
+    if(error != 3)
+    {
+      if(slist->active->numReturns != slist->last->numReturns)
+      {
+        return 5;
+      }
     }
 
     //kontrola pro token T_KW_END
@@ -312,7 +349,7 @@ int DefFunction(TList *list)
     {
         //v pripade absence tokenu definice funkce obsahuje telo
         //provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-        error = FceBody(&(*list));
+        error = FceBody(list, slist);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -328,13 +365,13 @@ int DefFunction(TList *list)
     }
 
     //posunuti aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
 
     //vracim chybu
     return error;
 }
 
-int CallFunction(TList *list)
+int CallFunction(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -347,7 +384,7 @@ int CallFunction(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -358,7 +395,7 @@ int CallFunction(TList *list)
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
         //v pripade absence tokenu volani funkce obsahuje parametry
-        error = Ids_Datatypes(&(*list));
+        error = Ids_Datatypes(list, slist);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -374,7 +411,7 @@ int CallFunction(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -387,7 +424,7 @@ int CallFunction(TList *list)
 
 /*-----FUNKCE NA UROVNI DEFINICE FUNKCE-----*/
 
-int FceBody(TList *list)
+int FceBody(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error = 0;
@@ -407,7 +444,7 @@ int FceBody(TList *list)
     if(list->active->token.type == T_KW_LOCAL)
     {
         //jedna se o definici promenne, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -415,13 +452,13 @@ int FceBody(TList *list)
         }
 
         //provedu kontrolu pro definici promenne a ulozim navratovou hodnotu
-        error = DefVar(&(*list));
+        error = DefVar(list, slist);
     }
     //kontrola pro token T_KW_IF
     else if(list->active->token.type == T_KW_IF)
     {
         //jedna se o podminku, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -429,13 +466,13 @@ int FceBody(TList *list)
         }
 
         //provedu kontrolu pro podminku a ulozim navratovou hodnotu
-        error = Cond(&(*list));
+        error = Cond(list, slist);
     }
     //kontrola pro token T_KW_WHILE
     else if(list->active->token.type == T_KW_WHILE)
     {
         //jedna se o cyklus, posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -443,14 +480,14 @@ int FceBody(TList *list)
         }
 
         //provedu kontrolu pro cyklus a ulozim navratovou hodnotu
-        error = Cycle(&(*list));
+        error = Cycle(list, slist);
     }
     //kontrola pro token T_ID
     else if(list->active->token.type == T_ID)
     {
         //jedna se o volani funkce nebo pripsani hodnoty promenne
         //posunu aktivitu v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -462,23 +499,23 @@ int FceBody(TList *list)
         {
             //jedna se o volani funkce
             //provedu kontrolu pro volani funkce a ulozim navratovou hodnotu
-            error = CallFunction(&(*list));
+            error = CallFunction(list, slist);
         }
         else
         {
             //jedna se o pripsani hodnoty promenne
             //posunu aktivitu v seznamu na predchozi prvek
-            TListTokenPrev(&(*list));
+            TListTokenPrev(list);
 
             //provedu kontrolu pro pripsani hodnoty promenne a ulozim navratovou hodnotu
-            error = Assign(&(*list));
+            error = Assign(list, slist);
         }
     }
     //kontrola pro token T_KW_RETURN
     else if(list->active->token.type == T_KW_RETURN)
     {
         //jedna se o return, posunu aktivitu v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -486,7 +523,7 @@ int FceBody(TList *list)
         }
 
         //provedu kontrolu pro return a ulozim navratovou hodnotu
-        error = Return(&(*list));
+        error = Return(list, slist);
     }
 
     //pokud se naskytly chyba a nebo jsem na konci tela funkce vratim chybu
@@ -498,7 +535,7 @@ int FceBody(TList *list)
     }
 
     //rekurzivne provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-    error = FceBody(&(*list));
+    error = FceBody(list, slist);
 
     //vratim chybu
     return error;
@@ -506,13 +543,13 @@ int FceBody(TList *list)
 
 /*-----FUNKCE NA UROVNI JEDNOTLIVYCH TEL FUNKCI-----*/
 
-int DefVar(TList *list)
+int DefVar(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro identifikatory a ulozim navratovou hodnotu
-    error = Ids(&(*list));
+    error = Ids(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -526,7 +563,7 @@ int DefVar(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -534,7 +571,7 @@ int DefVar(TList *list)
     }
 
     //provedu kontrolu pro datatypy a ulozim navratovou hodnotu
-    error = DataTypes(&(*list));
+    error = DataTypes(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -546,7 +583,7 @@ int DefVar(TList *list)
     {
         //v definici promenne rovou prirazuji hodnoty
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -560,15 +597,14 @@ int DefVar(TList *list)
           error = 1;
         }
 
-        TListTokenNext(&(*list));
+        TListTokenNext(list);
 
-        error = CallFunction(&(*list));
+        error = CallFunction(list, slist);
 
         if(error != 0)
         {
-            PrintToken(tmp->token.type);
             list->active = tmp;
-            error = Exps_Strings(&(*list));
+            error = Exps_Strings(list, slist);
         }
     }
 
@@ -576,13 +612,13 @@ int DefVar(TList *list)
     return error;
 }
 
-int Assign(TList *list)
+int Assign(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro identifikatory a ulozim navratovou hodnotu
-    error = Ids(&(*list));
+    error = Ids(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -597,7 +633,7 @@ int Assign(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -611,28 +647,27 @@ int Assign(TList *list)
       error = 1;
     }
 
-    TListTokenNext(&(*list));
+    TListTokenNext(list);
 
-    error = CallFunction(&(*list));
+    error = CallFunction(list, slist);
 
     if(error != 0)
     {
-        PrintToken(tmp->token.type);
         list->active = tmp;
-        error = Exps_Strings(&(*list));
+        error = Exps_Strings(list, slist);
     }
 
     //vratim chybu
     return error;
 }
 
-int Cond(TList *list)
+int Cond(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro expresi a ulozim navratovou hodnotu
-    error = Exp(&(*list));
+    error = Exp(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -647,7 +682,7 @@ int Cond(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -659,7 +694,7 @@ int Cond(TList *list)
     {
         //telo podminky neni prazdne
         //provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-        error = FceBody(&(*list));
+        error = FceBody(list, slist);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -675,7 +710,7 @@ int Cond(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -687,7 +722,7 @@ int Cond(TList *list)
     {
         //telo else v podmince je prazdne
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -699,7 +734,7 @@ int Cond(TList *list)
     }
 
     //provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-    error = FceBody(&(*list));
+    error = FceBody(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -714,19 +749,19 @@ int Cond(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
 
     //vratim chybu
     return error;
 }
 
-int Cycle(TList *list)
+int Cycle(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro expresi a ulozim navratovou hodnotu
-    error = Exp(&(*list));
+    error = Exp(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -741,7 +776,7 @@ int Cycle(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -749,7 +784,7 @@ int Cycle(TList *list)
     }
 
     //provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-    error = FceBody(&(*list));
+    error = FceBody(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -764,19 +799,19 @@ int Cycle(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
 
     //vratim chybu
     return error;
 }
 
-int Return(TList *list)
+int Return(TList *list, SList *slist)
 {
     //kontrola jestli nasledujici token muze byt exprese
-    if(IsExp(&(*list)) == 2)
+    if(IsExp(list, slist) == 2)
     {
         //nasledujici token muze byt exprese -> provedu kontrolu
-        Exps(&(*list));
+        Exps(list, slist);
     }
 
     //vratim 0 -> return nemuze vracet nic jineho
@@ -785,13 +820,13 @@ int Return(TList *list)
 
 /*-----POMOCNE FUNKCE PRO KONTROLU SYNTAXE-----*/
 
-int DataTypes(TList *list)
+int DataTypes(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro datovy typ a ulozim navratovou hodnotu
-    error = DataType(&(*list));
+    error = DataType(list, slist);
 
     //pokud nastala chyba nebo uz nenasleduje dalsi datovy typ
     if(error != 0 || list->active->token.type != T_COMMA)
@@ -801,7 +836,7 @@ int DataTypes(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -809,14 +844,18 @@ int DataTypes(TList *list)
     }
 
     //provedu kontrolu pro datove typy a ulozim navratovou hodnotu
-    error = DataTypes(&(*list));
+    error = DataTypes(list, slist);
 
     //vratim
     return error;
 }
 
-int DataType(TList *list)
+int DataType(TList *list, SList *slist)
 {
+  if(slist == NULL)
+  {
+    return 99;
+  }
     //pomocna promenna pro chybu
     int error;
 
@@ -826,21 +865,90 @@ int DataType(TList *list)
     {
         //v pripade validniho typu prepisu chybu na 0 (no error)
         error = 0;
+
+        SListInsertParam(slist, list->active->token.type);
+        if(IsDeclaredFunc(slist, slist->last->id_func) == 1)
+        {
+          error = IsDeclaredJump(slist, slist->last->id_func);
+
+          if(error != 3)
+          {
+            slist->active->params.active = slist->active->params.first;
+            for(int i = 0; i < slist->last->params.last->index - 1; i++)
+            {
+              if(slist->active->params.active->next == NULL)
+              {
+                return 5;
+              }
+              TListTokenNext(&slist->active->params);
+            }
+            if(slist->last->params.last->token.type != slist->active->params.active->token.type)
+            {
+              return 5;
+            }
+          }
+        }
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
 
     return error;
 }
 
-int Params(TList *list)
+int DataTypeReturn(TList *list, SList *slist)
+{
+  if(slist == NULL)
+  {
+    return 99;
+  }
+    //pomocna promenna pro chybu
+    int error;
+
+    //kontrola pro validni token
+    if(list->active->token.type == T_KW_INTEGER || list->active->token.type == T_KW_NUMBER
+    || list->active->token.type == T_KW_STRING || list->active->token.type == T_KW_NIL)
+    {
+        //v pripade validniho typu prepisu chybu na 0 (no error)
+        error = 0;
+
+        SListInsertReturn(slist, list->active->token.type);
+        if(IsDeclaredFunc(slist, slist->last->id_func) == 1)
+        {
+          error = IsDeclaredJump(slist, slist->last->id_func);
+
+          if(error != 3)
+          {
+            slist->active->returns.active = slist->active->returns.first;
+            for(int i = 0; i < slist->last->returns.last->index - 1; i++)
+            {
+              if(slist->active->returns.active->next == NULL)
+              {
+                return 5;
+              }
+              TListTokenNext(&slist->active->returns);
+            }
+            if(slist->last->returns.last->token.type != slist->active->returns.active->token.type)
+            {
+              return 5;
+            }
+          }
+        }
+    }
+
+    //posun aktivity v seznamu na dalsi prvek
+    error = TListTokenNext(list);
+
+    return error;
+}
+
+int Params(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro parametr a ulozim navratovou hodnotu
-    error = Param(&(*list));
+    error = Param(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -855,7 +963,7 @@ int Params(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -863,13 +971,13 @@ int Params(TList *list)
     }
 
     //provedu kontrolu pro parametry a ulozim navratovou hodnotu
-    error = Params(&(*list));
+    error = Params(list, slist);
 
     //vratim chybu
     return error;
 }
 
-int Param(TList *list)
+int Param(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -882,7 +990,7 @@ int Param(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -897,7 +1005,7 @@ int Param(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -905,13 +1013,13 @@ int Param(TList *list)
     }
 
     //provedu kontrolu pro datovy typ a ulozim navratovou hodnotu
-    error = DataType(&(*list));
+    error = DataType(list, slist);
 
     //vratim chybu
     return error;
 }
 
-int ReturnTypes(TList *list)
+int ReturnTypes(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -920,7 +1028,7 @@ int ReturnTypes(TList *list)
     if(list->active->token.type == T_COLON)
     {
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -928,7 +1036,7 @@ int ReturnTypes(TList *list)
         }
 
         //provedu kontrolu pro vraceny typ a ulozim navratovou hodnotu
-        error = ReturnType(&(*list));
+        error = ReturnType(list, slist);
 
         //vratim chybu
         return error;
@@ -940,13 +1048,13 @@ int ReturnTypes(TList *list)
     }
 }
 
-int ReturnType(TList *list)
+int ReturnType(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro datovy typ a ulozim navratovou hodnotu
-    error = DataType(&(*list));
+    error = DataTypeReturn(list, slist);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -958,7 +1066,7 @@ int ReturnType(TList *list)
     {
         //nasleduje dalsi vraceny typ
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -966,13 +1074,13 @@ int ReturnType(TList *list)
         }
 
         //rekurzivne provedu kontrolu pro vraceny typ a ulozim navratovou hodnotu
-        error = ReturnType(&(*list));
+        error = ReturnType(list, slist);
     }
 
     return error;
 }
 
-int Ids(TList *list)
+int Ids(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -985,7 +1093,7 @@ int Ids(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -996,7 +1104,7 @@ int Ids(TList *list)
     if(list->active->token.type == T_COMMA)
     {
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1004,20 +1112,20 @@ int Ids(TList *list)
         }
 
         //provedu kontrolu pro identifikatory a ulozim navratovou hodnotu
-        error = Ids(&(*list));
+        error = Ids(list, slist);
     }
 
     //vratim chybu
     return error;
 }
 
-int Exps(TList *list)
+int Exps(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
 
     //provedu kontrolu pro expresi a ulozim navratovou hodnotu
-    error = Exp(&(*list));
+    error = Exp(list, slist);
     if(error != 0)
     {
       //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1028,7 +1136,7 @@ int Exps(TList *list)
     if(list->active->token.type == T_COMMA)
     {
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1036,14 +1144,14 @@ int Exps(TList *list)
         }
 
         //provedu kontrolu pro exprese a ulozim navratovou hodnotu
-        error = Exps(&(*list));
+        error = Exps(list, slist);
     }
 
     //vratim chybu
     return error;
 }
 
-int Ids_Datatypes(TList *list)
+int Ids_Datatypes(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error;
@@ -1058,7 +1166,7 @@ int Ids_Datatypes(TList *list)
     }
 
     //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(&(*list));
+    error = TListTokenNext(list);
     if(error != 0)
     {
         //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1070,7 +1178,7 @@ int Ids_Datatypes(TList *list)
     {
         //nasleduje dalsi identifikator nebo datovy typ
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1078,14 +1186,14 @@ int Ids_Datatypes(TList *list)
         }
 
         //provedu kontrolu pro identifikatory nebo datove typy a ulozim navratovou hodnotu
-        error = Ids_Datatypes(&(*list));
+        error = Ids_Datatypes(list, slist);
     }
 
     //vratim chybu
     return error;
 }
 
-int Exps_Strings(TList *list)
+int Exps_Strings(TList *list, SList *slist)
 {
     //pomocna promenna pro chybu
     int error = 0;
@@ -1095,7 +1203,7 @@ int Exps_Strings(TList *list)
     {
         //nasledujici vyraz neni string -> musi byt exprese
         //provedu kontrolu pro expresi a ulozim navratovou hodnotu
-        error = Exp(&(*list));
+        error = Exp(list, slist);
         if(error != 0)
         {
           //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1105,7 +1213,7 @@ int Exps_Strings(TList *list)
     else
     {
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1118,7 +1226,7 @@ int Exps_Strings(TList *list)
     {
         //jeste nejseme na konci seznamu expresi a stringu
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             //v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
@@ -1126,187 +1234,22 @@ int Exps_Strings(TList *list)
         }
 
         //rekurzivne provedu kontrolu pro exprese nebo retezce a ulozim navratovou hodnotu
-        error = Exps_Strings(&(*list));
+        error = Exps_Strings(list, slist);
     }
 
     //vratim chybu
     return error;
 }
 
-/*-----JINE POMOCNE FUNKCE------*/
-
-void PrintToken(Token_type token)
-{
-    if(token == T_ID)
-    {
-        printf("ID");
-    }
-    else if(token == T_KW_DO)
-    {
-        printf("KW_DO");
-    }
-    else if(token == T_KW_ELSE)
-    {
-        printf("KW_ELSE");
-    }
-    else if(token == T_KW_END)
-    {
-        printf("KW_END");
-    }
-    else if(token == T_KW_FUNCTION)
-    {
-        printf("KW_FUNCTION");
-    }
-    else if(token == T_KW_GLOBAL)
-    {
-        printf("KW_GLOBAL");
-    }
-    else if(token == T_KW_IF)
-    {
-        printf("KW_IF");
-    }
-    else if(token == T_KW_LOCAL)
-    {
-        printf("KW_LOCAL");
-    }
-    else if(token == T_KW_NIL)
-    {
-        printf("KW_NIL");
-    }
-    else if(token == T_KW_INTEGER)
-    {
-        printf("KW_INTEGER");
-    }
-    else if(token == T_KW_NUMBER)
-    {
-        printf("KW_NUMBER");
-    }
-    else if(token == T_KW_REQUIRE)
-    {
-        printf("KW_REQUIRE");
-    }
-    else if(token == T_KW_RETURN)
-    {
-        printf("KW_RETURN");
-    }
-    else if(token == T_KW_STRING)
-    {
-        printf("KW_STRING");
-    }
-    else if(token == T_KW_THEN)
-    {
-        printf("KW_THEN");
-    }
-    else if(token == T_KW_WHILE)
-    {
-        printf("KW_WHILE");
-    }
-    else if(token == T_STRLEN)
-    {
-        printf("STRLEN");
-    }
-    else if(token == T_ADD)
-    {
-        printf("ADD");
-    }
-    else if(token == T_SUB)
-    {
-        printf("SUB");
-    }
-    else if(token == T_MUL)
-    {
-        printf("MUL");
-    }
-    else if(token == T_DIV_NUMBER)
-    {
-        printf("DIV_NUMBER");
-    }
-    else if(token == T_DIV_INTEGER)
-    {
-        printf("DIV_INTEGER");
-    }
-    else if(token == T_CONCATENATION)
-    {
-        printf("CONCATENATION");
-    }
-    else if(token == T_LT)
-    {
-        printf("LT");
-    }
-    else if(token == T_GT)
-    {
-        printf("GT");
-    }
-    else if(token == T_LET)
-    {
-        printf("LET");
-    }
-    else if(token == T_GET)
-    {
-        printf("GET");
-    }
-    else if(token == T_EQ)
-    {
-        printf("EQ");
-    }
-    else if(token == T_NEQ)
-    {
-        printf("NEQ");
-    }
-    else if(token == T_EOF)
-    {
-        printf("EOF");
-    }
-    else if(token == T_EOL)
-    {
-        printf("EOL");
-    }
-    else if(token == T_NUM_INTEGER)
-    {
-        printf("NUM_INTEGER");
-    }
-    else if(token == T_NUM_NUMBER)
-    {
-        printf("NUM_NUMBER");
-    }
-    else if(token == T_BRACKET_RIGHT)
-    {
-        printf("BRACKET_RIGHT");
-    }
-    else if(token == T_BRACKET_LEFT)
-    {
-        printf("BRACKET_LEFT");
-    }
-    else if(token == T_COLON)
-    {
-        printf("COLON");
-    }
-    else if(token == T_STRING)
-    {
-        printf("STRING");
-    }
-    else if(token == T_SETVALUE)
-    {
-        printf("SETVALUE");
-    }
-    else if(token == T_EMPTY)
-    {
-        printf("EMPTY");
-    }
-    else if(token == T_COMMA)
-    {
-        printf("COMMA");
-    }
-    else
-    {
-        printf("[TOKEN TYPE ERROR]");
-    }
-}
-
 /*-----DOCASNE POMOCNE FUNKCE-----*/
 
-int Exp(TList *list)
+int Exp(TList *list, SList *slist)
 {
+
+  if(slist == NULL)
+  {
+    return 99;
+  }
     int error;
 
     int line = list->active->token.line;
@@ -1314,7 +1257,7 @@ int Exp(TList *list)
     while(line == list->active->token.line)
     {
         //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(&(*list));
+        error = TListTokenNext(list);
         if(error != 0)
         {
             return error;
@@ -1323,8 +1266,12 @@ int Exp(TList *list)
     return 0;
 }
 
-int IsExp(TList *list)
+int IsExp(TList *list, SList *slist)
 {
+  if(slist == NULL)
+  {
+    return 99;
+  }
     int is = 0;
 
     //kontrola pro validni token

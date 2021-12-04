@@ -1042,7 +1042,7 @@ int TListDispose(TList *list)
   list->active = list->first;
   while(list->active != NULL)
   {
-    error =  TListDeleteActive(&(*list));
+    error =  TListDeleteActive(list);
     if(error != 0)
     {
         return error;
@@ -1080,4 +1080,172 @@ int GetTokenList(TList *list)
     }
   }
   return 0;
+}
+
+void PrintToken(Token_type token)
+{
+    if(token == T_ID)
+    {
+        printf("ID");
+    }
+    else if(token == T_KW_DO)
+    {
+        printf("KW_DO");
+    }
+    else if(token == T_KW_ELSE)
+    {
+        printf("KW_ELSE");
+    }
+    else if(token == T_KW_END)
+    {
+        printf("KW_END");
+    }
+    else if(token == T_KW_FUNCTION)
+    {
+        printf("KW_FUNCTION");
+    }
+    else if(token == T_KW_GLOBAL)
+    {
+        printf("KW_GLOBAL");
+    }
+    else if(token == T_KW_IF)
+    {
+        printf("KW_IF");
+    }
+    else if(token == T_KW_LOCAL)
+    {
+        printf("KW_LOCAL");
+    }
+    else if(token == T_KW_NIL)
+    {
+        printf("KW_NIL");
+    }
+    else if(token == T_KW_INTEGER)
+    {
+        printf("KW_INTEGER");
+    }
+    else if(token == T_KW_NUMBER)
+    {
+        printf("KW_NUMBER");
+    }
+    else if(token == T_KW_REQUIRE)
+    {
+        printf("KW_REQUIRE");
+    }
+    else if(token == T_KW_RETURN)
+    {
+        printf("KW_RETURN");
+    }
+    else if(token == T_KW_STRING)
+    {
+        printf("KW_STRING");
+    }
+    else if(token == T_KW_THEN)
+    {
+        printf("KW_THEN");
+    }
+    else if(token == T_KW_WHILE)
+    {
+        printf("KW_WHILE");
+    }
+    else if(token == T_STRLEN)
+    {
+        printf("STRLEN");
+    }
+    else if(token == T_ADD)
+    {
+        printf("ADD");
+    }
+    else if(token == T_SUB)
+    {
+        printf("SUB");
+    }
+    else if(token == T_MUL)
+    {
+        printf("MUL");
+    }
+    else if(token == T_DIV_NUMBER)
+    {
+        printf("DIV_NUMBER");
+    }
+    else if(token == T_DIV_INTEGER)
+    {
+        printf("DIV_INTEGER");
+    }
+    else if(token == T_CONCATENATION)
+    {
+        printf("CONCATENATION");
+    }
+    else if(token == T_LT)
+    {
+        printf("LT");
+    }
+    else if(token == T_GT)
+    {
+        printf("GT");
+    }
+    else if(token == T_LET)
+    {
+        printf("LET");
+    }
+    else if(token == T_GET)
+    {
+        printf("GET");
+    }
+    else if(token == T_EQ)
+    {
+        printf("EQ");
+    }
+    else if(token == T_NEQ)
+    {
+        printf("NEQ");
+    }
+    else if(token == T_EOF)
+    {
+        printf("EOF");
+    }
+    else if(token == T_EOL)
+    {
+        printf("EOL");
+    }
+    else if(token == T_NUM_INTEGER)
+    {
+        printf("NUM_INTEGER");
+    }
+    else if(token == T_NUM_NUMBER)
+    {
+        printf("NUM_NUMBER");
+    }
+    else if(token == T_BRACKET_RIGHT)
+    {
+        printf("BRACKET_RIGHT");
+    }
+    else if(token == T_BRACKET_LEFT)
+    {
+        printf("BRACKET_LEFT");
+    }
+    else if(token == T_COLON)
+    {
+        printf("COLON");
+    }
+    else if(token == T_STRING)
+    {
+        printf("STRING");
+    }
+    else if(token == T_SETVALUE)
+    {
+        printf("SETVALUE");
+    }
+    else if(token == T_EMPTY)
+    {
+        printf("EMPTY");
+    }
+    else if(token == T_COMMA)
+    {
+        printf("COMMA");
+    }
+    else
+    {
+        printf("[TOKEN TYPE ERROR]");
+    }
 }

@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "symtable.h"
 
 /*-----FUNKCE NA UROVNI CELEHO PROGRAMU-----*/
 
@@ -7,21 +7,21 @@
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Parse(TList *);
+int Parse(TList *, SList *);
 
 /**
  * @brief Funkce volana z Parse(), kontroluje hlavicku, telo a EOF programu (<program>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Program(TList *);
+int Program(TList *, SList *);
 
 /**
  * @brief Funkce volana z Program(), kontroluje syntax hlavniho tela programu (<main_body>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int MainBody(TList *);
+int MainBody(TList *, SList *);
 
 /*-----FUNKCE NA UROVNI HLAVNIHO TELA PROGRAMU-----*/
 
@@ -30,21 +30,21 @@ int MainBody(TList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DecFunction(TList *);
+int DecFunction(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro definici funkci (<def_function>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DefFunction(TList *);
+int DefFunction(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro volani funkci (<call_function>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int CallFunction(TList *);
+int CallFunction(TList *, SList *);
 
 /*-----FUNKCE NA UROVNI DEFINICE FUNKCE-----*/
 
@@ -53,7 +53,7 @@ int CallFunction(TList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int FceBody(TList *);
+int FceBody(TList *, SList *);
 
 /*-----FUNKCE NA UROVNI JEDNOTLIVYCH TEL FUNKCI-----*/
 
@@ -62,35 +62,35 @@ int FceBody(TList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DefVar(TList *);
+int DefVar(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro pripisovani hodnot (<assign>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Assign(TList *);
+int Assign(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro podminku (<cond>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Cond(TList *);
+int Cond(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro while cyklus (<cycle>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Cycle(TList *);
+int Cycle(TList *, SList *);
 
 /**
  * @brief Funkce kontroluje syntax pro vraceni z funkce (<return>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Return(TList *);
+int Return(TList *, SList *);
 
 /*-----POMOCNE FUNKCE PRO KONTROLU SYNTAXE-----*/
 
@@ -99,81 +99,73 @@ int Return(TList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DataTypes(TList *);
+int DataTypes(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu jednoto datatypu (<data_type>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DataType(TList *);
+int DataType(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice parametru (<params>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Params(TList *);
+int Params(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu jednoho parametru (<param>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Param(TList *);
+int Param(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice vracenych typu (<return_types>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int ReturnTypes(TList *);
+int ReturnTypes(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu jednoho vraceneho typu (<return_type>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int ReturnType(TList *);
+int ReturnType(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice identifikatotu (<ids>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids(TList *);
+int Ids(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice expresi
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Exps(TList *);
+int Exps(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice identifikatoru a datatypu (<ids_datatypes>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids_Datatypes(TList *);
+int Ids_Datatypes(TList *, SList *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice expresi a retezcu (<exps_strings>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Exps_Strings(TList *);
-
-/*-----JINE POMOCNE FUNKCE------*/
-
-/**
- * @brief Funkce pro printovani typu konkretniho tokenu
- * @param Token_type ktery chceme printovat
- */
-void PrintToken(Token_type);
+int Exps_Strings(TList *, SList *);
 
 /*-----DOCASNE POMOCNE FUNKCE-----*/
 
-int Exp(TList *);
+int Exp(TList *, SList *);
 
-int IsExp(TList *);
+int IsExp(TList *, SList *);
