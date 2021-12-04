@@ -64,9 +64,38 @@ int main()
         SListDispose(&slist);
         return error;
     }
-    else if(error != 0)
+    else if(error == 3)
     {
-      printf("ERROR %d", error);
+      printf("[SEMANTIC ERROR]");
+      printf(" Error %d : ", error);
+      printf("Not defined or redefinition of variable or function.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+    else if(error == 4)
+    {
+      printf("[SEMANTIC ERROR]");
+      printf(" Error %d : ", error);
+      printf("Error in assigning type.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+    else if(error == 5)
+    {
+      printf("[SEMANTIC ERROR]");
+      printf(" Error %d : ", error);
+      printf("Wrong number or type of parameters or return values.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+    else
+    {
+      printf("[INTERNAL ERROR]");
+      printf(" Error %d : ", error);
+      printf("Error not defined.\n");
       TListDispose(&list);
       SListDispose(&slist);
       return error;
