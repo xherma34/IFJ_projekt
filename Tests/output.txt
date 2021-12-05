@@ -1,1 +1,38 @@
-[SEMANTIC ERROR] Error 3 : Not defined or redefinition of variable or function.
+variable
+	name : b
+	type : KW_STRING
+variable
+	name : a
+	type : KW_INTEGER
+condition
+function :: def(1)
+	name : main
+	params (0) : 
+	returns (0) : 
+function :: def(0)
+	name : main
+	params (0) : 
+	returns (0) : 
+1----------
+variable
+	name : c
+	type : KW_NUMBER
+condition
+function :: def(1)
+	name : main
+	params (0) : 
+	returns (0) : 
+function :: def(0)
+	name : main
+	params (0) : 
+	returns (0) : 
+2----------
+function :: def(1)
+	name : main
+	params (0) : 
+	returns (0) : 
+function :: def(0)
+	name : main
+	params (0) : 
+	returns (0) : 
+Compilation succesfull!

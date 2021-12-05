@@ -99,14 +99,16 @@ int Return(TList *, SList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DataTypes(TList *, SList *);
+int DataTypes(TList *, SList *, int *, int);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu jednoto datatypu (<data_type>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int DataType(TList *, SList *);
+int DataType(TList *, SList *, bool);
+
+int DataTypeReturn(TList *, SList *, bool);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice parametru (<params>)
@@ -127,21 +129,21 @@ int Param(TList *, SList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int ReturnTypes(TList *, SList *);
+int ReturnTypes(TList *, SList *, bool);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu jednoho vraceneho typu (<return_type>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int ReturnType(TList *, SList *);
+int ReturnType(TList *, SList *, bool);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice identifikatotu (<ids>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids(TList *, SList *);
+int Ids(TList *, SList *, bool, int *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice expresi
@@ -155,14 +157,14 @@ int Exps(TList *, SList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids_Datatypes(TList *, SList *);
+int Ids_Datatypes(TList *, SList *, int *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice expresi a retezcu (<exps_strings>)
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Exps_Strings(TList *, SList *);
+int Exps_Strings(TList *, SList *, int);
 
 /*-----DOCASNE POMOCNE FUNKCE-----*/
 

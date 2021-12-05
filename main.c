@@ -91,7 +91,7 @@ int main()
       SListDispose(&slist);
       return error;
     }
-    else
+    else if(error != 0)
     {
       printf("[INTERNAL ERROR]");
       printf(" Error %d : ", error);

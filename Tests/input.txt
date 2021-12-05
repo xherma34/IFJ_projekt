@@ -2,8 +2,13 @@ require "ifj21"
 
 -- dec -> dec, def -> def, dec
 
-function foo(x:integer, y:number) : string
-end
+global main : function()
 
-function foo(x:integer, y:number) : string
+function main()
+	if a < b
+	then
+		local a,b : integer, string
+	else
+		local c : number
+	end
 end

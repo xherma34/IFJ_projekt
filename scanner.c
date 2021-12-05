@@ -896,20 +896,22 @@ Token GetNumber(DLList *list)
 {
     Token myToken;
     int len = list->length;
-    myToken.value.string = malloc(len + 1 * sizeof(char));
-    DLLnodePtr tmp= list->firstElement;
+    char new[len + 1];
+    DLLnodePtr tmp = list->firstElement;
     char *ptr;
 
     for(int i = 0; i < len; i++)
     {
-        myToken.value.string[i] = tmp->data;
+        new[i] = tmp->data;
         tmp = tmp->next;
     }
 
-    myToken.value.string[len] = '\0';
+    new[len] = '\0';
 
-    myToken.value.number = strtod(myToken.value.string, &ptr);
+    myToken.value.number = strtod(new, &ptr);
     myToken.type = T_NUM_NUMBER;
+
+	//free(myToken.value.string);
 
     DLL_dispose(&(*list));
 
