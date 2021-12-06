@@ -2,13 +2,11 @@ require "ifj21"
 
 -- dec -> dec, def -> def, dec
 
-global main : function()
+global main : function(string) : string
 
-function main()
-	if a < b
-	then
-		local a,b : integer, string
-	else
-		local c : number
-	end
+function main(x:string) : string
+
+	local a : integer
+	local b : string = "hello"
+	local c : string = "hello"
 end

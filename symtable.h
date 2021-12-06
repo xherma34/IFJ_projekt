@@ -26,6 +26,7 @@ typedef struct SNode{
 typedef struct{
   SNodePtr first;
   SNodePtr last;
+  SNodePtr lastFunc;
   SNodePtr active;
 }SList;
 
@@ -44,11 +45,14 @@ int SListDispose(SList *);
 int IsDeclaredFunc(SList *, Token *);
 int IsDeclaredJump(SList *, Token *);
 int IsDeclaredVar(SList *, Token *);
+int IsDeclaredVarInScope(SList *, Token *);
 int DeleteScope(SList *);
 
 int IsInteger(SList *, Token *);
 int IsNumber(SList *, Token *);
 int IsString(SList *, Token *);
 int IsNil(SList *, Token *);
+
+void LastFunc(SList *);
 
 void PrintSList(SList *);

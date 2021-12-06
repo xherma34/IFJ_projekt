@@ -1,38 +1,9 @@
-variable
-	name : b
-	type : KW_STRING
-variable
-	name : a
-	type : KW_INTEGER
-condition
 function :: def(1)
 	name : main
-	params (0) : 
-	returns (0) : 
+	params (1) : KW_STRING(1) 
+	returns (1) : KW_STRING(1) 
 function :: def(0)
 	name : main
-	params (0) : 
-	returns (0) : 
-1----------
-variable
-	name : c
-	type : KW_NUMBER
-condition
-function :: def(1)
-	name : main
-	params (0) : 
-	returns (0) : 
-function :: def(0)
-	name : main
-	params (0) : 
-	returns (0) : 
-2----------
-function :: def(1)
-	name : main
-	params (0) : 
-	returns (0) : 
-function :: def(0)
-	name : main
-	params (0) : 
-	returns (0) : 
+	params (1) : KW_STRING(1) 
+	returns (1) : KW_STRING(1) 
 Compilation succesfull!

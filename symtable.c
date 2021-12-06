@@ -10,6 +10,7 @@ int SListInit(SList *list)
   list->first = NULL;
   list->last = NULL;
   list->active = NULL;
+  list->lastFunc = NULL;
   return 0;
 }
 
@@ -174,9 +175,11 @@ int SListInsertParam(SList *list, Token_type tokentype)
   Token token;
   token.type = tokentype;
 
-  TListInsert(&list->last->params, token);
-  list->last->numParams ++;
-  list->last->params.last->index = list->last->numParams;
+	LastFunc(list);
+
+  TListInsert(&list->lastFunc->params, token);
+  list->lastFunc->numParams ++;
+  list->lastFunc->params.last->index = list->lastFunc->numParams;
 
   return 0;
 }
@@ -191,9 +194,11 @@ int SListInsertReturn(SList *list, Token_type tokentype)
   Token token;
   token.type = tokentype;
 
-  TListInsert(&list->last->returns, token);
-  list->last->numReturns ++;
-  list->last->returns.last->index = list->last->numReturns;
+  LastFunc(list);
+
+  TListInsert(&list->lastFunc->returns, token);
+  list->lastFunc->numReturns ++;
+  list->lastFunc->returns.last->index = list->lastFunc->numReturns;
 
   return 0;
 }
@@ -342,29 +347,26 @@ int IsDeclaredFunc(SList *list, Token *token)
 
 int IsDeclaredJump(SList *list, Token *token)
 {
-  if(list == NULL)
-  {
-    return 99;
-  }
+	if(list == NULL)
+	{
+		return 99;
+	}
 
-  if(token->type != T_ID)
-  {
-    return 99;
-  }
+	if(token->type != T_ID)
+	{
+		return 99;
+	}
 
-  if(list->first == NULL)
-  {
-    return 3;
-  }
+	if(list->first == NULL)
+	{
+		return 3;
+	}
 
-  char *str = token->value.string;
+	char *str = token->value.string;
 
-  list->active = list->last->prev;
+	LastFunc(list);
 
-  if(list->last->prev == NULL)
-  {
-    return 3;
-  }
+  	list->active = list->lastFunc->prev;
 
   while(1)
   {
@@ -428,6 +430,47 @@ int IsDeclaredVar(SList *list, Token *token)
     else
     {
       if(list->active == list->first)
+      {
+        return 3;
+      }
+    }
+    SListPrev(&(*list));
+  }
+
+  return 99;
+}
+
+int IsDeclaredVarInScope(SList *list, Token *token)
+{
+  if(list == NULL)
+  {
+    return 99;
+  }
+
+  if(token->type != T_ID)
+  {
+    return 99;
+  }
+
+  list->active = list->last;
+
+  while(1)
+  {
+    if(list->active->var == true)
+    {
+      if(list->active == list->first &&
+        strcmp(token->value.string, list->active->id_var->value.string) != 0)
+      {
+        return 3;
+      }
+      else if(strcmp(token->value.string, list->active->id_var->value.string) == 0)
+      {
+        return 0;
+      }
+    }
+    else
+    {
+      if(list->active == list->first || list->active->cond == true || list->active->cycle == true)
       {
         return 3;
       }
@@ -513,6 +556,15 @@ int IsNil(SList *list, Token *token)
     return 4;
   }
   return 3;
+}
+
+void LastFunc(SList *list)
+{
+	list->lastFunc = list->last;
+	while(list->lastFunc->func != true)
+	{
+		list->lastFunc = list->lastFunc->prev;
+	}
 }
 
 /*-------------------------------------------------------------*/

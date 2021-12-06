@@ -143,14 +143,14 @@ int ReturnType(TList *, SList *, bool);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids(TList *, SList *, bool, int *);
+int Ids(TList *, SList *, int *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice expresi
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Exps(TList *, SList *);
+int Exps(TList *, SList *, int, int *);
 
 /**
  * @brief Pomocna funkce pro kontrolu syntaxu vice identifikatoru a datatypu (<ids_datatypes>)
