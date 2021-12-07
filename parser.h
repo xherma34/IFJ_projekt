@@ -159,13 +159,6 @@ int Exps(TList *, SList *, int, int *);
  */
 int Ids_Datatypes(TList *, SList *, int *);
 
-/**
- * @brief Pomocna funkce pro kontrolu syntaxu vice expresi a retezcu (<exps_strings>)
- * @param TList ktery obsahuje vsechny tokeny vstupniho programu
- * @return Integer, vraci chybovou hodnotu
- */
-int Exps_Strings(TList *, SList *, int);
-
 /*-----DOCASNE POMOCNE FUNKCE-----*/
 
 int Exp(TList *, SList *);
