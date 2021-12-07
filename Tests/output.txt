@@ -1,11 +1,1 @@
-STRING
-STRING
-function :: def(1)
-	name : main
-	params (1) : KW_STRING(1) 
-	returns (1) : KW_STRING(1) 
-function :: def(0)
-	name : main
-	params (1) : KW_STRING(1) 
-	returns (1) : KW_STRING(1) 
-Compilation succesfull!
+[SEMANTIC ERROR] Error 4 on line 11: near token type 'KW_LOCAL'. Error in assigning type.

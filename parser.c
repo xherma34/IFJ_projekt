@@ -631,7 +631,11 @@ int DefVar(TList *list, SList *slist)
 	}
 	else if(type == T_NUM_INTEGER && slist->last->type != T_KW_INTEGER)
 	{
-		return 4;
+		if(slist->last->type != T_KW_NUMBER)
+		{
+			return 4;
+		}
+		return error;
 	}
 	else if(type == T_NUM_NUMBER && slist->last->type != T_KW_NUMBER)
 	{
@@ -678,8 +682,9 @@ int Assign(TList *list, SList *slist)
     error = Exps(list, slist, varCount, &commaCount);
 
 	//pokud se lisi pocet promennych a pocet pripisovanych hodnot vracim 7
-	if(varCount != commaCount)
+	if(varCount > commaCount)
 	{
+		printf("hovno");
 		return 7;
 	}
 
@@ -698,6 +703,7 @@ int Cond(TList *list, SList *slist)
     {
         return error;
     }
+
 
     //kontrola pro token T_KW_WHEN
     if(list->active->token.type != T_KW_THEN)
@@ -930,6 +936,10 @@ int Return(TList *list, SList *slist)
 			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
 		}
 		else if(type == T_KW_NIL && slist->lastFunc->returns.active->token.type == T_KW_NIL)
+		{
+			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+		}
+		else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
 		{
 			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
 		}
@@ -1348,11 +1358,6 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 {
     int error;
 
-	if(varCount < (*commaCount))
-	{
-		return 7;
-	}
-
 	Token_type type;
 	error = Exp(list, slist, &type);
 	if(error != 0)
@@ -1360,31 +1365,59 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 		return error;
 	}
 
-	slist->active = slist->last;
-	for(int i = 0; i < varCount - (*commaCount); i++)
+	TNodePtr tmp = list->active;
+
+	while(list->active->token.type != T_SETVALUE)
 	{
-		error = SListPrev(slist);
-		if(error != 0)
+		if(list->active->prev == NULL)
 		{
-			return error;
+			return 99;
 		}
+		TListTokenPrev(list);
 	}
+
+	if(list->active->prev == NULL)
+	{
+		return 99;
+	}
+	TListTokenPrev(list);
+
+	for(int i = 0; i < (varCount - *commaCount)*2; i++)
+	{
+		if(list->active->prev == NULL)
+		{
+			return 99;
+		}
+		TListTokenPrev(list);
+	}
+
+
+	error = IsDeclaredVar(slist, &list->active->token);
+	if(error > 1)
+	{
+		return 99;
+	}
+
+	list->active = tmp;
 
 	if(type == T_STRING && slist->active->type != T_KW_STRING)
 	{
-		return 0;
+		return 4;
 	}
 	else if(type == T_NUM_INTEGER && slist->active->type != T_KW_INTEGER)
 	{
-		return 0;
+		if(slist->active->type != T_KW_NUMBER)
+		{
+			return 4;
+		}
 	}
 	else if(type == T_NUM_NUMBER && slist->active->type != T_KW_NUMBER)
 	{
-		return 0;
+		return 4;
 	}
 	else if(type == T_KW_NIL && slist->active->type != T_KW_NIL)
 	{
-		return 0;
+		return 4;
 	}
 
 
@@ -1400,6 +1433,7 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 
         //provedu kontrolu pro exprese a ulozim navratovou hodnotu
 		(*commaCount)++;
+		printf("--%d\n", *commaCount);
         error = Exps(list, slist, varCount, commaCount);
     }
 

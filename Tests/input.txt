@@ -2,11 +2,13 @@ require "ifj21"
 
 -- dec -> dec, def -> def, dec
 
-global main : function(string) : string
+global main : function(string) : number
 
-function main(x:string) : string
+function main(x:string) : number
 
-	local a : integer
-	local b : string = "hello"
-	local c : string = "hello"
+	local a : integer = 5+5
+	local b : string = 5+5
+	local c : integer = 10
+	a,b,c = 5+10+12,10,12
+	return 5
 end
