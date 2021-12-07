@@ -1,4 +1,4 @@
-#include "symtable.h"
+#include "expression.h"
 
 /*-----FUNKCE NA UROVNI CELEHO PROGRAMU-----*/
 
@@ -158,9 +158,3 @@ int Exps(TList *, SList *, int, int *);
  * @return Integer, vraci chybovou hodnotu
  */
 int Ids_Datatypes(TList *, SList *, int *);
-
-/*-----DOCASNE POMOCNE FUNKCE-----*/
-
-int Exp(TList *, SList *);
-
-int IsExp(TList *, SList *);

@@ -1,0 +1,14 @@
+require "ifj21"
+
+function foo(x : string) : string
+	return x
+end
+
+
+function main()
+
+local foo : string = 10
+
+
+
+end

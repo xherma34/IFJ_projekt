@@ -1,0 +1,20 @@
+require "ifj21"
+
+function fce(y : integer) : string
+	return "ahoj"
+end
+
+function foo(x : integer, y : number)
+	fce(x)
+end
+
+
+function main()
+
+
+
+local x : integer = foo(5,0.5)
+
+
+
+end

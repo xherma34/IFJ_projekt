@@ -1,0 +1,20 @@
+require "ifj21"
+
+function main()
+
+local x : integer = 4
+while x>1
+do
+
+local var : integer = 10
+
+	if x > 6
+	then
+	local x : integer = 10
+	else
+	end
+local var : integer = 6
+end
+
+
+end

@@ -1,0 +1,17 @@
+
+require "ifj21"
+
+
+function main()
+
+local var : string = ""
+local y : integer = 5
+if 8/#"var" > y then
+else
+end
+
+--pohoda
+
+
+end
+main()

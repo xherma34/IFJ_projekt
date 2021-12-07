@@ -1,0 +1,13 @@
+require "ifj21"
+
+function main()
+
+
+local x : integer = 12
+local y : number = 12.25
+local x : string = "test"
+
+
+
+
+end

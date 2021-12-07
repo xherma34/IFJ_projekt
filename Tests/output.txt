@@ -1,3 +1,5 @@
+STRING
+STRING
 function :: def(1)
 	name : main
 	params (1) : KW_STRING(1) 

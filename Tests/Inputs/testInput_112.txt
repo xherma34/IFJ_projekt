@@ -1,0 +1,15 @@
+require "ifj21"
+
+function main()
+
+local x : number
+
+if x>5
+then
+	local var : integer = 4
+else
+	local var : integer = 4
+end
+local var : integer = 4
+
+end

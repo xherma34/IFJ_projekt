@@ -1,0 +1,16 @@
+require "ifj21"
+
+
+function foo(x : integer) : string
+return x
+end
+
+function main()
+
+
+
+foo("stringos")
+
+
+
+end

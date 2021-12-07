@@ -1,0 +1,17 @@
+require "ifj21"
+
+
+function main()
+
+local x : nil
+local y : integer
+
+if x > y then
+else
+end
+
+--chyba 8
+
+
+end
+main()

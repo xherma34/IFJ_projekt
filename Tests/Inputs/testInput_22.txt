@@ -5,7 +5,7 @@ function main()
 
 
 
-local var : integer = 0000002,147,483,647
+local var : integer = 25
 
 
 

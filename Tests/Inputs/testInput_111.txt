@@ -1,0 +1,14 @@
+require "ifj21"
+
+function foo(y : integer) : integer
+y = 1+1
+return y
+
+end
+function main()
+
+
+local x : integer = foo()
+
+
+end

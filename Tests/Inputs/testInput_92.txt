@@ -3,6 +3,11 @@ require "ifj21"
 function main()
 
 
+local b : integer = 12
+local x : integer = 12
+local y : integer = 12
+local pes : integer = 12
+
 
 
 
@@ -15,7 +20,7 @@ if pes > 2
 then
 return
 else
-return x+y, 0
+return
 end
 end
 else

@@ -1,27 +1,22 @@
 require "ifj21"
 
-function main()
+function main() : integer, integer
+	local f : integer
+	local pes : integer
+	local x : integer
+	local y : integer
 
 
-
-
-If 5>f then
-while pes == 2 do
-write("pes")
-if pes > 2 then
-return
-else
-return x+y, 0
-end
-end
-else
-return
-end
-
-
-
-
-
-
-
+	if 5>f then
+		while pes == 2 do
+			write("pes")
+			if pes > 2 then
+				return 5, 8
+			else
+				return x+y, 0
+			end
+		end
+	else
+		return
+	end
 end

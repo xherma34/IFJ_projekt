@@ -179,6 +179,7 @@ int DecFunction(TList *list, SList *slist)
         return error;
     }
 
+
     //kontrola pro token T_BRACKET_LEFT
     if(list->active->token.type != T_BRACKET_LEFT)
     {
@@ -595,9 +596,15 @@ int DefVar(TList *list, SList *slist)
         return error;
     }
 
-	//Token_type type;
+	Token_type type;
 
-	error = Exp(list, slist/*, &type*/);
+	error = TListTokenNext(list);
+	if(error != 0)
+	{
+		return error;
+	}
+
+	error = Exp(list, slist, &type);
 	if(error != 0)
 	{
 		if(error == 1)
@@ -610,11 +617,34 @@ int DefVar(TList *list, SList *slist)
 		}
 	}
 
-	/*if(type != slist->last->type)
+	// if(type != slist->last->type)
+	// {
+	// 	return 4;
+	// }
+	// else
+	// {
+	// 	return error;
+	// }
+	if(type == T_STRING && slist->last->type != T_KW_STRING)
 	{
 		return 4;
-	}*/
-    return error;
+	}
+	else if(type == T_NUM_INTEGER && slist->last->type != T_KW_INTEGER)
+	{
+		return 4;
+	}
+	else if(type == T_NUM_NUMBER && slist->last->type != T_KW_NUMBER)
+	{
+		return 4;
+	}
+	else if(type == T_KW_NIL && slist->last->type != T_KW_NIL)
+	{
+		return 4;
+	}
+	else
+	{
+		return error;
+	}
 }
 
 int Assign(TList *list, SList *slist)
@@ -660,8 +690,10 @@ int Cond(TList *list, SList *slist)
 {
     int error;
 
+	Token_type type;
+
     //provedu kontrolu pro expresi
-    error = Exp(list, slist);
+    error = Exp(list, slist, &type);
     if(error != 0)
     {
         return error;
@@ -773,8 +805,10 @@ int Cycle(TList *list, SList *slist)
 {
     int error;
 
+	Token_type type;
+
     //provedu kontrolu pro expresi a ulozim navratovou hodnotu
-    error = Exp(list, slist);
+    error = Exp(list, slist, &type);
     if(error != 0)
     {
         return error;
@@ -845,29 +879,22 @@ int Return(TList *list, SList *slist)
 	//nastavim aktivni prvek na posledni
 	slist->active = slist->last;
 
-	//dokud aktivni prvek nebude funkce posouvam doleva
-    while(slist->active->id_func == NULL)
+	error = LastFunc(slist);
+	if(error != 0)
 	{
-		if(slist->active->prev != NULL)
-		{
-			SListPrev(slist);
-		}
-		else
-		{
-			return 99;
-		}
+		return error;
 	}
 
 	int expCount = 0; //pocet expresi
-	//Token_type type;
+	Token_type type;
 
 	//nastaveni aktivniho prvku v returns na prvni prvek
-	slist->active->returns.active = slist->active->returns.first;
+	slist->lastFunc->returns.active = slist->lastFunc->returns.first;
 
 	while(1)
 	{
 		//zavolam funkci pro zpracovani exprese
-		error = Exp(list, slist/*, &type*/);
+		error = Exp(list, slist, &type);
 		if(error != 0)
 		{
 			if(error == 1) //chybejici exprese
@@ -884,19 +911,32 @@ int Return(TList *list, SList *slist)
 		expCount++; //prictu pocet expresi
 
 		//pocet expresi je vetsi nez pocet vracenych hodnot
-		if(expCount > slist->active->numReturns)
+		if(expCount > slist->lastFunc->numReturns)
 		{
 			return 5;
 		}
 
-		/*if(slist->active->returns->active->type == type)
+
+		if(type == T_STRING && slist->lastFunc->returns.active->token.type == T_KW_STRING)
 		{
-			slist->active->returns->active = slist->active->returns->active->next;
+			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+		}
+		else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_INTEGER)
+		{
+			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+		}
+		else if(type == T_NUM_NUMBER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
+		{
+			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+		}
+		else if(type == T_KW_NIL && slist->lastFunc->returns.active->token.type == T_KW_NIL)
+		{
+			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
 		}
 		else
 		{
 			return 5;
-		}*/
+		}
 
 		//kontrola zda nasleduje dalsi exprese
 		if(list->active->token.type != T_COMMA)
@@ -929,32 +969,32 @@ int DataTypes(TList *list, SList *slist, int *commaCount, int varCount)
 		return error;
 	}
 
-	//posunu aktivitu v seznamu na predchozi prvek
-	error =TListTokenPrev(list);
-	if(error != 0)
-	{
-		return error;
-	}
-
-	//nastavim aktivitu na posledni prvek v seznamu
-	slist->active = slist->last;
-	if(varCount < *commaCount)
-	{
-		return 7;
-	}
-	for(int i = 0; i < varCount - (*commaCount); i++)
-	{
-		SListPrev(slist);
-	}
-	slist->active->type = list->active->token.type;
-	slist->active = slist->last;
-
-	//posunu aktivitu v seznamu na dalsi prvek
-	error = TListTokenNext(list);
-	if(error != 0)
-	{
-		return error;
-	}
+	// //posunu aktivitu v seznamu na predchozi prvek
+	// error =TListTokenPrev(list);
+	// if(error != 0)
+	// {
+	// 	return error;
+	// }
+	//
+	// //nastavim aktivitu na posledni prvek v seznamu
+	// slist->active = slist->last;
+	// if(varCount < *commaCount)
+	// {
+	// 	return 7;
+	// }
+	// for(int i = 0; i < varCount - (*commaCount); i++)
+	// {
+	// 	SListPrev(slist);
+	// }
+	// slist->active->type = list->active->token.type;
+	// slist->active = slist->last;
+	//
+	// //posunu aktivitu v seznamu na dalsi prvek
+	// error = TListTokenNext(list);
+	// if(error != 0)
+	// {
+	// 	return error;
+	// }
 
     //pokud uz nenasleduje dalsi datovy typ
     if(list->active->token.type != T_COMMA)
@@ -1313,11 +1353,10 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 		return 7;
 	}
 
-	//Token_type type;
-	error = Exp(list, slist/*, &type*/);
+	Token_type type;
+	error = Exp(list, slist, &type);
 	if(error != 0)
 	{
-		//v pripade nekorektniho provedeni fce vracime jeji navratovou hodnotu
 		return error;
 	}
 
@@ -1331,10 +1370,22 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 		}
 	}
 
-	// if(slist->active->type != type)
-	// {
-	// 	return 0;
-	// }
+	if(type == T_STRING && slist->active->type != T_KW_STRING)
+	{
+		return 0;
+	}
+	else if(type == T_NUM_INTEGER && slist->active->type != T_KW_INTEGER)
+	{
+		return 0;
+	}
+	else if(type == T_NUM_NUMBER && slist->active->type != T_KW_NUMBER)
+	{
+		return 0;
+	}
+	else if(type == T_KW_NIL && slist->active->type != T_KW_NIL)
+	{
+		return 0;
+	}
 
 
     //kontrola pro token T_COMMA
@@ -1454,48 +1505,4 @@ int Ids_Datatypes(TList *list, SList *slist, int *commaCount)
     }
 
     return error;
-}
-
-/*-----DOCASNE POMOCNE FUNKCE-----*/
-
-int Exp(TList *list, SList *slist)
-{
-
-  if(slist == NULL)
-  {
-    return 99;
-  }
-    int error;
-
-    int line = list->active->token.line;
-
-    while(line == list->active->token.line)
-    {
-        //posun aktivity v seznamu na dalsi prvek
-        error = TListTokenNext(list);
-        if(error != 0)
-        {
-            return error;
-        }
-    }
-    return 0;
-}
-
-int IsExp(TList *list, SList *slist)
-{
-  if(slist == NULL)
-  {
-    return 99;
-  }
-    int is = 0;
-
-    //kontrola pro validni token
-    if(list->active->token.type == T_ID || list->active->token.type == T_NUM_INTEGER ||
-    list->active->token.type == T_NUM_NUMBER || list->active->token.type == T_STRING ||
-    list->active->token.type == T_STRLEN || list->active->token.type == T_KW_NIL)
-    {
-        is = 1;
-    }
-
-    return is;
 }

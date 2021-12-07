@@ -2,17 +2,10 @@ require "ifj21"
 
 function main()
 
+local x : integer = 12
 
-
-If 5>x then
-write("ahoj")
+if 5>x then
+	write("ahoj")
 end
-
-
-
-
-
-
-
 
 end

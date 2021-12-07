@@ -66,12 +66,28 @@ typedef union
     char *string;
 } Token_value;
 
+typedef enum
+{
+	I_ADD_SUB,
+	I_MUL_DIV,
+	I_REL_OPERATOR,
+	I_CONCATENATION,
+	I_STRLEN,
+	I_L_BRACKET,
+	I_R_BRACKET,
+	I_ID,
+	I_DOLLAR,
+	I_E,
+	I_STOP
+} PTindex;
+
 
 typedef struct
 {
     Token_type type;
     Token_value value;
     int line;
+	PTindex PTindex;
 } Token;
 
 typedef struct TNode

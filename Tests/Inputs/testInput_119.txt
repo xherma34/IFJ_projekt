@@ -1,0 +1,18 @@
+
+require "ifj21"
+
+
+function main()
+
+local x : number = 10.5
+local y : number = 11.4
+
+if x//y then
+else
+end
+
+--chyba 6
+
+
+end
+main()

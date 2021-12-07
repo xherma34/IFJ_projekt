@@ -1,0 +1,17 @@
+
+require "ifj21"
+
+
+function main()
+
+local x : integer
+local y : number
+
+while x/y > 5 do
+end
+
+--pohoda
+
+
+end
+main()

@@ -5,7 +5,7 @@ function main()
 
 
 
-local var : number = 2.3E-309
+local var : number = 2.3E-3
 
 
 

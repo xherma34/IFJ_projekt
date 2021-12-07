@@ -1,0 +1,14 @@
+require "ifj21"
+
+function main()
+
+
+
+if x>5
+then
+else
+end
+
+
+
+end

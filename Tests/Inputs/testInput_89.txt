@@ -3,10 +3,11 @@ require "ifj21"
 function main()
 
 
+local x : integer = 12
 
 
 
-If 5>x then
+if 5>x then
 write("ahoj")
 else
 var = var + 1

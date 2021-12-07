@@ -3,10 +3,15 @@ require "ifj21"
 function main()
 
 
+local a : integer = 12
+local pes : integer = 12
+local y : integer = 12
 
 
 
-If 5>a then
+
+
+if 5>a then
 while pes == 2
 write("pes")
 		if pes > 2 then

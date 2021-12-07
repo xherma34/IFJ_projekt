@@ -2,14 +2,6 @@ require "ifj21"
 
 function main()
 
-
-
-
 local var : number = -10.5
-
-
-
-
-
 
 end

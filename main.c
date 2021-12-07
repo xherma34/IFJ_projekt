@@ -117,7 +117,7 @@ int main()
       return error;
     }
 
-    PrintSList(&slist);
+    //PrintSList(&slist);
 
     printf("Compilation succesfull!\n");
 

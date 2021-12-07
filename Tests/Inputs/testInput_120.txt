@@ -1,0 +1,17 @@
+
+require "ifj21"
+
+
+function main()
+
+local var : string
+
+if var > 10 then
+else
+end
+
+--chyba 6
+
+
+end
+main()

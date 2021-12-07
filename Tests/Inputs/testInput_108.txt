@@ -1,0 +1,16 @@
+require "ifj21"
+
+global foo : function(string, integer) : string, integer
+
+
+function foo(x : string, y : integer) : string, integer
+	local z : integer = 0
+	return x, z, y
+end
+
+
+function main()
+	local x : string = "hello"
+	local y : integer = 69
+	foo(x,y)
+end

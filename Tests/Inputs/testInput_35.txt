@@ -6,7 +6,7 @@ function main()
 
 
 
-local var, var2, var3, var4 : integer, string, number
+local var : integer
 
 
 

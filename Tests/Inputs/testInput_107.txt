@@ -1,0 +1,19 @@
+require "ifj21"
+
+function foo() : integer, integer
+local x : integer = 5
+local y : integer = 2
+return x,y
+end
+
+function main()
+
+
+local var : integer
+local x : integer
+local y : integer
+var, x, y = foo()
+
+
+
+end

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
 TARGET = ifj21
-SOURCES = scanner.o DLList.o parser.o symtable.o
+SOURCES = scanner.o DLList.o parser.o symtable.o TStack.o expression.o
 TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
@@ -16,7 +16,7 @@ REF_OUTPUT = $(testDir)/Referals/referOutput_$(n).txt
 
 .PHONY: all test debug clean
 
-all: scanner.o DLList.o parser.o symtable.o
+all: DLList.o scanner.o symtable.o TStack.o expression.o parser.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 run:
@@ -25,14 +25,20 @@ run:
 scanner.o: scanner.c scanner.h
 	$(s)$(CC) $(CFLAGS) -c scanner.c
 
+expression.o: expression.c expression.h
+	$(s)$(CC) $(CFLAGS) -c expression.c
+
+TStack.o: TStack.c TStack.h
+	$(s)$(CC) $(CFLAGS) -c TStack.c
+
 DLList.o: DLList.c DLList.h
 	$(s)$(CC) $(CFLAGS) -c DLList.c
 
 parser.o: parser.c parser.h
-	$(s)@$(CC) $(CFLAGS) -c parser.c
+	$(s)$(CC) $(CFLAGS) -c parser.c
 
 symtable.o: symtable.c symtable.h
-	$(s)@$(CC) $(CFLAGS) -c symtable.c
+	$(s)$(CC) $(CFLAGS) -c symtable.c
 
 tests:
 	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
@@ -51,3 +57,4 @@ clean:
 	$(s)rm -rf $(testDir)/Outputs/
 	$(s)rm -f $(testDir)/*.o
 	$(s)rm -f $(currDir)/ifj21
+	$(s)rm -f $(currDir)/a.out

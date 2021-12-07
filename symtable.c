@@ -311,12 +311,12 @@ int SListDeleteLast(SList *list)
 		//uvolneni alokovanych seznamu
 		if(list->last->func == true)
 		{
-		  TListDispose(&list->last->params);
+		  error = TListDispose(&list->last->params);
 		  if(error != 0)
 		  {
 			  return error;
 		  }
-		  TListDispose(&list->last->returns);
+		  error = TListDispose(&list->last->returns);
 		  if(error != 0)
 		  {
 			  return error;
@@ -331,12 +331,12 @@ int SListDeleteLast(SList *list)
 		//uvolneni alokovanych seznamu
 		if(list->last->func == true)
 		{
-			TListDispose(&list->last->params);
+			error = TListDispose(&list->last->params);
   		  if(error != 0)
   		  {
   			  return error;
   		  }
-  		  TListDispose(&list->last->returns);
+  		  	error = TListDispose(&list->last->returns);
   		  if(error != 0)
   		  {
   			  return error;
@@ -466,8 +466,14 @@ int IsDeclaredJump(SList *list, Token *token)
 		return error;
 	}
 
+	if(list->lastFunc->prev == NULL)
+	{
+		return 3;
+	}
+
 	//aktivni prvek se nastavi doleva od posledni funkce
 	list->active = list->lastFunc->prev;
+
 
 	while(1)
 	{

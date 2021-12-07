@@ -7,7 +7,7 @@ function main()
 
 
 
-local var : integer = 3147483640
+local var : integer = 3147
 
 
 

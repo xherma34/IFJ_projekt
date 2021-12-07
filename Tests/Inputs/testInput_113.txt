@@ -1,0 +1,48 @@
+require "ifj21"
+
+global foo : function(string, number) : number
+
+function foo(x : string, y : number) : number
+
+local pes : number = 10.555
+	if y > 10 then
+		y,x = 10.2, "Hell"
+	else
+		local x : string = "Hello"
+	end
+	return pes
+end
+
+function main()
+
+local x : number
+
+if x>5
+then
+	local var : integer = 4
+else
+	local var : integer = 4
+end
+
+foo(10,8)
+
+local p : number = foo("ahoj",5.5)
+
+local y : integer
+local z : integer
+
+while y == 0
+do
+local z : integer = 1
+	if z > 10 then
+		local z : number = 10.5
+	else
+		local z : string = "adasda"
+		local y : nil
+	end
+local y : integer = 10
+end
+
+
+end
+main()

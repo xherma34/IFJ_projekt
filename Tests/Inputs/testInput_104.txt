@@ -1,0 +1,17 @@
+require "ifj21"
+
+function main()
+
+
+local var : string = 10
+local var2 : string = 10.5
+
+local x : integer = 10.5
+local y : integer = "ahoj"
+
+local z : number = "ifj"
+
+
+
+
+end

@@ -1,20 +1,14 @@
 require "ifj21"
 
-function main()
+function main() : integer
 
+local x : integer = 12
+local y : integer = 12
 
-
-
-
-If 5==x then
-return x + y,
+if 5==x then
+	return x + y,
 else
-return
+	return x
 end
-
-
-
-
-
 
 end

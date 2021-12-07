@@ -1,0 +1,18 @@
+require "ifj21"
+
+
+function foo(y : string) : integer
+	local foo : integer = 5
+	return foo
+end
+
+
+
+function main()
+
+
+local var : integer = foo("Hello")
+
+
+
+end

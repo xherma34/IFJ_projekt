@@ -6,11 +6,11 @@ function main()
 
 
 
-local var : integer
-local var : number
-local var : string
-local var : nil
-local var, var2, var3 : integer
+local var1 : integer
+local var2 : number
+local var3 : string
+local var4 : nil
+local var5 : integer
 
 
 

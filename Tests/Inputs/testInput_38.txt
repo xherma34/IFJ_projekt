@@ -2,19 +2,12 @@ require "ifj21"
 
 function main()
 
+	local x : integer
 
-
-
-
-If 5>x then
-write("ahoj")
-else
-var = var + 1
-end
-
-
-
-
-
-
+	if 5>x then
+		write("ahoj")
+	else
+		local var : integer
+		var = var + 1
+	end
 end

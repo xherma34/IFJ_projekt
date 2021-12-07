@@ -1,20 +1,12 @@
 require "ifj21"
 
 function main()
+	local x : integer
+	local y : integer
 
-
-
-
-If 5==x then
-return x + y
-else
-return
-end
-
-
-
-
-
-
-
+	if 5==x then
+		return
+	else
+		return
+	end
 end
