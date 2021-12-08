@@ -1090,166 +1090,166 @@ void PrintToken(Token_type token)
 {
     if(token == T_ID)
     {
-        printf("ID");
+        fprintf(stderr, "ID");
     }
     else if(token == T_KW_DO)
     {
-        printf("KW_DO");
+        fprintf(stderr, "KW_DO");
     }
     else if(token == T_KW_ELSE)
     {
-        printf("KW_ELSE");
+        fprintf(stderr, "KW_ELSE");
     }
     else if(token == T_KW_END)
     {
-        printf("KW_END");
+        fprintf(stderr, "KW_END");
     }
     else if(token == T_KW_FUNCTION)
     {
-        printf("KW_FUNCTION");
+        fprintf(stderr, "KW_FUNCTION");
     }
     else if(token == T_KW_GLOBAL)
     {
-        printf("KW_GLOBAL");
+        fprintf(stderr, "KW_GLOBAL");
     }
     else if(token == T_KW_IF)
     {
-        printf("KW_IF");
+        fprintf(stderr, "KW_IF");
     }
     else if(token == T_KW_LOCAL)
     {
-        printf("KW_LOCAL");
+        fprintf(stderr, "KW_LOCAL");
     }
     else if(token == T_KW_NIL)
     {
-        printf("KW_NIL");
+        fprintf(stderr, "KW_NIL");
     }
     else if(token == T_KW_INTEGER)
     {
-        printf("KW_INTEGER");
+        fprintf(stderr, "KW_INTEGER");
     }
     else if(token == T_KW_NUMBER)
     {
-        printf("KW_NUMBER");
+        fprintf(stderr, "KW_NUMBER");
     }
     else if(token == T_KW_REQUIRE)
     {
-        printf("KW_REQUIRE");
+        fprintf(stderr, "KW_REQUIRE");
     }
     else if(token == T_KW_RETURN)
     {
-        printf("KW_RETURN");
+        fprintf(stderr, "KW_RETURN");
     }
     else if(token == T_KW_STRING)
     {
-        printf("KW_STRING");
+        fprintf(stderr, "KW_STRING");
     }
     else if(token == T_KW_THEN)
     {
-        printf("KW_THEN");
+        fprintf(stderr, "KW_THEN");
     }
     else if(token == T_KW_WHILE)
     {
-        printf("KW_WHILE");
+        fprintf(stderr, "KW_WHILE");
     }
     else if(token == T_STRLEN)
     {
-        printf("STRLEN");
+        fprintf(stderr, "STRLEN");
     }
     else if(token == T_ADD)
     {
-        printf("ADD");
+        fprintf(stderr, "ADD");
     }
     else if(token == T_SUB)
     {
-        printf("SUB");
+        fprintf(stderr, "SUB");
     }
     else if(token == T_MUL)
     {
-        printf("MUL");
+        fprintf(stderr, "MUL");
     }
     else if(token == T_DIV_NUMBER)
     {
-        printf("DIV_NUMBER");
+        fprintf(stderr, "DIV_NUMBER");
     }
     else if(token == T_DIV_INTEGER)
     {
-        printf("DIV_INTEGER");
+        fprintf(stderr, "DIV_INTEGER");
     }
     else if(token == T_CONCATENATION)
     {
-        printf("CONCATENATION");
+        fprintf(stderr, "CONCATENATION");
     }
     else if(token == T_LT)
     {
-        printf("LT");
+        fprintf(stderr, "LT");
     }
     else if(token == T_GT)
     {
-        printf("GT");
+        fprintf(stderr, "GT");
     }
     else if(token == T_LET)
     {
-        printf("LET");
+        fprintf(stderr, "LET");
     }
     else if(token == T_GET)
     {
-        printf("GET");
+        fprintf(stderr, "GET");
     }
     else if(token == T_EQ)
     {
-        printf("EQ");
+        fprintf(stderr, "EQ");
     }
     else if(token == T_NEQ)
     {
-        printf("NEQ");
+        fprintf(stderr, "NEQ");
     }
     else if(token == T_EOF)
     {
-        printf("EOF");
+        fprintf(stderr, "EOF");
     }
     else if(token == T_EOL)
     {
-        printf("EOL");
+        fprintf(stderr, "EOL");
     }
     else if(token == T_NUM_INTEGER)
     {
-        printf("NUM_INTEGER");
+        fprintf(stderr, "NUM_INTEGER");
     }
     else if(token == T_NUM_NUMBER)
     {
-        printf("NUM_NUMBER");
+        fprintf(stderr, "NUM_NUMBER");
     }
     else if(token == T_BRACKET_RIGHT)
     {
-        printf("BRACKET_RIGHT");
+        fprintf(stderr, "BRACKET_RIGHT");
     }
     else if(token == T_BRACKET_LEFT)
     {
-        printf("BRACKET_LEFT");
+        fprintf(stderr, "BRACKET_LEFT");
     }
     else if(token == T_COLON)
     {
-        printf("COLON");
+        fprintf(stderr, "COLON");
     }
     else if(token == T_STRING)
     {
-        printf("STRING");
+        fprintf(stderr, "STRING");
     }
     else if(token == T_SETVALUE)
     {
-        printf("SETVALUE");
+        fprintf(stderr, "SETVALUE");
     }
     else if(token == T_EMPTY)
     {
-        printf("EMPTY");
+        fprintf(stderr, "EMPTY");
     }
     else if(token == T_COMMA)
     {
-        printf("COMMA");
+        fprintf(stderr, "COMMA");
     }
     else
     {
-        printf("[TOKEN TYPE ERROR]");
+        fprintf(stderr, "[TOKEN TYPE ERROR]");
     }
 }

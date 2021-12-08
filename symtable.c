@@ -844,7 +844,7 @@ void PrintSList(SList *list)
 
   if(list->last == NULL)
   {
-    printf("empty list\n");
+    fprintf(stderr, "empty list\n");
   }
 
   list->active = list->last;
@@ -853,46 +853,46 @@ void PrintSList(SList *list)
   {
     if(list->active->func == true)
     {
-      printf("function :: def(%d)\n", list->active->def_func);
-      printf("\tname : %s\n", list->active->id_func->value.string);
-      printf("\tparams (%d) : ", list->active->numParams);
+      fprintf(stderr, "function :: def(%d)\n", list->active->def_func);
+      fprintf(stderr, "\tname : %s\n", list->active->id_func->value.string);
+      fprintf(stderr, "\tparams (%d) : ", list->active->numParams);
       list->active->params.active = list->active->params.first;
       while(list->active->params.active != NULL)
       {
         PrintToken(list->active->params.active->token.type);
-        printf("(%d) ", list->active->params.active->index);
+        fprintf(stderr, "(%d) ", list->active->params.active->index);
         TListTokenNext(&list->active->params);
       }
-      printf("\n");
-      printf("\treturns (%d) : ", list->active->numReturns);
+      fprintf(stderr, "\n");
+      fprintf(stderr, "\treturns (%d) : ", list->active->numReturns);
       list->active->returns.active = list->active->returns.first;
       while(list->active->returns.active != NULL)
       {
         PrintToken(list->active->returns.active->token.type);
-        printf("(%d) ", list->active->returns.active->index);
+        fprintf(stderr, "(%d) ", list->active->returns.active->index);
         TListTokenNext(&list->active->returns);
       }
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     else if(list->active->var == true)
     {
-      printf("variable\n");
-      printf("\tname : %s\n", list->active->id_var->value.string);
-      printf("\ttype : ");
+      fprintf(stderr, "variable\n");
+      fprintf(stderr, "\tname : %s\n", list->active->id_var->value.string);
+      fprintf(stderr, "\ttype : ");
       PrintToken(list->active->type);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     else if(list->active->cond == true)
     {
-      printf("condition\n");
+      fprintf(stderr, "condition\n");
     }
     else if(list->active->cycle == true)
     {
-      printf("cycle\n");
+      fprintf(stderr, "cycle\n");
     }
     else
     {
-      printf("error\n");
+      fprintf(stderr, "error\n");
     }
     SListPrev(&(*list));
   }

@@ -9,7 +9,6 @@ CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
 TARGET = ifj21
 SOURCES = scanner.o DLList.o parser.o symtable.o TStack.o expression.o
-TESTSOURCES = $(SOURCES) $(testDir)/test.c
 
 currDir:=$(PWD)
 testDir:=$(currDir)/Tests
@@ -49,13 +48,11 @@ symtable.o: symtable.c symtable.h
 
 tests:
 	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
-	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)bash $(currDir)/Tests/Scripts/test.sh
 
 clean:
 	$(s)rm -f $(SOURCES)
 	$(s)rm -f $(currDir)/*.o
 	$(s)rm -rf $(testDir)/Outputs/
-	$(s)rm -f $(testDir)/*.o
 	$(s)rm -f $(currDir)/ifj21
 	$(s)rm -f $(currDir)/a.out
