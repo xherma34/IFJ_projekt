@@ -110,63 +110,63 @@ int SListDispose(SList *);
 /**
  * @brief Funkce pro urceni deklarace nebo definice funkce
  * @param SList ve kterem hledame deklarovanou nebo definovanou funkci
- * @return Error
+ * @return 0 -> je deklarovana, 1 -> je i definovana, 3 -> neni deklarovana, other -> chyba
  */
 int IsDeclaredFunc(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni deklarace nebo definice funkce s preskocenim posledni funkce
  * @param SList ve kterem hledame deklarovanou nebo definovanou funkci
- * @return Error
+ * @return 0 -> je deklarovana, 1 -> je i definovana, 3 -> neni deklarovana, other -> chyba
  */
 int IsDeclaredJump(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni definice promenne
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je deklarovana, 3 -> neni deklarovana, other -> chyba
  */
 int IsDeclaredVar(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni definice promenne v aktualnim scopu
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je deklarovana, 3 -> neni deklarovana, other -> chyba
  */
 int IsDeclaredVarInScope(SList *, Token *);
 
 /**
  * @brief Funkce pro smazani aktualniho scopu
  * @param SList ve kterem mazeme aktualni scope
- * @return Token vcetne typu a hodnoty
+ * @return Error
  */
 int DeleteScope(SList *);
 
 /**
  * @brief Funkce pro urceni definice promenne jako integer
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je integer, 3 -> neni deklarovana, 4 -> neni integer other -> chyba
  */
 int IsInteger(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni definice promenne jako number
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je number, 3 -> neni deklarovana, 4 -> neni number other -> chyba
  */
 int IsNumber(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni definice promenne jako string
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je string, 3 -> neni deklarovana, 4 -> neni string other -> chyba
  */
 int IsString(SList *, Token *);
 
 /**
  * @brief Funkce pro urceni definice promenne jako nil
  * @param SList ve kterem hledame definovanou promennou
- * @return Error
+ * @return 0 -> je nil, 3 -> neni deklarovana, 4 -> neni nil other -> chyba
  */
 int IsNil(SList *, Token *);
 
@@ -180,12 +180,11 @@ int LastFunc(SList *);
 /**
  * @brief Funkce ktera porovna dva nody navzajem
  * @params SNodePtr nody ktere porovnavam
- * @return 0 -> jsou stejne, 1 -> nejsou stejne, 2 -> rozdil v returns
- * other -> chyba
+ * @return 0 -> jsou stejne, 1 -> nejsou stejne, 2 -> rozdil v returns, other -> chyba
  */
 int IsClone(SNodePtr, SNodePtr);
 
-/*-----DOCASNE FUNKCE-----*/
+/*-----POMOCNE FUNKCE-----*/
 
 /**
  * @brief Funkce pro tisk celeho seznamu symbolu
