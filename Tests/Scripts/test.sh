@@ -21,7 +21,7 @@ do
     then
       $PWD/Tests/test.o  < $PWD/Tests/Inputs/testInput_$i.txt > $PWD/Tests/Outputs/testOutput_$i.txt
     else
-      $PWD/ifj21  < $PWD/Tests/Inputs/testInput_$i.txt > $PWD/Tests/Outputs/testOutput_$i.txt
+      $PWD/ifj21  < $PWD/Tests/Inputs/testInput_$i.txt 2> $PWD/Tests/Outputs/testOutput_$i.txt
     fi
     diff -us  $PWD/Tests/Outputs/testOutput_$i.txt $PWD/Tests/Referals/referOutput_$i.txt
   echo

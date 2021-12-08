@@ -8,8 +8,8 @@ int main()
     error = TListInit(&list);
     if(error == 99)
     {
-        printf("[INTERNAL ERROR]");
-        printf(" Error %d\n", error);
+        fprintf(stderr, "[INTERNAL ERROR]");
+        fprintf(stderr, " Error %d\n", error);
         TListDispose(&list);
         return error;
     }
@@ -18,8 +18,8 @@ int main()
     error = SListInit(&slist);
     if(error == 99)
     {
-        printf("[INTERNAL ERROR]");
-        printf(" Error %d\n", error);
+        fprintf(stderr, "[INTERNAL ERROR]");
+        fprintf(stderr, " Error %d\n", error);
         TListDispose(&list);
         SListDispose(&slist);
         return error;
@@ -28,16 +28,16 @@ int main()
     error = GetTokenList(&list);
     if(error == 99)
     {
-        printf("[INTERNAL ERROR]");
-        printf(" Error %d\n", error);
+        fprintf(stderr, "[INTERNAL ERROR]");
+        fprintf(stderr, " Error %d\n", error);
         TListDispose(&list);
         SListDispose(&slist);
         return error;
     }
     else if(error == 1)
     {
-        printf("[LEXICAL ERROR]");
-        printf(" Error %d\n", error);
+        fprintf(stderr, "[LEXICAL ERROR]");
+        fprintf(stderr, " Error %d\n", error);
         TListDispose(&list);
         SListDispose(&slist);
         return error;
@@ -46,72 +46,124 @@ int main()
     error = Parse(&list, &slist);
     if(error == 99)
     {
-        printf("[INTERNAL ERROR]");
-        printf(" Error %d\n", error);
+        fprintf(stderr, "[INTERNAL ERROR]");
+        fprintf(stderr, " Error %d\n", error);
         TListDispose(&list);
         SListDispose(&slist);
         return error;
     }
     else if(error == 2)
     {
-        printf("[SYNTAX ERROR]");
-        printf(" Error %d", error);
-        printf(" on line %d:", list.active->token.line);
-        printf(" near token type '");
+        fprintf(stderr, "[SYNTAX ERROR]");
+        fprintf(stderr, " Error %d", error);
+        fprintf(stderr, " on line %d:", list.active->token.line);
+        fprintf(stderr, " near token type '");
         PrintToken(list.active->token.type);
-        printf("'\n");
+        fprintf(stderr, "'\n");
         TListDispose(&list);
         SListDispose(&slist);
         return error;
     }
     else if(error == 3)
     {
-      printf("[SEMANTIC ERROR]");
-	  printf(" Error %d", error);
-	  printf(" on line %d:", list.active->token.line);
-	  printf(" near token type '");
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
 	  PrintToken(list.active->token.type);
-	  printf("'. ");
-      printf("Not defined or redefinition of variable or function.\n");
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Not defined or redefinition of variable or function.\n");
       TListDispose(&list);
       SListDispose(&slist);
       return error;
     }
     else if(error == 4)
     {
-      printf("[SEMANTIC ERROR]");
-	  printf(" Error %d", error);
-	  printf(" on line %d:", list.active->token.line);
-	  printf(" near token type '");
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
 	  PrintToken(list.active->token.type);
-	  printf("'. ");
-      printf("Error in assigning type.\n");
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Error in assigning type.\n");
       TListDispose(&list);
       SListDispose(&slist);
       return error;
     }
     else if(error == 5)
     {
-      printf("[SEMANTIC ERROR]");
-	  printf(" Error %d", error);
-	  printf(" on line %d:", list.active->token.line);
-	  printf(" near token type '");
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
 	  PrintToken(list.active->token.type);
-	  printf("'. ");
-      printf("Wrong number or type of parameters or return values.\n");
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Wrong number or type of parameters or return values.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+	else if(error == 6)
+    {
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
+	  PrintToken(list.active->token.type);
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Error in type compatibility in arithmetic operation.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+	else if(error == 7)
+    {
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
+	  PrintToken(list.active->token.type);
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Not defined semantic error.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+	else if(error == 8)
+    {
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
+	  PrintToken(list.active->token.type);
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Error in unexpected operation with nil.\n");
+      TListDispose(&list);
+      SListDispose(&slist);
+      return error;
+    }
+	else if(error == 9)
+    {
+      fprintf(stderr, "[SEMANTIC ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
+	  PrintToken(list.active->token.type);
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Error in division with zero.\n");
       TListDispose(&list);
       SListDispose(&slist);
       return error;
     }
     else if(error != 0)
     {
-      printf("[INTERNAL ERROR]");
-	  printf(" Error %d", error);
-	  printf(" on line %d:", list.active->token.line);
-	  printf(" near token type '");
+      fprintf(stderr, "[INTERNAL ERROR]");
+	  fprintf(stderr, " Error %d", error);
+	  fprintf(stderr, " on line %d:", list.active->token.line);
+	  fprintf(stderr, " near token type '");
 	  PrintToken(list.active->token.type);
-	  printf("'. ");
-      printf("Error not defined.\n");
+	  fprintf(stderr, "'. ");
+      fprintf(stderr, "Error not defined.\n");
       TListDispose(&list);
       SListDispose(&slist);
       return error;
@@ -119,7 +171,7 @@ int main()
 
     //PrintSList(&slist);
 
-    printf("Compilation succesfull!\n");
+    fprintf(stderr, "Compilation successful!\n");
 
     TListDispose(&list);
     SListDispose(&slist);
