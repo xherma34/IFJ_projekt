@@ -1,0 +1,95 @@
+Gramatika
+/*
+* Pomocná gramatika k parseru
+* Projekt: ifj21
+*
+* Autoři:
+*	Jan Zdeněk (xzdene01)
+*	Alexander Sila (xsilaa00)
+*	Pavel Heřmann (xherma34)
+*	Maxim Plička (xplick04)
+*
+*/
+-----------------------------
+LEGENDA:
+ID -> konkrétní identifikátor
+EXP -> konkrétní expression
+STRING, INTEGER, NUMBER, NIL -> konkrétně napsaný výraz daného datového typu
+-----------------------------
+//cely program//
+<program> -> require "ifj21" <main_body> EOF
+
+<main_body> -> /*eps*/
+<main_body> -> global<dec_function><main_body>
+<main_body> -> function<def_function><main_body>
+<main_body> -> ID<call_function><main_body>
+
+//hlavni telo programu//
+<dec_function> -> ID:function(<data_types>)<return_types>
+
+<def_function> -> ID(<params>)<return_types><fce_body>end
+
+<call_function> -> (<ids_datatypes>)
+
+//definice funkce//
+<fce_body> -> /*eps*/
+<fce_body> -> local<def_var><fce_body>
+<fce_body> -> <assign><fce_body>
+<fce_body> -> if<cond><fce_body>
+<fce_body> -> while<cycle><fce_body>
+<fce_body> -> ID<call_function><fce_body>
+<fce_body> -> return<return><fce_body>
+
+//tela jednotlivych funkci//
+<def_var> -> ID:<data_type>
+<def_var> -> ID:<data_types>=EXPS
+<def_var> -> ID:<data_types>=<call_function>
+
+<assign> -> <ids>=<exps>
+<assign> -> <ids>=<call_function>
+
+
+<cond> -> EXPthen<fce_body>else<fce_body>end
+
+<cycle> -> EXPdo<fce_body>end
+
+<return> -> /*eps*/
+<return> -> <exps_strings>
+<return> -> <call_function>
+
+//pomocne//
+<data_types> -> /*eps*/
+<data_types> -> <data_type>,<data_types>
+<data_types> -> <data_type>
+
+<data_type> -> integer
+<data_type> -> number
+<data_type> -> string
+<data_type> -> nil
+
+<params> -> /*eps*/
+<params> -> <param>,<params>
+<params> -> <param>
+<param> -> ID:<data_type>
+
+<return_types> -> /*eps*/
+<return_types> -> : <return_type>
+
+<return_type> -> <data_type>
+<return_type> -> <data_type>,<return_type>
+
+<ids> -> ID
+<ids> -> ID,<ids>
+
+<exps> -> EXP
+<exps> -> EXP,<exps>
+
+<ids_datatypes> -> ID
+<ids_datatypes> -> STRING
+<ids_datatypes> -> NUMBER
+<ids_datatypes> -> INTEGER
+<ids_datatypes> -> NIL
+<ids_datatypes> -> STRING,<ids_datatypes>
+<ids_datatypes> -> NUMBER,<ids_datatypes>
+<ids_datatypes> -> INTEGER,<ids_datatypes>
+<ids_datatypes> -> NIL,<ids_datatypes>
