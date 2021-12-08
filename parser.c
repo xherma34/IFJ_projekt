@@ -105,7 +105,7 @@ int MainBody(TList *list, SList *slist)
             return error;
         }
         //provedu kontrolu pro volani funkce a ulozim navratovou hodnotu
-        error = CallFunction(list, slist);
+        error = CallFunction(list, slist, 0);
     }
 
     //pokud jsem nasel chybu nebo jsem na konci hlavniho tela
@@ -366,9 +366,62 @@ int DefFunction(TList *list, SList *slist)
     return error;
 }
 
-int CallFunction(TList *list, SList *slist)
+int CallFunction(TList *list, SList *slist, int varCount)
 {
     int error;
+
+	error = SListInsertFunc(slist, false, &list->active->prev->token);
+	if(error != 0)
+	{
+		return error;
+	}
+
+	if(varCount > 0)
+	{
+		TNodePtr tmp_active_list = list->active;
+
+		for(int i = 0; i < (varCount * 2); i++)
+		{
+			error = TListTokenPrev(list);
+			if(error != 0)
+			{
+				return error;
+			}
+		}
+
+		//PrintToken(list->active->token.type);
+
+		for(int i = 0; i < varCount; i++)
+		{
+			error = IsDeclaredVar(slist, &list->active->token);
+			if(error != 0)
+			{
+				return error;
+			}
+
+			SListInsertReturn(slist,slist->active->type);
+			error = TListTokenNext(list);
+			if(error != 0)
+			{
+				return error;
+			}
+			error = TListTokenNext(list);
+			if(error != 0)
+			{
+				return error;
+			}
+		}
+
+		list->active = tmp_active_list->next;
+	}
+
+	if(IsDeclaredJump(slist, &list->active->prev->token) > 1)
+	{
+		printf("hovno\n");
+		return 3;
+	}
+
+	SNodePtr tmp = slist->active;
 
     //kontrola pro token T_BRACKET_LEFT
     if(list->active->token.type != T_BRACKET_LEFT)
@@ -388,13 +441,29 @@ int CallFunction(TList *list, SList *slist)
     if(list->active->token.type != T_BRACKET_RIGHT)
     {
         //volani funkce obsahuje parametry
-		int commaCount = 0;
-        error = Ids_Datatypes(list, slist, &commaCount);
+        error = Ids_Datatypes(list, slist);
         if(error != 0)
         {
             return error;
         }
+
     }
+
+	error = IsClone(slist->last, tmp);
+	if(error == 1)
+	{
+		return 5;
+	}
+	else if(error == 2 && varCount > 0)
+	{
+		return 5;
+	}
+	else if(error > 2)
+	{
+		return error;
+	}
+
+	SListDeleteLast(slist);
 
     //kontrola pro token T_BRACKET_RIGHT
     if(list->active->token.type != T_BRACKET_RIGHT)
@@ -475,7 +544,7 @@ int FceBody(TList *list, SList *slist)
         if(list->active->token.type == T_BRACKET_LEFT)
         {
             //jedna se o volani funkce
-            error = CallFunction(list, slist);
+            error = CallFunction(list, slist, 0);
         }
         else
         {
@@ -670,12 +739,19 @@ int Assign(TList *list, SList *slist)
         return 2;
     }
 
-    //posun aktivity v seznamu na dalsi prvek
-    error = TListTokenNext(list);
-    if(error != 0)
-    {
-        return error;
-    }
+	//posun aktivity v seznamu na dalsi prvek
+	error = TListTokenNext(list);
+	if(error != 0)
+	{
+		return error;
+	}
+
+	if(list->active->next->token.type == T_BRACKET_LEFT)
+	{
+		error = CallFunction(list, slist, varCount + 1);
+
+		return error;
+	}
 
 	//kontrola expresi, posilam pocet promennych -1 a pocet pripisovanych hodnot -1
 	int commaCount = 0;
@@ -684,7 +760,6 @@ int Assign(TList *list, SList *slist)
 	//pokud se lisi pocet promennych a pocet pripisovanych hodnot vracim 7
 	if(varCount > commaCount)
 	{
-		printf("hovno");
 		return 7;
 	}
 
@@ -1440,7 +1515,7 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
     return error;
 }
 
-int Ids_Datatypes(TList *list, SList *slist, int *commaCount)
+int Ids_Datatypes(TList *list, SList *slist)
 {
     int error;
 
@@ -1453,67 +1528,53 @@ int Ids_Datatypes(TList *list, SList *slist, int *commaCount)
         return 2;
     }
 
-	// //
-	// slist->active->params.active = slist->active->params.first;
-	// for(int i = 0; i < *commaCount; i++)
-	// {
-	// 	TListTokenNext(&slist->active->params);
-	// }
-	//
-	// if(list->active->token.type == T_NUM_INTEGER && slist->active->params.active->token.type != T_KW_INTEGER)
-	// {
-	// 	return 5;
-	// }
-	// else if(list->active->token.type == T_STRING && slist->active->params.active->token.type != T_KW_STRING)
-	// {
-	// 	return 5;
-	// }
-	// else if(list->active->token.type == T_NUM_NUMBER && slist->active->params.active->token.type != T_KW_NUMBER)
-	// {
-	// 	return 5;
-	// }
-	// else if(list->active->token.type == T_KW_NIL && slist->active->params.active->token.type != T_KW_NIL)
-	// {
-	// 	return 5;
-	// }
-	// else if(list->active->token.type == T_ID)
-	// {
-	// 	if(IsDeclaredVar(slist, &list->active->token) != 0)
-	// 	{
-	// 		return 3;
-	// 	}
-	// 	else
-	// 	{
-	// 		if(IsInteger(slist, &list->active->token) == 0)
-	// 		{
-	// 			if(slist->active->params.active->token.type != T_KW_INTEGER)
-	// 			{
-	// 				return 5;
-	// 			}
-	// 		}
-	// 		else if(IsNumber(slist, &list->active->token) == 0)
-	// 		{
-	// 			if(slist->active->params.active->token.type != T_KW_NUMBER)
-	// 			{
-	// 				return 5;
-	// 			}
-	// 		}
-	// 		else if(IsString(slist, &list->active->token) == 0)
-	// 		{
-	// 			if(slist->active->params.active->token.type != T_KW_STRING)
-	// 			{
-	// 				return 5;
-	// 			}
-	// 		}
-	// 		else if(IsNil(slist, &list->active->token) == 0)
-	// 		{
-	// 			if(slist->active->params.active->token.type != T_KW_NIL)
-	// 			{
-	// 				return 5;
-	// 			}
-	// 		}
-	// 	}
-	// }
+	if(list->active->token.type == T_STRING)
+	{
+		SListInsertParam(slist, T_KW_STRING);
+	}
+	else if(list->active->token.type == T_NUM_INTEGER)
+	{
+		SListInsertParam(slist, T_KW_INTEGER);
+	}
+	else if(list->active->token.type == T_NUM_NUMBER)
+	{
+		SListInsertParam(slist, T_KW_NUMBER);
+	}
+	else if(list->active->token.type == T_KW_NIL)
+	{
+		SListInsertParam(slist, T_KW_NIL);
+	}
+	else if(list->active->token.type == T_ID)
+	{
+		error = IsInteger(slist, &list->active->token);
+		if(error == 0)
+		{
+			SListInsertParam(slist, T_KW_INTEGER);
+		}
+		else if(error == 3)
+		{
+			return error;
+		}
+
+		error = IsNumber(slist, &list->active->token);
+		if(error == 0)
+		{
+			SListInsertParam(slist, T_KW_NUMBER);
+		}
+
+		error = IsString(slist, &list->active->token);
+		if(error == 0)
+		{
+			SListInsertParam(slist, T_KW_STRING);
+		}
+
+		error = IsNil(slist, &list->active->token);
+		if(error == 0)
+		{
+			SListInsertParam(slist, T_KW_NIL);
+		}
+
+	}
 
 	//posun aktivity v seznamu na dalsi prvek
     error = TListTokenNext(list);
@@ -1525,7 +1586,6 @@ int Ids_Datatypes(TList *list, SList *slist, int *commaCount)
     //kontrola pro token T_COMMA
     if(list->active->token.type == T_COMMA)
     {
-		(*commaCount)++;
         //nasleduje dalsi identifikator nebo datovy typ
         //posun aktivity v seznamu na dalsi prvek
         error = TListTokenNext(list);
@@ -1535,7 +1595,7 @@ int Ids_Datatypes(TList *list, SList *slist, int *commaCount)
         }
 
         //rekurzivne provedu kontrolu pro identifikatory nebo datove typy a ulozim navratovou hodnotu
-        error = Ids_Datatypes(list, slist, commaCount);
+        error = Ids_Datatypes(list, slist);
     }
 
     return error;

@@ -44,7 +44,7 @@ int DefFunction(TList *, SList *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int CallFunction(TList *, SList *);
+int CallFunction(TList *, SList *, int);
 
 /*-----FUNKCE NA UROVNI DEFINICE FUNKCE-----*/
 
@@ -157,4 +157,4 @@ int Exps(TList *, SList *, int, int *);
  * @param TList ktery obsahuje vsechny tokeny vstupniho programu
  * @return Integer, vraci chybovou hodnotu
  */
-int Ids_Datatypes(TList *, SList *, int *);
+int Ids_Datatypes(TList *, SList *);

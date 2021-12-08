@@ -4,11 +4,32 @@ require "ifj21"
 
 global main : function(string) : number
 
-function main(x:string) : number
+global foo : function()
+global foo1 : function(integer,number,string)
+global foo2 : function() : integer,number,string
+global foo3 : function(integer,number,string) : integer,number,string
+global foo4 : function(integer,integer,integer) : string,string
+global foo5 : function(integer,number,string, integer, number,integer,nil) : nil,integer,nil
 
-	local a : integer = 5+5
-	local b : string = 5+5
-	local c : integer = 10
-	a,b,c = 5+10+12,10,12
-	return 5
+--foo(5,5.5,"hello")
+
+function main(x:string) : number
+	local a : integer
+	local b : integer
+	local c : number
+	local d : number
+	local e : string
+	local f : string
+	local g : nil
+	local h : nil
+	local i : integer
+	local j : integer
+	local k : integer
+
+	foo()
+	foo1(b,d,f)
+	a,c,e = foo2()
+	a,d,f = foo3(a,c,e)
+	e,e = foo4(a,b,a)
+	g,c,h = foo5(a,c,e,a,b,a,h)
 end

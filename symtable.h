@@ -177,6 +177,14 @@ int IsNil(SList *, Token *);
  */
 int LastFunc(SList *);
 
+/**
+ * @brief Funkce ktera porovna dva nody navzajem
+ * @params SNodePtr nody ktere porovnavam
+ * @return 0 -> jsou stejne, 1 -> nejsou stejne, 2 -> rozdil v returns
+ * other -> chyba
+ */
+int IsClone(SNodePtr, SNodePtr);
+
 /*-----DOCASNE FUNKCE-----*/
 
 /**

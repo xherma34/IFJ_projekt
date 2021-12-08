@@ -744,6 +744,84 @@ int LastFunc(SList *list)
 	return 0;
 }
 
+int IsClone(SNodePtr node1, SNodePtr node2)
+{
+	if(node1 == NULL || node2 == NULL)
+	{
+		return 99;
+	}
+
+	if(node1->func == true)
+	{
+		if(node2->func == false)
+		{
+			return 1;
+		}
+
+		if(node1->numParams != node2->numParams)
+		{
+			return 1;
+		}
+
+		node1->params.active = node1->params.first;
+		node2->params.active = node2->params.first;
+		for(int i = 0; i < node1->numParams; i++)
+		{
+			if(node1->params.active->token.type != node2->params.active->token.type)
+			{
+				if(node1->params.active->token.type == T_KW_INTEGER &&
+					node2->params.active->token.type == T_KW_NUMBER)
+				{
+					node1->params.active = node1->params.active->next;
+					node2->params.active = node2->params.active->next;
+				}
+				else
+				{
+					return 1;
+				}
+			}
+			else
+			{
+				node1->params.active = node1->params.active->next;
+				node2->params.active = node2->params.active->next;
+			}
+		}
+
+		if(node1->numReturns != node2->numReturns)
+		{
+			return 2;
+		}
+
+		node1->returns.active = node1->returns.first;
+		node2->returns.active = node2->returns.first;
+		for(int i = 0; i < node1->numReturns; i++)
+		{
+			if(node1->returns.active->token.type != node2->returns.active->token.type)
+			{
+				if(node2->returns.active->token.type == T_KW_INTEGER &&
+					node1->returns.active->token.type == T_KW_NUMBER)
+				{
+					node1->returns.active = node1->returns.active->next;
+					node2->returns.active = node2->returns.active->next;
+				}
+				else
+				{
+					return 2;
+				}
+			}
+			else
+			{
+				node1->returns.active = node1->returns.active->next;
+				node2->returns.active = node2->returns.active->next;
+			}
+		}
+
+		return 0;
+	}
+
+	return 0;
+}
+
 /*------------DOCASNE FUNKCE------------------------------------------*/
 
 void PrintSList(SList *list)
