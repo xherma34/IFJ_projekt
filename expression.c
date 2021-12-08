@@ -24,13 +24,13 @@ void getIndex(TNodePtr node, SList *slist)
 {
 	switch (node->token.type) {
 		case T_ID :
+			//Kontroluji zda neni t_id funkce, pokud ano nastavuji I_DOLLAR -> zbytek se vyresi sam v exp funkci
 			if(!IsDeclaredFunc(slist, &node->token)) node->token.PTindex = I_DOLLAR;
 			//Pokud nactu operand na operand, vracim jen prvni expression a 0
 			else if((node->prev->token.PTindex == I_ID ||
-		node->prev->token.PTindex == I_R_BRACKET) &&
+			node->prev->token.PTindex == I_R_BRACKET) &&
 			node->prev != NULL)
 			{
-				//Poresit case, kdy pri ...= a a = a + b, jestli se to pred assign bude zpracovavat v EXP funkci
 				node->token.PTindex = I_DOLLAR;
 			}
 			//Vse ostatni
@@ -98,6 +98,7 @@ void getIndex(TNodePtr node, SList *slist)
 
 int getIndexValue(Token *token)
 {
+	//vraci pozici radku/sloupce v tabulce
 	switch (token->PTindex) {
 		case I_ADD_SUB:
 			return 0;
@@ -168,6 +169,7 @@ PTRule getRule(int cnt, Token *token1, Token *token2, Token *token3)
 	//E -> E + E atd.
 	else if(cnt == 3)
 	{
+		//E -> (E)
 		if(token1->type == T_BRACKET_RIGHT && token2->PTindex == I_E && token3->type == T_BRACKET_LEFT)
 		{
 			return E_BRACKETS;
@@ -407,7 +409,7 @@ return 0;
 
 int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type, SList *slist)
 {
-	//dodelat print,
+	//Pomocne promenne
 	bool string_correct = false;
 	bool num_correct = false;
 	bool string_correct_id = false;
@@ -419,7 +421,7 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 	case E_ADD_E:
 	case E_SUB_E:
 	case E_MUL_E:
-
+		//Osetreni spatneho typu u aretmicke operace
 		if(t1->type == T_STRING)
 		{
 			return 6;
@@ -428,12 +430,13 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		{
 			return 8;
 		}
+		//Pokud je number, musi byt i finalni typ pro print number
 		else if(t1->type == T_NUM_NUMBER)
 		{
 			*final_type = T_NUM_NUMBER;
 		}
 
-
+		//Osetreni spatneho typu u aretmicke operace
 		if(t3->type == T_STRING)
 		{
 			return 6;
@@ -442,11 +445,12 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		{
 			return 8;
 		}
+		//Pokud je number, musi byt i finalni typ pro print number
 		else if(t3->type == T_NUM_NUMBER)
 		{
 			*final_type = T_NUM_NUMBER;
 		}
-
+		//Pokud se neprenastavil final type znamena to, ze final type bude int
 		if(*final_type != T_NUM_NUMBER)
 		{
 			*final_type = T_NUM_INTEGER;
@@ -454,45 +458,68 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		return 0;
 
 	case E_DIV_INT_E:
-
-
-		if(t3->type == T_STRING)
+		//Osetreni spatneho typu u aretmicke operace
+		if(t3->type == T_STRING || t1->type == T_STRING)
 		{
 			return 6;
 		}
-		else if(t3->type == T_KW_NIL)
+		else if(t3->type == T_KW_NIL || t1->type == T_KW_NIL)
 		{
 			return 8;
 		}
-		else if(t3->type == T_NUM_NUMBER)
-		{
-			*final_type = T_NUM_NUMBER;
-		}
-
-
-		if(t1->type == T_STRING)
+		else if(t3->type == T_NUM_NUMBER || t1->type == T_NUM_NUMBER)
 		{
 			return 6;
 		}
-		else if(t1->type == T_KW_NIL)
-		{
-			return 8;
-		}
-		else if(t1->type == T_NUM_NUMBER)
+
+		//Kontrola ze nedochazi k deleni nulou
+		if(t1->type == T_NUM_INTEGER)
 		{
 			if(t1->value.number == 0) return 9;
 		}
-		else if(t1->type == T_NUM_INTEGER)
-		{
-			if(t1->value.integer == 0) return 9;
-		}
-
+		//Final type musi byt integer
 		*final_type = T_NUM_INTEGER;
 		return 0;
 
+		//PRED ODEVZDANIM PREKONTROLOVAT KTERA VARIANTA JE SPRAVNE A SMAZAT TU NESPRAVNOU
+		//RESENI PAVEL
+		// if(t3->type == T_STRING)
+		// {
+		// 	return 6;
+		// }
+		// else if(t3->type == T_KW_NIL)
+		// {
+		// 	return 8;
+		// }
+		// else if(t3->type == T_NUM_NUMBER)
+		// {
+		// 	*final_type = T_NUM_NUMBER;
+		// }
+
+
+		// if(t1->type == T_STRING)
+		// {
+		// 	return 6;
+		// }
+		// else if(t1->type == T_KW_NIL)
+		// {
+		// 	return 8;
+		// }
+		// else if(t1->type == T_NUM_NUMBER)
+		// {
+		// 	if(t1->value.number == 0) return 9;
+		// }
+		// else if(t1->type == T_NUM_INTEGER)
+		// {
+		// 	if(t1->value.integer == 0) return 9;
+		// }
+
+		// *final_type = T_NUM_INTEGER;
+		// return 0;
+
 	case E_DIV_NUM_E:
 
-
+		//Osetreni spatneho typu u aretmicke operace
 		if(t3->type == T_STRING)
 		{
 			return 6;
@@ -501,11 +528,13 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		{
 			return 8;
 		}
+		//Pokud prisel number, final type bude number
 		else if(t3->type == T_NUM_NUMBER)
 		{
 			*final_type = T_NUM_NUMBER;
 		}
 
+		//Osetreni spatneho typu u aretmicke operace
 		if(t1->type == T_STRING)
 		{
 			return 6;
@@ -514,6 +543,7 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		{
 			return 8;
 		}
+		//Kontrola ze nemuzu delit nulou
 		else if(t1->type == T_NUM_NUMBER)
 		{
 			if(t1->value.number == 0) return 9;
@@ -527,9 +557,12 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		return 0;
 
 	case E_CONCATENATION_E:
+		//Final type po redukci konkatenace bude vzdy string
 		*final_type = T_STRING;
 
+		//Pokud je t1 string, nastavim string correct na true
 		if(t1->type == T_STRING) string_correct = true;
+		//Kontrola typu v konkatenaci
 		else if(t1->type == T_KW_NIL) return 8;
 
 		if(string_correct)
@@ -537,6 +570,7 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 			if(t3->type == T_STRING) return 0;
 			else if(t3->type == T_KW_NIL) return 8;
 		}
+		//Pokud jsem nacetl cokoliv krom string/nil vracim 6 -> spatna prace s datovym typem u operace
 		return 6;
 
 	case E_LT_E:
@@ -544,42 +578,53 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 	case E_LET_E:
 	case E_GET_E:
 		*final_type = T_NUM_INTEGER;
-			if(t1->type == T_NUM_INTEGER || t1->type == T_NUM_NUMBER) num_correct = true;
-			else if(t1->type == T_STRING) string_correct = true;
-			else if(t1->type == T_KW_NIL) return 8;
+		//Pokud bylo cislo, tak num_correct = true
+		if(t1->type == T_NUM_INTEGER || t1->type == T_NUM_NUMBER) num_correct = true;
+		//Pokud byl string, tak string_correct = true
+		else if(t1->type == T_STRING) string_correct = true;
+		//Nil nelze pouzit u nerovnosti <, >, <=, >=
+		else if(t1->type == T_KW_NIL) return 8;
 
-
-
-			if((t3->type == T_NUM_INTEGER || t3->type == T_NUM_NUMBER) && num_correct) return 0;
-			else if(t3->type == T_STRING && string_correct) return 0;
-			else if(t3->type == T_KW_NIL) return 8;
-
+		//Pokud jsem predesly nacetl cislo a tento je take cislo
+		if((t3->type == T_NUM_INTEGER || t3->type == T_NUM_NUMBER) && num_correct) return 0;
+		//Pokud jsem predesly nacetl string a tento je take string
+		else if(t3->type == T_STRING && string_correct) return 0;
+		//Nil nelze pouzit u nerovnosti <, >, <=, >=
+		else if(t3->type == T_KW_NIL) return 8;
+	//Vse ostatni vracim 6 -> spatna prace s datovym typem u operace
 	return 6;
 
 	case E_EQ_E:
 	case E_NEQ_E:
-		num_correct_id = num_correct_id;
-		string_correct_id = string_correct_id;
+
+		//Vysledkem je pravdivostni hodn. tzn. integer 
 		*final_type = T_NUM_INTEGER;
 		
-		//BYLO ->TYPE == ID
+		//Pokud byl prvek nacten jako ID (musi se kontrolovat kvuli porovnavani s nil)
 		if(t1->ID == true)
 		{
+			//Nastaveni booleanu podle toho, co jsem nacetl za dat. typ
 			if(t1->type == T_NUM_INTEGER || t1->type == T_NUM_NUMBER) num_correct_id = true;
 			else if(t1->type == T_STRING) string_correct_id = true;
 			else if(t1->type == T_KW_NIL) nil_correct = true;
 		}
+		//Pokud prvek nebyl nacten jako ID, tzn. raw integer (5 == )
 		else if(t1->type != T_ID)
 		{
+			//Nastaveni booleanu podle toho, co jsem nacetl za dat. typ
 			if(t1->type == T_NUM_INTEGER || t1->type == T_NUM_NUMBER) num_correct = true;
 			else if(t1->type == T_STRING) string_correct = true;
 			else if(t1->type == T_KW_NIL) nil_correct = true;
 		}
 
+		//POkud byl druhy prvek nacten jako ID
 		if(t3->ID == true)
 		{
+			//Lze porovnat int,num s num,int,nil => return 0
 			if((t3->type == T_NUM_INTEGER || t3->type == T_NUM_NUMBER) && (num_correct || nil_correct || num_correct_id)) return 0;
+			//Lze porovnat string s string, nil
 			else if(t3->type == T_STRING && (string_correct || nil_correct || string_correct_id)) return 0;
+			//Pokud byl predesly ID a ted jsem nacetl nil
 			else if(t3->type == T_KW_NIL)
 			{
 				if(string_correct_id || nil_correct || num_correct_id)
@@ -594,8 +639,11 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		}
 		else if(t3->type != T_ID)
 		{
+			//Lze porovnat int, num, s int, num => tentokrat nelze s nil, nejedna se totiz o ID
 			if((t3->type == T_NUM_INTEGER || t3->type == T_NUM_NUMBER) && (num_correct || num_correct_id)) return 0;
+			//Lze porovnat string s string, nil => tentokrat nelze s nil, nejedna se totiz o ID
 			else if(t3->type == T_STRING && (string_correct || string_correct_id)) return 0;
+			//POkud jsem nacetl nil, predesly musi byt id
 			else if(t3->type == T_KW_NIL)
 			{
 				if(string_correct_id || nil_correct || num_correct_id)
@@ -608,16 +656,17 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 				}
 			}
 		}
+		//Pokud se nesplnila ani jedna podminka s nilem => return 8
 		if(nil_correct) return 8;
+		//Vse ostatni tzn. (int == string atp.) => return 6, spatne pouziti datovych typu u relacniho operatoru
 		else return 6;
 
 	case STRLEN_E:
+		//Vysledkem operatoru # je int
 		*final_type = T_NUM_INTEGER;
-
-		
-
+		//Lze pouzit s unarnim # pouze ID typu string || T_STRING
 		if(t1->type == T_STRING) return 0;
-		
+		//Vsechny ostatni datove typy nelze provadet
 		return 6;
 
 	case E_BRACKETS:
@@ -626,13 +675,16 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		return 0;
 
 	case E_ID:
+		//Kontrola pro ID
 		if(t1->type == T_ID)
 		{
-		if(IsDeclaredVar(slist,t1) == 3) return 3;
-		if(!IsString(slist, t1)) *final_type = T_STRING;
-		if(!IsInteger(slist, t1)) *final_type = T_NUM_INTEGER;
-		if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
-		if(!IsNil(slist, t1)) *final_type = T_KW_NIL;
+			//Pokud neni vubec deklarovany
+			if(IsDeclaredVar(slist,t1) == 3) return 3;
+			//Kontrola datoveho typu
+			if(!IsString(slist, t1)) *final_type = T_STRING;
+			if(!IsInteger(slist, t1)) *final_type = T_NUM_INTEGER;
+			if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
+			if(!IsNil(slist, t1)) *final_type = T_KW_NIL;
 		}
 		else if(t1->type != T_ID)
 		{
@@ -648,15 +700,16 @@ return 2;
 
 int Exp(TList *list, SList *slist, Token_type *final_type)
 {
-	slist = slist;
+	//Inicializace a alokace stacku
 	TStack *stack = malloc(sizeof(TStack));
 	if(stack == NULL)
 	{
 		return 99;
 	}
 	TStackInit(stack);
+	//Pomocna promenna pro drzeni stackTopu
 	Token top;
-	//setDataType = NULL;
+	//Pomocne promenne
 	PTaction action;
 	bool tokenNext = true;
 	int reduceError;
@@ -665,28 +718,35 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
 	{
 		//pokud T_ID bude funkce, break
 		getIndex(list->active, slist);
+		//Funkce, ktera bere top, ktery neni E||StopSign
 		TStackTopNotE(stack, &top);
 		action = getAction(&top, &list->active->token); //do action se ulozi operace podle PrecedenceTable
 		switch (action)
 		{
+		//Shift case
 		case S:
+			//Pushnu na stack stopSign
 			if(TStackPushStop(stack))
 			{
 				freeStackE(stack);
 				free(stack);
 				return 99;
 			}
+			//Pushnu na stack nacteny prvek
 			if(TStackPush(stack, &list->active->token))
 			{
 				freeStackE(stack);
 				free(stack);
 				return 99;
 			}
+			//Zapinam nacitani dalsiho tokenu
 			tokenNext = true;
 			break;
-
+		//Reduce case
 		case R:
+			//Vypinam nacitani dalsiho tokenu
 			tokenNext = false;
+			//Zavolam funkci reduceByRule a kontroluji error
 			reduceError = reduceByRule(stack, final_type, slist);
 			if(reduceError != 0)
 			{
@@ -695,26 +755,32 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
 				return reduceError;
 			}
 			break;
-
+		//Equals case
 		case E:
+			//Pushnu na stack
 			if(TStackPush(stack, &list->active->token))
 			{
 				freeStackE(stack);
 				free(stack);
 				return 99;
 			}
+			//Zapinam nacitani dalsiho tokenu
 			tokenNext = true;
 		break;
-
+		//Error/end case
 		case X:
-			if(stack->stackToken[stack->topIndex]->PTindex == I_DOLLAR && list->active->token.PTindex == I_DOLLAR) //prislo neco, co neni exp
+			//Stacktop == dollar && list->active == dollar -> prislo neco co neni expression
+			if(stack->stackToken[stack->topIndex]->PTindex == I_DOLLAR && list->active->token.PTindex == I_DOLLAR) 
 			{
+				//Uvolnim pamet a vracim 1 => notAnExpression
 				freeStackE(stack);
 				free(stack);
 				return 1;
 			}
+			//Stacktop == E, AfterTop == dollar, list->actie == dolar -> Spravne zpracovany expression
 			else if(stack->stackToken[stack->topIndex]->PTindex == I_E && list->active->token.PTindex == I_DOLLAR && stack->stackToken[stack->topIndex-1]->PTindex == I_DOLLAR)
 			{
+				//Uvolnim pamet a vracim 0 => IsExpression
 				freeStackE(stack);
 				free(stack);
 				return 0;
@@ -727,6 +793,7 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
 			}
 		break;
 		}
+		//Pokud je tokenNext true posouvam se
 		if(tokenNext)
 		{
 			if(TListTokenNext(list) == 99)
@@ -737,5 +804,7 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
 			}
 		}
 	}
+//Pokud se dostane sem znamena to chybu nacitani => notAnExpression
+//Testovano, nemelo by se sem nikdy dostat
 return 1;
 }
