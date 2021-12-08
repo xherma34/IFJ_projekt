@@ -1,3 +1,1 @@
-1 : 1
-1 : 1
-[INTERNAL ERROR] Error 8 on line 16: near token type 'KW_THEN'. Error not defined.
+[INTERNAL ERROR] Error 8 on line 22: near token type 'KW_THEN'. Error not defined.

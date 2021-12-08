@@ -15,21 +15,10 @@ global foo5 : function(integer,number,string, integer, number,integer,nil) : nil
 
 function main(x:string) : number
 	local a : integer
-	local b : integer
-	local c : number
-	local d : number
-	local e : string
-	local f : string
-	local g : nil
-	local h : nil
-	local i : integer
-	local j : integer
-	local k : integer
+	local c : integer
+	local b : string
+	local d : nil
 
-	foo()
-	foo1(b,d,f)
-	a,c,e = foo2()
-	a,d,f = foo3(a,c,e)
-	e,e = foo4(a,b,a)
-	g,c,h = foo5(a,c,e,a,b,a,h)
+	if (a+c)*a+#b==d then else end
+
 end

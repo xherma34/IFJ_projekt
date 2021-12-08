@@ -88,6 +88,7 @@ typedef struct
     Token_value value;
     int line;
 	PTindex PTindex;
+    bool ID;
 } Token;
 
 typedef struct TNode
