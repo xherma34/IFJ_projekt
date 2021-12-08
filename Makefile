@@ -20,7 +20,7 @@ all: DLList.o scanner.o symtable.o TStack.o expression.o parser.o
 	$(s)$(CC) $(CFLAGS) -o $(currDir)/$(TARGET) $(SOURCES) main.c
 
 run:
-	$(s)./ifj21 < $(TEST_INPUT)
+	$(s)./ifj21 < $(TEST_INPUT) >$(TEST_OUTPUT)
 
 scanner.o: scanner.c scanner.h
 	$(s)$(CC) $(CFLAGS) -c scanner.c
@@ -44,12 +44,6 @@ tests:
 	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
 	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
 	$(s)bash $(currDir)/Tests/Scripts/test.sh
-
-test:
-	if [ ! -d Tests/Outputs ]; then mkdir Tests/Outputs; fi
-	$(s)$(CC) $(CFLAGS) -o $(testDir)/test.o $(TESTSOURCES)
-	$(s)Tests/test.o  < $(TEST_INPUT) > $(TEST_OUTPUT)
-	-$(s)diff -us $(REF_OUTPUT) $(TEST_OUTPUT)
 
 clean:
 	$(s)rm -f $(SOURCES)
