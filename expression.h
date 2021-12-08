@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file expression.h
+*
+* @brief Knihovna pro expession.c
+*
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include "TStack.h" //Potrebuji scanner, symstack, parser -> vse linknuto v parseru
 
 //hodnoty v tabulce

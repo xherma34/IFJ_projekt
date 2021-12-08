@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file TStack.h
+*
+* @brief Knihovna pro TStack.c
+*
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include "symtable.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,6 +76,6 @@ int TStackPushStop(TStack *);
 
 /**
  * @brief funkce pro uvloneni pameti pro I_E, I_STOP, I_DOLLAR
- * 
+ *
  */
 void freeStackE(TStack *);

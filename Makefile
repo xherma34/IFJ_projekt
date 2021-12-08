@@ -1,3 +1,10 @@
+#
+# Projekt: IFJ 2021
+# file: Makefile
+#
+# author: Jan Zdeněk (xzdene01)
+#
+
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -lm -fcommon -g
 TARGET = ifj21

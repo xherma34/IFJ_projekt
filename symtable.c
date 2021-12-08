@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file symtable.c
+*
+* @brief Implementace tabulky symbolů
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Alexander Sila (xsila00)
+*/
+
 #include "symtable.h"
 
 int SListInit(SList *list)

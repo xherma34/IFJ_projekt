@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file TStack.c
+*
+* @brief Implementace zásobníku tokenů
+*
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include "TStack.h"
 
 void TStackInit(TStack *stack)
@@ -59,7 +70,7 @@ void TStackTopNotE(TStack *stack, Token *token)
 	else
 	{
 		//Pokud je stack top I_E a pod nim je cokoliv jineho nez stopSign, vracim afterTop prvek
-		if(stack->stackToken[stack->topIndex-1]->PTindex != I_STOP) 
+		if(stack->stackToken[stack->topIndex-1]->PTindex != I_STOP)
 		{
 			token->PTindex = stack->stackToken[stack->topIndex-1]->PTindex;
 		}

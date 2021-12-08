@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file main.c
+*
+* @brief Knihovna pro parcer.c
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Alexander Sila (xsila00)
+*/
+
 #include "expression.h"
 
 /*-----FUNKCE NA UROVNI CELEHO PROGRAMU-----*/

@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file main.c
+*
+* @brief Implementace hlavního těla překladače
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Alexander Sila (xsila00)
+*/
+
 #include "parser.h"
 
 int main()

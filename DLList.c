@@ -1,3 +1,15 @@
+/*
+* Project: IFJ 2021
+*
+* @file DLList.c
+*
+* @brief Implementace obousměrně vázaného seznamu charakterů pro scanner.c
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include "DLList.h"
 
 void DLL_error()
@@ -7,6 +19,7 @@ void DLL_error()
 
 void DLL_init(DLList *list)
 {
+	//připsání výchozích hodnot
     list->firstElement = NULL;
     list->lastElement = NULL;
     list->length = 0;
@@ -14,12 +27,14 @@ void DLL_init(DLList *list)
 
 void DLL_dispose(DLList *list)
 {
-    
+
+	//kontrola pro neexistující list
     if(list == NULL)
     {
         return;
     }
 
+	//pro jednoprvková list
     if(list->length == 1)
     {
         free(list->firstElement);
@@ -28,7 +43,7 @@ void DLL_dispose(DLList *list)
 
     DLLnodePtr tmp = list->firstElement;
 
-
+	//postupne mazani prvku
     while(tmp != NULL)
     {
         list->firstElement = tmp->next;
@@ -80,7 +95,7 @@ void DLL_deleteFirst(DLList *list)
     //Osetreni neprazdnosti
     if(list->firstElement != NULL)
     {
-        //Ziskam si pomocnym pointerem prvni element v listu 
+        //Ziskam si pomocnym pointerem prvni element v listu
         DLLnodePtr tmp = list->firstElement;
 
         //Pro jedno prvkovy list
@@ -108,7 +123,7 @@ void DLL_deleteLast(DLList *list)
     //Osetreni neprazdnosti
     if(list->firstElement != NULL)
     {
-        //Ziskam si pomocnym pointerem posledni element v listu 
+        //Ziskam si pomocnym pointerem posledni element v listu
         DLLnodePtr tmp = list->lastElement;
 
         //pro jedno prvkovy list
@@ -139,5 +154,3 @@ void DLL_getFirst(DLList *list, char *data)
     }
     *data = list->firstElement->data;
 }
-
-

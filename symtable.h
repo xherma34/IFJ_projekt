@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file symtable.h
+*
+* @brief Knihovna pro symtable.c
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Alexander Sila (xsila00)
+*/
+
 #include "scanner.h"
 
 typedef struct SNode{

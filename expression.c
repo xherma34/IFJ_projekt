@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file expression.c
+*
+* @brief Implementace precedenční syntaktické analýzy
+*
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include "expression.h"
 
 #define PTSIZE 9
@@ -399,7 +410,6 @@ int reduceByRule(TStack *stack, Token_type *final_type, SList *slist)
 		break;
 
 	case NOT_A_RULE:
-		printf("hovno");
 		free(compressedExpression);
 		return 2;
 	}
@@ -597,9 +607,9 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 	case E_EQ_E:
 	case E_NEQ_E:
 
-		//Vysledkem je pravdivostni hodn. tzn. integer 
+		//Vysledkem je pravdivostni hodn. tzn. integer
 		*final_type = T_NUM_INTEGER;
-		
+
 		//Pokud byl prvek nacten jako ID (musi se kontrolovat kvuli porovnavani s nil)
 		if(t1->ID == true)
 		{
@@ -631,7 +641,7 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 				{
 					return 0;
 				}
-				else 
+				else
 				{
 					return 6;
 				}
@@ -650,7 +660,7 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 				{
 					return 0;
 				}
-				else 
+				else
 				{
 					return 6;
 				}
@@ -770,7 +780,7 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
 		//Error/end case
 		case X:
 			//Stacktop == dollar && list->active == dollar -> prislo neco co neni expression
-			if(stack->stackToken[stack->topIndex]->PTindex == I_DOLLAR && list->active->token.PTindex == I_DOLLAR) 
+			if(stack->stackToken[stack->topIndex]->PTindex == I_DOLLAR && list->active->token.PTindex == I_DOLLAR)
 			{
 				//Uvolnim pamet a vracim 1 => notAnExpression
 				freeStackE(stack);

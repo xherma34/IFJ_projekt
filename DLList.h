@@ -1,3 +1,15 @@
+/*
+* Project: IFJ 2021
+*
+* @file DLList.h
+*
+* @brief Knihovna pro DLList.c
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include<stdio.h>
 #include<stdlib.h>
 

@@ -1,7 +1,7 @@
 Gramatika
 /*
 * Pomocná gramatika k parseru
-* Projekt: ifj21
+* Projekt: IFJ 2021
 *
 * Autoři:
 *	Jan Zdeněk (xzdene01)

@@ -1,3 +1,15 @@
+/*
+* Project: IFJ 2021
+*
+* @file scanner.h
+*
+* @brief Knihovna pro scanner.c
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

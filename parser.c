@@ -1,3 +1,14 @@
+/*
+* Project: IFJ 2021
+*
+* @file parser.c
+*
+* @brief Implementace syntaktického a sémantického analyzátoru
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Alexander Sila (xsila00)
+*/
+
 #include "parser.h"
 
 /*-----FUNKCE MIMO PROGRAM-----*/
@@ -441,8 +452,6 @@ int CallFunction(TList *list, SList *slist, int varCount)
 				return error;
 			}
 		}
-
-		//PrintToken(list->active->token.type);
 
 		for(int i = 0; i < varCount; i++)
 		{
@@ -1021,12 +1030,10 @@ int Cycle(TList *list, SList *slist)
 		error = FceBody(list, slist);
 		if(error != 0)
 		{
-			//PrintToken(list->active->token.type);
 			return error;
 		}
 	}
-
-
+	
     if(list->active->token.type != T_KW_END)
     {
         //v pripade absence tokenu vracim 2 (syntax error)

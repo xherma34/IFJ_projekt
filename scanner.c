@@ -1,10 +1,13 @@
 /*
-* Obsah souboru:  Lexikalni analyzator
+* Project: IFJ 2021
 *
-* Autor:          Pavel Hermann(xherma34)
-*                 Jan Zdenek(xzdene01)
-*                 Aleks(xsila00)
-*                 Maxim Plicka(xplick04)
+* @file scanner.c
+*
+* @brief Implementace lexikálního analyzátoru
+*
+* @author Jan Zdeněk (xzdene01)
+* @author Pavel Heřmann (xherma34)
+* @author Maxim Plička (xplick04)
 */
 
 #include "scanner.h"
@@ -41,7 +44,6 @@ typedef enum
     S_COMMENT_START_BLOCK_FIRST,
     S_COMMENT_BLOCK,
     S_COMMENT_BLOCK_END,
-    S_COMMENT_LINE,
 
     //Operatory
     S_STRLEN,       //#
