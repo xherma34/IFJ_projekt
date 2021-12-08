@@ -12,9 +12,10 @@
 #include "symtable.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+//Maximalni pocet prvku ve stacku
 #define MAX_STACK 100
 
+//Stack tokenu 
 typedef struct
 {
     Token *stackToken[MAX_STACK];
@@ -22,60 +23,65 @@ typedef struct
 } TStack;
 
 /**
- * @brief Funkce co inicializuje stack
- *
+ * @brief Funkce co inicializuje stack -> rovnou pushuje i dno
+ * @param TStack 
  */
 void TStackInit(TStack *);
 
 /**
  * @brief Funkce pro pushovani na stack
- *
- * @return int, pokud dojde k erroru pri pushovani vraci 1
+ * @param TStack
+ * @param Token co chci pushovat
+ * @return 0 -> uspesny push, >0 -> error
  */
 int TStackPush(TStack *, Token *);
 
 /**
  * @brief Funkce odstrani Top prvek zasobniku
- *
- * @return int
+ * @param TStack
+ * @return 0 -> uspesny pop, >0 -> error
  */
 int TStackPop(TStack *);
 
 /**
- * @brief Funkce vraci do promenne
- *
- * @return TStackItem
+ * @brief Funkce vraci do promenne top stacku
+ * @param TStack
+ * @param Token do ktereho ukladam stackTop
  */
 void TStackTop(TStack *, Token *);
 
 /**
- * @brief Funkce vraci do promenne top, ktery neni E
- *
+ * @brief Funkce vraci do promenne top, ktery neni E||stopSign
+ * @param TStack
+ * @param Token do ktereho ukladam stackTop
  * @return TStackItem top zasobniku
  */
 void TStackTopNotE(TStack *, Token *);
 
 /**
- * @brief Funkce vraci pocet itemu mezi stackTopem a prvnim Stop SIgnem ve stacku
- *
- * @return int, pokud error => -1
+ * @brief Funkce vraci pocet prvku mezi stackTopem a prvnim Stop SIgnem ve stacku
+ * @param TStack
+ * @return Pocet prvku || -1 -> error
  */
 int TStackUntillStopSign(TStack *);
 
 /**
  * @brief Pomocna funkce pro shiftovani -> prida prvek pod top node zasobniku
- *
+ * @param TStack
+ * @param Token co chci pushovat
+ * @return 0 -> uspesny push, 1 -> error
  */
 int TStackPushAfterTop(TStack *, Token *);
 
 /**
  * @brief Funkce pro vlozeni stop symbolu na stack
- *
+ * @param TStack
+ * @return 0 -> uspesni push, 1 -> error
  */
 int TStackPushStop(TStack *);
 
 /**
  * @brief funkce pro uvloneni pameti pro I_E, I_STOP, I_DOLLAR
- *
+ * @param TStack
  */
 void freeStackE(TStack *);

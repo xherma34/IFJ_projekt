@@ -468,64 +468,43 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 		return 0;
 
 	case E_DIV_INT_E:
-		//Osetreni spatneho typu u aretmicke operace
-		if(t3->type == T_STRING || t1->type == T_STRING)
+
+		//Osetreni spatneho typu u aritmeticke operace
+		if(t3->type == T_STRING)
 		{
 			return 6;
 		}
-		else if(t3->type == T_KW_NIL || t1->type == T_KW_NIL)
+		else if(t3->type == T_KW_NIL)
 		{
 			return 8;
 		}
-		else if(t3->type == T_NUM_NUMBER || t1->type == T_NUM_NUMBER)
+		//Nastaveni finalniho datoveho typu
+		else if(t3->type == T_NUM_NUMBER)
+		{
+			*final_type = T_NUM_NUMBER;
+		}
+
+		//Osetreni spatneho typu u aritmeticke operace
+		if(t1->type == T_STRING)
 		{
 			return 6;
 		}
-
-		//Kontrola ze nedochazi k deleni nulou
-		if(t1->type == T_NUM_INTEGER)
+		else if(t1->type == T_KW_NIL)
+		{
+			return 8;
+		}
+		//Kontrola deleni nulou
+		else if(t1->type == T_NUM_NUMBER)
 		{
 			if(t1->value.number == 0) return 9;
 		}
-		//Final type musi byt integer
+		else if(t1->type == T_NUM_INTEGER)
+		{
+			if(t1->value.integer == 0) return 9;
+		}
+
 		*final_type = T_NUM_INTEGER;
 		return 0;
-
-		//PRED ODEVZDANIM PREKONTROLOVAT KTERA VARIANTA JE SPRAVNE A SMAZAT TU NESPRAVNOU
-		//RESENI PAVEL
-		// if(t3->type == T_STRING)
-		// {
-		// 	return 6;
-		// }
-		// else if(t3->type == T_KW_NIL)
-		// {
-		// 	return 8;
-		// }
-		// else if(t3->type == T_NUM_NUMBER)
-		// {
-		// 	*final_type = T_NUM_NUMBER;
-		// }
-
-
-		// if(t1->type == T_STRING)
-		// {
-		// 	return 6;
-		// }
-		// else if(t1->type == T_KW_NIL)
-		// {
-		// 	return 8;
-		// }
-		// else if(t1->type == T_NUM_NUMBER)
-		// {
-		// 	if(t1->value.number == 0) return 9;
-		// }
-		// else if(t1->type == T_NUM_INTEGER)
-		// {
-		// 	if(t1->value.integer == 0) return 9;
-		// }
-
-		// *final_type = T_NUM_INTEGER;
-		// return 0;
 
 	case E_DIV_NUM_E:
 
