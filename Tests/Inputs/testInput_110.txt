@@ -4,8 +4,9 @@ function fce(y : integer) : string
 	return "ahoj"
 end
 
-function foo(x : integer, y : number)
-	fce(x)
+function foo(x : integer, y : number) : string
+	local a : string = fce(x)
+	return a
 end
 
 
@@ -13,7 +14,7 @@ function main()
 
 
 
-local x : integer = foo(5,0.5)
+local x : string = foo(5,0.5)
 
 
 

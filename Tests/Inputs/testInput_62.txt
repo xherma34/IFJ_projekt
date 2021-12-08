@@ -4,7 +4,7 @@ function main()
 
 
 
-local var : number = -e4
+local var : number = 12e-4
 
 
 

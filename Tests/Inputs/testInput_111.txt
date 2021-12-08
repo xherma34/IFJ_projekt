@@ -7,8 +7,12 @@ return y
 end
 function main()
 
+local x : integer = foo(x)
+local a : integer
+local b : integer
+local c : integer
 
-local x : integer = foo()
+a = 5 + b*(#("ab".."cd"))b = c
 
 
 end

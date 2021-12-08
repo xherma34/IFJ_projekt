@@ -1,1 +1,1 @@
-[SEMANTIC ERROR] Error 4
+Compilation successful!

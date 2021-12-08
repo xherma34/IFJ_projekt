@@ -6,7 +6,7 @@ function main()
 
 
 
-local var : number = 012-e0124
+local var : number = 012e-0124
 
 
 

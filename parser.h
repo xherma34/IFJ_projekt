@@ -158,3 +158,11 @@ int Exps(TList *, SList *, int, int *);
  * @return Integer, vraci chybovou hodnotu
  */
 int Ids_Datatypes(TList *, SList *);
+
+/**
+ * @brief Funkce pro kontrolu funkce write()
+ * @param TList ktery obsahuje vsechny tokeny vstupniho programu
+ * @param SList ktery obsahuje tabulku symbolu
+ * @return Error
+ */
+int WriteFunction(TList *, SList *);

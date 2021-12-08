@@ -22,6 +22,49 @@ int Program(TList *list, SList *slist)
 {
     int error;
 
+	//deklarace preddefinovanych funkci
+	Token tmp_reads;
+	tmp_reads.value.string = "reads";
+	SListInsertFunc(slist, true, &tmp_reads);
+	SListInsertReturn(slist, T_KW_STRING);
+
+	Token tmp_readi;
+	tmp_readi.value.string = "readi";
+	SListInsertFunc(slist, true, &tmp_readi);
+	SListInsertReturn(slist, T_KW_INTEGER);
+
+	Token tmp_readn;
+	tmp_readn.value.string = "readn";
+	SListInsertFunc(slist, true, &tmp_readn);
+	SListInsertReturn(slist, T_KW_NUMBER);
+
+	Token tmp_tointeger;
+	tmp_tointeger.value.string = "tointeger";
+	SListInsertFunc(slist, true, &tmp_tointeger);
+	SListInsertParam(slist, T_KW_NUMBER);
+	SListInsertReturn(slist, T_KW_INTEGER);
+
+	Token tmp_substr;
+	tmp_substr.value.string = "substr";
+	SListInsertFunc(slist, true, &tmp_substr);
+	SListInsertParam(slist, T_KW_STRING);
+	SListInsertParam(slist, T_KW_NUMBER);
+	SListInsertParam(slist, T_KW_NUMBER);
+	SListInsertReturn(slist, T_KW_STRING);
+
+	Token tmp_ord;
+	tmp_ord.value.string = "ord";
+	SListInsertFunc(slist, true, &tmp_ord);
+	SListInsertParam(slist, T_KW_STRING);
+	SListInsertParam(slist, T_KW_INTEGER);
+	SListInsertReturn(slist, T_KW_INTEGER);
+
+	Token tmp_chr;
+	tmp_chr.value.string = "chr";
+	SListInsertFunc(slist, true, &tmp_chr);
+	SListInsertParam(slist, T_KW_INTEGER);
+	SListInsertReturn(slist, T_KW_STRING);
+
     //kontrola pro token T_KW_REQUIRE
     if(list->active->token.type != T_KW_REQUIRE)
     {
@@ -104,8 +147,18 @@ int MainBody(TList *list, SList *slist)
         {
             return error;
         }
-        //provedu kontrolu pro volani funkce a ulozim navratovou hodnotu
-        error = CallFunction(list, slist, 0);
+
+		//kontrola pro write
+		if(strcmp(list->active->prev->token.value.string, "write") == 0)
+		{
+			error = WriteFunction(list, slist);
+		}
+		else
+		{
+			//provedu kontrolu pro volani funkce a ulozim navratovou hodnotu
+			error = CallFunction(list, slist, 0);
+		}
+
     }
 
     //pokud jsem nasel chybu nebo jsem na konci hlavniho tela
@@ -417,7 +470,6 @@ int CallFunction(TList *list, SList *slist, int varCount)
 
 	if(IsDeclaredJump(slist, &list->active->prev->token) > 1)
 	{
-		printf("hovno\n");
 		return 3;
 	}
 
@@ -544,7 +596,14 @@ int FceBody(TList *list, SList *slist)
         if(list->active->token.type == T_BRACKET_LEFT)
         {
             //jedna se o volani funkce
-            error = CallFunction(list, slist, 0);
+			if(strcmp(list->active->prev->token.value.string, "write") == 0)
+			{
+				error = WriteFunction(list, slist);
+			}
+			else
+			{
+				error = CallFunction(list, slist, 0);
+			}
         }
         else
         {
@@ -665,6 +724,39 @@ int DefVar(TList *list, SList *slist)
         return error;
     }
 
+	if(list->active->next->next->token.type == T_BRACKET_LEFT)
+	{
+		error = TListTokenNext(list);
+		if(error != 0)
+		{
+			return error;
+		}
+
+		if(IsDeclaredFunc(slist, &list->active->token) > 1)
+		{
+			return IsDeclaredFunc(slist, &list->active->token);
+		}
+
+
+		if(slist->active->numReturns == 0)
+		{
+			return 5;
+		}
+
+		Token_type tmp_type = slist->active->returns.first->token.type;
+
+		if(tmp_type != list->active->prev->prev->token.type)
+		{
+			if(tmp_type == T_KW_NUMBER && list->active->prev->prev->token.type == T_KW_INTEGER)
+			{
+				return 0;
+			}
+			return 4;
+		}
+
+		return 0;
+	}
+
 	Token_type type;
 
 	error = TListTokenNext(list);
@@ -686,14 +778,6 @@ int DefVar(TList *list, SList *slist)
 		}
 	}
 
-	// if(type != slist->last->type)
-	// {
-	// 	return 4;
-	// }
-	// else
-	// {
-	// 	return error;
-	// }
 	if(type == T_STRING && slist->last->type != T_KW_STRING)
 	{
 		return 4;
@@ -991,41 +1075,41 @@ int Return(TList *list, SList *slist)
 
 		expCount++; //prictu pocet expresi
 
-		//pocet expresi je vetsi nez pocet vracenych hodnot
-		if(expCount > slist->lastFunc->numReturns)
+		if(slist->lastFunc->returns.active != NULL)
 		{
-			return 5;
-		}
-
-
-		if(type == T_STRING && slist->lastFunc->returns.active->token.type == T_KW_STRING)
-		{
-			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
-		}
-		else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_INTEGER)
-		{
-			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
-		}
-		else if(type == T_NUM_NUMBER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
-		{
-			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
-		}
-		else if(type == T_KW_NIL && slist->lastFunc->returns.active->token.type == T_KW_NIL)
-		{
-			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
-		}
-		else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
-		{
-			slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
-		}
-		else
-		{
-			return 5;
+			if(type == T_STRING && slist->lastFunc->returns.active->token.type == T_KW_STRING)
+			{
+				slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+			}
+			else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_INTEGER)
+			{
+				slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+			}
+			else if(type == T_NUM_NUMBER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
+			{
+				slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+			}
+			else if(type == T_KW_NIL && slist->lastFunc->returns.active->token.type == T_KW_NIL)
+			{
+				slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+			}
+			else if(type == T_NUM_INTEGER && slist->lastFunc->returns.active->token.type == T_KW_NUMBER)
+			{
+				slist->lastFunc->returns.active = slist->lastFunc->returns.active->next;
+			}
+			else
+			{
+				return 5;
+			}
 		}
 
 		//kontrola zda nasleduje dalsi exprese
 		if(list->active->token.type != T_COMMA)
 		{
+			if(expCount < slist->lastFunc->numReturns)
+			{
+				return 5;
+			}
 			return error;
 		}
 		else
@@ -1037,6 +1121,16 @@ int Return(TList *list, SList *slist)
 				return error;
 			}
 		}
+	}
+
+	error = LastFunc(slist);
+	if(error != 0)
+	{
+		return error;
+	}
+	if(expCount < slist->lastFunc->numReturns)
+	{
+		return 5;
 	}
     return 0;
 }
@@ -1508,7 +1602,6 @@ int Exps(TList *list, SList *slist, int varCount, int *commaCount)
 
         //provedu kontrolu pro exprese a ulozim navratovou hodnotu
 		(*commaCount)++;
-		printf("--%d\n", *commaCount);
         error = Exps(list, slist, varCount, commaCount);
     }
 
@@ -1599,4 +1692,65 @@ int Ids_Datatypes(TList *list, SList *slist)
     }
 
     return error;
+}
+
+int WriteFunction(TList *list, SList *slist)
+{
+	int error;
+
+	if(list->active->token.type != T_BRACKET_LEFT)
+	{
+		return 2;
+	}
+
+	error = TListTokenNext(list);
+	if(error != 0)
+	{
+		return error;
+	}
+
+	while(list->active->token.type == T_ID || list->active->token.type == T_STRING)
+	{
+		if(list->active->token.type == T_ID)
+		{
+			error = IsDeclaredVar(slist, &list->active->token);
+			if(error != 0)
+			{
+				return error;
+			}
+
+			if(slist->active->type == T_KW_NIL)
+			{
+				return 5;
+			}
+		}
+		error = TListTokenNext(list);
+		if(error != 0)
+		{
+			return error;
+		}
+
+		if(list->active->token.type == T_COMMA)
+		{
+			error = TListTokenNext(list);
+			if(error != 0)
+			{
+				return error;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if(list->active->token.type != T_BRACKET_RIGHT)
+	{
+		return 2;
+	}
+	else
+	{
+		error = TListTokenNext(list);
+		return error;
+	}
 }

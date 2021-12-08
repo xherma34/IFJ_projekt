@@ -1,7 +1,7 @@
 require "ifj21"
 
 function main()
-
+local a : integer
 local var : number = 10 a 5
 
 end

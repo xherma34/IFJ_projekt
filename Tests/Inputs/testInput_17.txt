@@ -6,7 +6,7 @@ function main()
 
 
 
-local var : number = 12+e00124
+local var : number = 12e+00124
 
 
 

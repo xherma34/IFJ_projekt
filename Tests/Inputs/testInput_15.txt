@@ -1,15 +1,5 @@
 require "ifj21"
 
 function main()
-
-
-
-
-
-local var : number = 12-E0000000124
-
-
-
-
-
+	local var : number = 12E-0000000124
 end

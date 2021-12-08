@@ -26,7 +26,9 @@ void getIndex(TNodePtr node, SList *slist)
     case T_ID :
       if(!IsDeclaredFunc(slist, &node->token)) node->token.PTindex = I_DOLLAR;
       //Pokud nactu operand na operand, vracim jen prvni expression a 0
-      else if(node->prev->token.PTindex == I_ID && node->prev != NULL)
+      else if((node->prev->token.PTindex == I_ID ||
+		node->prev->token.PTindex == I_R_BRACKET) &&
+	  	node->prev != NULL)
       {
         //Poresit case, kdy pri ...= a a = a + b, jestli se to pred assign bude zpracovavat v EXP funkci
         node->token.PTindex = I_DOLLAR;
