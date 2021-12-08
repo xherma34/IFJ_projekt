@@ -15,10 +15,9 @@ global foo5 : function(integer,number,string, integer, number,integer,nil) : nil
 
 function main(x:string) : number
 	local a : integer
-	local c : integer
-	local b : string
-	local d : nil
+	local c : string
 
-	if (a+c)*a+#b==d then else end
+
+	if a/c>5 then else end
 
 end

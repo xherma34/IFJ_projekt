@@ -7,11 +7,11 @@ function main()
 	local x : integer
 	local y : number
 
-	while x do
+	while x/y>5 do
 	
 	end
 
---pohoda
+--DOMLUVIT SE S BORCEMA -> INPUT/OUTPUT.TXT NORMALNE JEDE
 
 
 end

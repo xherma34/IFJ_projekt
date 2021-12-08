@@ -11,7 +11,7 @@ if (10/y)//y then
 else
 end
 
---chyba 6
+--To stejny jako test_input120
 
 
 end

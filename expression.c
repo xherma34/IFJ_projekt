@@ -544,7 +544,6 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
 	case E_LET_E:
 	case E_GET_E:
 		*final_type = T_NUM_INTEGER;
-
 			if(t1->type == T_NUM_INTEGER || t1->type == T_NUM_NUMBER) num_correct = true;
 			else if(t1->type == T_STRING) string_correct = true;
 			else if(t1->type == T_KW_NIL) return 8;

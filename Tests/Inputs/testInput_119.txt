@@ -1,4 +1,3 @@
-
 require "ifj21"
 
 
@@ -11,7 +10,7 @@ function main()
 	else
 	end
 
---chyba 6
+--Je to chyba 6? domluvit se s borcema, jak to chceme brat
 
 
 end
