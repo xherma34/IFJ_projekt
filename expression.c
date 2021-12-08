@@ -315,6 +315,15 @@ int reduceByRule(TStack *stack, Token_type *final_type, SList *slist)
 		}
 		compressedExpression->type = *final_type;
 
+		if(t1->PTindex == I_E)
+		{
+			free(stack->stackToken[stack->topIndex]);
+		}
+		if(t3->PTindex == I_E)
+		{
+			free(stack->stackToken[stack->topIndex-2]);
+		}
+
 		if(TStackPop(stack)) return 99;
 		if(TStackPop(stack)) return 99;
 		if(TStackPop(stack)) return 99;
