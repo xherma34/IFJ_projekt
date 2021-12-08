@@ -546,6 +546,10 @@ int FceBody(TList *list, SList *slist)
 		list->active->token.type != T_ID &&
 		list->active->token.type != T_KW_RETURN)
     {
+		// if(list->active->token.type == T_KW_END)
+		// {
+		// 	return 0;
+		// }
         //v pripade absence validniho tokenu vracim 2 (syntax error)
         return 2;
     }
@@ -752,6 +756,18 @@ int DefVar(TList *list, SList *slist)
 				return 0;
 			}
 			return 4;
+		}
+
+		error = TListTokenNext(list);
+		if(error != 0)
+		{
+			return error;
+		}
+
+		error = CallFunction(list, slist, 0);
+		if(error != 0)
+		{
+			return error;
 		}
 
 		return 0;
@@ -999,12 +1015,17 @@ int Cycle(TList *list, SList *slist)
         return error;
     }
 
-    //provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
-    error = FceBody(list, slist);
-    if(error != 0)
-    {
-        return error;
-    }
+	if(list->active->token.type != T_KW_END)
+	{
+		//provedu kontrolu pro telo funkce a ulozim navratovou hodnotu
+		error = FceBody(list, slist);
+		if(error != 0)
+		{
+			//PrintToken(list->active->token.type);
+			return error;
+		}
+	}
+
 
     if(list->active->token.type != T_KW_END)
     {

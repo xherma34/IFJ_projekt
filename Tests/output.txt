@@ -1,1 +1,1 @@
-[INTERNAL ERROR] Error 6 on line 21: near token type 'GT'. Error not defined.
+Compilation succesfull!

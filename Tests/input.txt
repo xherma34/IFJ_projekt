@@ -2,22 +2,11 @@ require "ifj21"
 
 -- dec -> dec, def -> def, dec
 
-global main : function(string) : number
-
-global foo : function()
-global foo1 : function(integer,number,string)
-global foo2 : function() : integer,number,string
-global foo3 : function(integer,number,string) : integer,number,string
-global foo4 : function(integer,integer,integer) : string,string
-global foo5 : function(integer,number,string, integer, number,integer,nil) : nil,integer,nil
-
---foo(5,5.5,"hello")
+global foo : function(number) : integer
 
 function main(x:string) : number
-	local a : integer
-	local c : string
 
-
-	if a/c>5 then else end
+	local b : integer
+	local a : integer = foo(b)
 
 end
