@@ -227,6 +227,7 @@ PTRule getRule(int cnt, Token *token1, Token *token2, Token *token3)
 
 int reduceByRule(TStack *stack, Token_type *final_type, SList *slist)
 {
+	bool dealloc = false;
 	int SSerror = 0;
 	PTRule rule;
 	Token *t1, *t2, *t3;
@@ -317,9 +318,10 @@ int reduceByRule(TStack *stack, Token_type *final_type, SList *slist)
 
 		if(t1->PTindex == I_E)
 		{
+			dealloc = true;
 			free(stack->stackToken[stack->topIndex]);
 		}
-		if(t3->PTindex == I_E)
+		else if(t3->PTindex == I_E && dealloc == false)
 		{
 			free(stack->stackToken[stack->topIndex-2]);
 		}
