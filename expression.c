@@ -352,13 +352,21 @@ int reduceByRule(TStack *stack, Token_type *final_type, SList *slist)
       return SSerror;
     }
     //Pro deleni nulopu musim predat hodn.
-    if(t1->type == T_NUM_NUMBER)
+    if(t1->type != T_ID)
     {
-      compressedExpression->value.number = t1->value.number;
+      if(t1->type == T_NUM_NUMBER)
+      {
+        compressedExpression->value.number = t1->value.number;
+      }
+      else if(t1->type == T_NUM_INTEGER)
+      {
+        compressedExpression->value.integer = t1->value.integer;
+      }
     }
-    else if(t1->type == T_NUM_INTEGER)
+    else //deleni neznamou
     {
-      compressedExpression->value.integer = t1->value.integer;
+      compressedExpression->value.number = 1;
+      compressedExpression->value.integer = 1;
     }
 
     compressedExpression->PTindex = I_E;
@@ -389,9 +397,9 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
     if(t1->type == T_ID)
     {
 		if(IsDeclaredVar(slist,t1) == 3) return 3;
-      if(!IsString(slist, t1)) return 6;
-      if(!IsNil(slist, t1)) return 8;
-      if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
+    if(!IsString(slist, t1)) return 6;
+    if(!IsNil(slist, t1)) return 8;
+    if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
     }
     else if(t1->type != T_ID)
     {
@@ -412,9 +420,9 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
     if(t3->type == T_ID)
     {
 		if(IsDeclaredVar(slist,t3) == 3) return 3;
-      if(!IsString(slist, t3)) return 6;
-      if(!IsNil(slist, t3)) return 8;
-      if(!IsNumber(slist, t3)) *final_type = T_NUM_NUMBER;
+    if(!IsString(slist, t3)) return 6;
+    if(!IsNil(slist, t3)) return 8;
+    if(!IsNumber(slist, t3)) *final_type = T_NUM_NUMBER;
     }
     else if(t3->type != T_ID)
     {
@@ -438,35 +446,12 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
     return 0;
 
   case E_DIV_INT_E:
-    if(t1->type == T_ID)
-    {
-		if(IsDeclaredVar(slist,t1) == 3) return 3;
-      if(!IsString(slist, t1)) return 6;
-      if(!IsNil(slist, t1)) return 8;
-      if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
-    }
-    else if(t1->type != T_ID)
-    {
-      if(t1->type == T_STRING)
-      {
-        return 6;
-      }
-      else if(t1->type == T_KW_NIL)
-      {
-        return 8;
-      }
-      else if(t1->type == T_NUM_NUMBER)
-      {
-        *final_type = T_NUM_NUMBER;
-      }
-    }
-
     if(t3->type == T_ID)
     {
 		if(IsDeclaredVar(slist,t3) == 3) return 3;
-      if(!IsString(slist, t3)) return 6;
-      if(!IsNil(slist, t3)) return 8;
-      if(!IsNumber(slist, t3)) *final_type = T_NUM_NUMBER;
+    if(!IsString(slist, t3)) return 6;
+    if(!IsNil(slist, t3)) return 8;
+    if(!IsNumber(slist, t3) || !IsInteger(slist, t3)) *final_type = T_NUM_NUMBER;
     }
     else if(t3->type != T_ID)
     {
@@ -480,46 +465,46 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
       }
       else if(t3->type == T_NUM_NUMBER)
       {
-        if(t3->value.number == 0) return 9;
+        *final_type = T_NUM_NUMBER;
       }
-      else if(t3->type == T_NUM_INTEGER)
+    }
+
+    if(t1->type == T_ID)
+    {
+		if(IsDeclaredVar(slist,t1) == 3) return 3;
+		if(!IsString(slist, t1)) return 6;
+    if(!IsNil(slist, t1)) return 8;
+    if(!IsNumber(slist, t1) || !IsInteger(slist, t1)) *final_type = T_NUM_NUMBER;
+    }
+    else if(t1->type != T_ID)
+    {
+      if(t1->type == T_STRING)
       {
-        if(t3->value.integer == 0) return 9;
+        return 6;
+      }
+      else if(t1->type == T_KW_NIL)
+      {
+        return 8;
+      }
+      else if(t1->type == T_NUM_NUMBER)
+      {
+        if(t1->value.number == 0) return 9;
+      }
+      else if(t1->type == T_NUM_INTEGER)
+      {
+        if(t1->value.integer == 0) return 9;
       }
     }
     *final_type = T_NUM_INTEGER;
     return 0;
 
   case E_DIV_NUM_E:
-    if(t1->type == T_ID)
-    {
-		if(IsDeclaredVar(slist,t1) == 3) return 3;
-      if(!IsString(slist, t1)) return 6;
-      if(!IsNil(slist, t1)) return 8;
-      if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
-    }
-    else if(t1->type != T_ID)
-    {
-      if(t1->type == T_STRING)
-      {
-        return 6;
-      }
-      else if(t1->type == T_KW_NIL)
-      {
-        return 8;
-      }
-      else if(t1->type == T_NUM_NUMBER)
-      {
-        *final_type = T_NUM_NUMBER;
-      }
-    }
-
     if(t3->type == T_ID)
     {
 		if(IsDeclaredVar(slist,t3) == 3) return 3;
-		if(!IsString(slist, t3)) return 6;
+      if(!IsString(slist, t3)) return 6;
       if(!IsNil(slist, t3)) return 8;
-      if(!IsNumber(slist, t3)) *final_type = T_NUM_NUMBER;
+      if(!IsNumber(slist, t3) || !IsInteger(slist, t3)) *final_type = T_NUM_NUMBER;
     }
     else if(t3->type != T_ID)
     {
@@ -533,11 +518,34 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
       }
       else if(t3->type == T_NUM_NUMBER)
       {
-        if(t3->value.number == 0) return 9;
+        *final_type = T_NUM_NUMBER;
       }
-      else if(t3->type == T_NUM_INTEGER)
+    }
+
+    if(t1->type == T_ID)
+    {
+		if(IsDeclaredVar(slist,t1) == 3) return 3;
+		if(!IsString(slist, t1)) return 6;
+      if(!IsNil(slist, t1)) return 8;
+      if(!IsNumber(slist, t1) || !IsInteger(slist, t1)) *final_type = T_NUM_NUMBER;
+    }
+    else if(t1->type != T_ID)
+    {
+      if(t1->type == T_STRING)
       {
-        if(t3->value.integer == 0) return 9;
+        return 6;
+      }
+      else if(t1->type == T_KW_NIL)
+      {
+        return 8;
+      }
+      else if(t1->type == T_NUM_NUMBER)
+      {
+        if(t1->value.number == 0) return 9;
+      }
+      else if(t1->type == T_NUM_INTEGER)
+      {
+        if(t1->value.integer == 0) return 9;
       }
     }
     *final_type = T_NUM_NUMBER;
@@ -670,10 +678,10 @@ int CheckSS(PTRule rule, Token *t1, Token *t2, Token *t3, Token_type *final_type
     if(t1->type == T_ID)
     {
 		if(IsDeclaredVar(slist,t1) == 3) return 3;
-      if(!IsString(slist, t1)) *final_type = T_STRING;
-      if(!IsInteger(slist, t1)) *final_type = T_NUM_INTEGER;
-      if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
-      if(!IsNil(slist, t1)) *final_type = T_KW_NIL;
+    if(!IsString(slist, t1)) *final_type = T_STRING;
+    if(!IsInteger(slist, t1)) *final_type = T_NUM_INTEGER;
+    if(!IsNumber(slist, t1)) *final_type = T_NUM_NUMBER;
+    if(!IsNil(slist, t1)) *final_type = T_KW_NIL;
     }
     else if(t1->type != T_ID)
     {
@@ -780,339 +788,3 @@ int Exp(TList *list, SList *slist, Token_type *final_type)
   }
 return 1;
 }
-
-// int main()
-// {
-//   //dodelat pocitani zavorek, free u error stavu, zkontrolovat error stavy, otestovat deleni nulou, strlen bere string atd..
-//   TList list;
-//   //Token t1, t2, t3, t4, t5, t6, t7, t8, t9;
-//   // Token t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-//   Token t1, t2, t3, t4, t10;
-//   //Token t1, t2, t4, t9, t5, t6, t7;
-//   //Token t1, t2, t4, t8;
-//   // char action;
-//   // TStack stack;
-//   // TStackInit(&stack);
-
-
-//   t1.type = T_KW_THEN;
-//   t2.type = T_ID;
-//   t3.type = T_LT;
-//   t4.type = T_KW_NIL;
-//   // t5.type = T_STRING;
-//   // t6.type = T_NUM_NUMBER;
-//   // t9.type = T_BRACKET_RIGHT;
-
-//   // t6.type = T_SUB;
-//   // t6.type = T_STRLEN;
-//   // t7.type = T_STRING;
-//   // t8.type = T_BRACKET_RIGHT;
-//   t10.type = T_KW_THEN;
-//   //LIST: NUM => a+(b*c)THEN
-//   //      +
-//   //      (
-//   //      NUM
-//   //      *
-//   //      NUM
-//   //      )
-//   TListInit(&list);
-//   TListInsert(&list, t1);
-//   TListInsert(&list, t2);
-//   TListInsert(&list, t3);
-//   TListInsert(&list, t4);
-//   // TListInsert(&list, t5);
-//   // TListInsert(&list, t6);
-//   // TListInsert(&list, t7);
-//   // TListInsert(&list, t8);
-//   // TListInsert(&list, t9);
-//   TListInsert(&list, t10);
-
-//   list.active = list.first;
-//   int expRet = Exp(&list, &slist);
-
-//   if(expRet == 9)
-//   {
-//     printf("\n");
-//     printf("chyba -> deleni 0\n");
-//   }
-//   else if(expRet == 2)
-//   {
-//     printf("chyba -> syntax chyba\n");
-//   }
-//   else if(expRet == 6)
-//   {
-//     printf("chyba typu v aritmeticke operaci\n");
-//   }
-//     else if(expRet == 8)
-//   {
-//     printf("chyba s nil\n");
-//   }
-//   else if(expRet == 0)
-//   {
-//     printf("\n");
-//     printf("valid -> spravne zadany expression\n");
-//   }
-//   else if(expRet == 1)
-//   {
-//     printf("\n");
-//     printf("valid -> neni expression\n");
-//   }
-
-//   if(list.active->token.type == T_STRING)
-//   {
-//     printf("Valid return type");
-//   }
-
-
-// //   getIndex(&t1);  //I_ID
-// //   getIndex(&t2);  //I_ADD
-// //   getIndex(&t3);  //I_L_BRACKET
-// //   getIndex(&t4);  //I_ID
-// //   getIndex(&t5);  //I_MUL_DIV
-// //   getIndex(&t6);  //I_ID
-// //   getIndex(&t7);  //I_R_BRACKET
-// //   getIndex(&t8);  //I_DOLLAR
-
-
-// //   /*************TESTOVANI getIndex******************/
-// //   if(t1.PTindex == I_ID && t2.PTindex == I_ADD_SUB && t3.PTindex == I_L_BRACKET && t4.PTindex == I_ID && t5.PTindex == I_MUL_DIV && t6.PTindex == I_ID && t7.PTindex == I_R_BRACKET && t8.PTindex == I_DOLLAR)
-// //   {
-// //     printf("getIndexPassed\n");
-// //   }
-// //   else
-// //   {
-// //     printf("getIndexFailed\n");
-// //   }
-// // int i = 0;
-// //   /*************TESTOVANI getIndexValue******************/
-
-// //   //REFERENCE OUTPUT:
-// //   //7 0 5 7 1 7 6 8
-// //   i = getIndexValue(&t1);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t2);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t3);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t4);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t5);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t6);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t7);
-// //   printf("%d", i);
-// //   i = getIndexValue(&t8);
-// //   printf("%d", i);
-// //   printf("\n");
-
-// //   /*************TESTOVANI getAction******************/
-// //   //*****REF OUTPUT****
-//   // //S, R, S, S, R, S, R, R
-//   // list.active = list.first;
-//   // //a+(b*c)THEN
-//   // //Stack:$      List:I_ID
-//   // PTaction action;
-
-//   // TStackTop(&stack, &top);
-//   // action = getAction(&top, &t1);
-//   // TStackPush(&stack, &t1);
-
-//   // printf("\n");
-
-//   // if(action == S)
-//   // {
-//   //   printf("S");
-//   // }
-//   // else if(action == R)
-//   // {
-//   //   printf("R");
-//   // }
-//   // else if(action == E)
-//   // {
-//   //   printf("E");
-//   // }
-//   // else
-//   // {
-//   //   printf("error");
-//   // }
-
-//   //   TStackTop(&stack, &top);
-//   // action = getAction(&top, &t2);
-//   // TStackPush(&stack, &t2);
-
-//   // if(action == S)
-//   // {
-//   //   printf("S");
-//   // }
-//   // else if(action == R)
-//   // {
-//   //   printf("R");
-//   // }
-//   // else if(action == E)
-//   // {
-//   //   printf("E");
-//   // }
-//   // else
-//   // {
-//   //   printf("error");
-//   // }
-
-//   //   TStackTop(&stack, &top);
-//   // action = getAction(&top, &t3);
-//   // TStackPush(&stack, &t3);
-
-//   // if(action == S)
-//   // {
-//   //   printf("S");
-//   // }
-//   // else if(action == R)
-//   // {
-//   //   printf("R");
-//   // }
-//   // else if(action == E)
-//   // {
-//   //   printf("E");
-//   // }
-//   // else
-//   // {
-//   //   printf("error");
-//   // }
-
-// //     TStackTop(&stack, &top);
-// //   action = getAction(&top, &t4);
-// //   TStackPush(&stack, &t4);
-
-// //   if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == E)
-// //   {
-// //     printf("E");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //     TStackTop(&stack, &top);
-// //   action = getAction(&top, &t5);
-// //   TStackPush(&stack, &t5);
-
-// //   if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == E)
-// //   {
-// //     printf("E");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //     TStackTop(&stack, &top);
-// //   action = getAction(&top, &t6);
-// //   TStackPush(&stack, &t6);
-
-// //   if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == E)
-// //   {
-// //     printf("E");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //     TStackTop(&stack, &top);
-// //   action = getAction(&top, &t7);
-// //   TStackPush(&stack, &t7);
-
-// //   if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == E)
-// //   {
-// //     printf("E");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //     TStackTop(&stack, &top);
-// //   action = getAction(&top, &t8);
-// //   TStackPush(&stack, &t8);
-
-// //     if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == E)
-// //   {
-// //     printf("E");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //   TStackTop(&stack, &top);
-// //   action = getAction(&top, &t8);
-// //   TStackPush(&stack, &t8);
-
-// //     if(action == S)
-// //   {
-// //     printf("S");
-// //   }
-// //   else if(action == R)
-// //   {
-// //     printf("R");
-// //   }
-// //   else if(action == X)
-// //   {
-// //     printf("X");
-// //   }
-// //   else
-// //   {
-// //     printf("error");
-// //   }
-
-// //   /*************TESTOVANI getAction******************/
-// list.active = list.first;
-// while(list.active != NULL)
-// {
-
-//   list.active = list.active->next;
-//   free(list.first);
-//   list.first = list.active;
-// }
-//   return 0;
-// }
