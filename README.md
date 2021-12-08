@@ -1,6 +1,8 @@
 ## Brno University of Technology - Faculty of Information Technology
 #### Formal Languages and Compilers
 
+#### Implementation of compiler for ifj21
+
 ### Platforms
 Ubuntu 20.04
 
